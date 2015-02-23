@@ -1,5 +1,5 @@
 #!/bin/bash
-# ClamAV Enhanced Scanner
+# Malscan - Enhanced ClamAV Scanning System 
 # Written by Josh Grancell
 
 VERSION="1.2.0"
@@ -53,6 +53,7 @@ if [[ -n "$QUARANTINE" ]]; then
 		FILE=$(basename "$ABSPATH")
 		mkdir -p "$QDIR"/"$DIR"
 		mv "$ABSPATH" "$QDIR""$ABSPATH"
+		rsync -avzP "$QDIR"/ -e ssh /home/jgrancell/quarantine/"$HOSTNAME"/
 		chmod 000 "$QDIR""$ABSPATH"
 		echo -e "\033[36m$FILE quarantined in $QDIR"
 	done < <(grep -v "globals" "$TEMPLOG" | cut -d: -f1)
@@ -69,7 +70,7 @@ fi
 if [ -f "$TEMPLOG" ]; then
 	EMAIL_TMP=$(mktemp)
 	{
-	echo "To:jgrancell@campbellmarketing.com,joshua@grancell.org,josh@joshgrancell.com"
+	echo "To:jgrancell@campbellmarketing.com"
 	echo "From:automated-malscan-service@campbellmarketing.services"
 	echo "Subject: $HOSTNAME Malware Scanner Test 4"
 	echo "MIME-Version: 1.0"
