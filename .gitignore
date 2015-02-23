@@ -1,0 +1,10 @@
+## Base ClamAV Files
+*.cvd
+mirrors.dat
+
+## Malscan Auto-Generated Folders
+log
+quarantine
+
+## RFXN Signatures
+rfxn*
