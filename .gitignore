@@ -1,4 +1,5 @@
 ## Base ClamAV Files
+*.cld
 *.cvd
 mirrors.dat
 
