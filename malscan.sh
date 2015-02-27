@@ -2,11 +2,14 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.3.1"
-DATE="Feb 25 2015"
+VERSION="1.3.2"
+DATE="Feb 27 2015"
 
 # Email Notification List
 EMAIL="jgrancell@campbellmarketing.com"
+
+# The ClamAV User Account - almost always clamav, except for legacy installs
+USER="clam"
 
 # The local Malscan directory locations
 MAINDIR="/var/lib/clamav"
@@ -55,20 +58,33 @@ fi
 if [[ "$1" == "-m" || "$1" == "--mime-check" ]]; then
 	shift
 	SCANLOG="$LOGDIR"/'mimecheck-'$(date +%F-%s)
+	SCANTYPE="Mime-Type check"
 	MIMECHECK=1
 	TEMPLOG=$(mktemp)
-	echo -n "Compiling a full list of potential files. "
+	echo -ne "\033[32mCompiling a full list of potential files... "
 	find "$1" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
 	echo "Completed!"
-	echo "Searching found files for any MIME mismatch against the given extensions."
-	for FILE in $(cat "$TEMPLOG"); do
-		if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf).*?(PHP)'; then
-			if  [ $(basename $FILE) != "license.txt" ]; then
-				echo -e "\033[35mDETECTION: $FILE has been detected as a PHP file with a non-matching extension.\033[37m" | tee -a "$SCANLOG"
-			fi
-		fi
-	done
-	echo "See $SCANLOG for a full list of detected files."
+	echo -e "Searching found files for any MIME mismatch against the given extensions.\033[37m"
+	
+	while IFS= read -r FILE; do
+                if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf).*?(PHP)'; then
+                        if  [ $(basename $FILE) != "license.txt" ]; then
+                                echo -ne "\033[35m"
+                                echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$SCANLOG"
+                                echo -ne "\033[37m"
+                        fi
+                fi
+	done < <(cat "$TEMPLOG")
+
+	if [[ -f "$SCANLOG" ]]; then
+		echo -e "\033[31mSee $SCANLOG for a full list of detected files.\033[37m"
+		DETECTION=1
+	else
+		echo -ne "\033[32m"
+		echo "No suspicious files detected." | tee -a "$SCANLOG"
+		echo -ne "\033[37m"
+		DETECTION=0
+	fi
 fi
 
 ## Reporting Mode
@@ -77,7 +93,7 @@ if [[ "$1" == "-r"|| "$1" == "--report" ]]; then
 	REPORT=1
 	REPORTFILE="$LOGDIR"/report-"$HOSTNAME"-$(date +%s).log
 	sigtool --md5 "$2" >> "$REPORTFILE"
-	rsync -avzP "$REPORTFILE" -e ssh "$REMOTE"
+	rsync -avzP "$REPORTFILE" -e ssh "$REMOTE"		## This rsync copies files over to our security sanbox
 	rm "$REPORTFILE"
 	echo -e "\033[36mFile signatured generated and reported to Centauri for inclusion in the DB.\033[37m"
 	exit 0
@@ -85,16 +101,32 @@ fi
 
 ## Running the actual scanning functionality.
 if [[ -z "$REPORT" && -z "$MIMECHECK" ]]; then
+	SCANTYPE="Malware scan"
 	SCANLOG="$LOGDIR"/$(date +%F-%s)
 	echo -ne "\033[31m"
-	"$CLAMSCAN" -d "$MAINDIR"/rfxn.hdb -d "$MAINDIR"/rfxn.ndb -d "$MAINDIR"/custom.hdb -d "$MAINDIR"/custom.ndb -i -r --no-summary --exclude='quarantine' "$1" | tee "$SCANLOG"
+	"$CLAMSCAN" -d "$MAINDIR"/rfxn.hdb -d "$MAINDIR"/rfxn.ndb -d "$MAINDIR"/custom.hdb -d "$MAINDIR"/custom.ndb -i -r --no-summary --exclude='quarantine' "$1" | tee -a "$SCANLOG"
 	echo -ne "\033[37m"
 
+	## If no files were found, we'll add a note into the scanlog accordingly.
+	if [[ ! -s "$SCANLOG" ]]; then
+		echo -ne "\033[32m"
+		echo "Malware scan completed. No malicious files found." | tee -a "$SCANLOG"
+		echo -ne "\033[37m"
+		DETECTION=0
+	fi
+
+	## Running the quarantine, if requested
 	if [[ -n "$QUARANTINE" ]]; then
 
-
+		## This logic actively quarantines files that are not on our whitelist
 		while read -r; do
 			ABSPATH=$(readlink -f "$REPLY")
+			
+			## Setting the detection variable to 1, which allows us to parse the correct notification
+			if [[ -f "$ABSPATH" ]]; then
+				DETECTION=1
+			fi
+			
 			DIR=$(dirname "$ABSPATH")
 			FILE=$(basename "$ABSPATH")
 			mkdir -p "$QDIR"/"$DIR"
@@ -104,17 +136,18 @@ if [[ -z "$REPORT" && -z "$MIMECHECK" ]]; then
 			echo -e "\033[36m$FILE quarantined and locked down in $QDIR and sent to Centauri.\033[37m" | tee -a "$LOGDIR"/quarantine.log
 		done < <(grep -v "globals" "$SCANLOG" | cut -d: -f1)
 
+		## This logic actively notifies us of possible suspicious files that are whitelisted
 		while read -r; do
 			ABSPATH=$(readlink -f "$REPLY")
 			DIR=$(dirname "$ABSPATH")
 			FILE=$(basename "$ABSPATH")
 			echo -e "\033[35m$FILE has been flagged as suspicious, but not quarantined.\033[37m" | tee -a "$LOGDIR"/quarantine.log
-		done < <(grep -v "globals" "$SCANLOG" | cut -d: -f1)
+		done < <(grep -v "globals" "$SCANLOG" | cut -d: -f1) ## This grep is the whitelist. Use regex to add additional filenames
 	fi
 fi
 
 ## Setting Up The Alert Email
-if [ -s "$SCANLOG" -a -n "$NOTIFY" ]; then
+if [[ -n "$NOTIFY" ]]; then
 	EMAIL_TMP=$(mktemp)
 	{
 	echo "To:$EMAIL"
@@ -126,17 +159,20 @@ if [ -s "$SCANLOG" -a -n "$NOTIFY" ]; then
 	echo "<!DOCTYPE html>"
 	echo "<html> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"	
 
-	if [[ -n "$QUARANTINE" ]]; then
+	if [[ -n "$QUARANTINE" && "$DETECTION" == 1 ]]; then
 		echo "<body> Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGDIR/quarantine.log for further information. </body></html>"
-	elif [[ -n "$MIMECHECK" ]]; then
+	elif [[ -n "$MIMECHECK" && "$DETECTION" == 1 ]]; then
 		echo "<body> PHP files have been detected on $HOSTNAME that are using suspicious file extension types. Please see $SCANLOG for additional information, and investigate each file for whitelisting or quarantining. </body></html>"
-	else
+	elif [[ "$DETECTION" == 1 ]]; then
 		echo "<body> Malicious and/or suspicious files have been identified on $HOSTNAME. Please see $SCANLOG for further information. </body></html>"
+	else
+		echo "<body> $SCANTYPE of $HOSTNAME has been completed without any malicious or suspicious files being detected. A logfile has been generated at $SCANLOG. </body></html>"
 	fi
 	} >> "$EMAIL_TMP"
 
 	sendmail -i -t < "$EMAIL_TMP"
 fi
 
-exit 0
+chown -R "$USER":"$USER" "$MAINDIR"
 
+exit 0
