@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 MAINDIR="/var/lib/clamav"
-USER="clam"
+USER="clamav"
 
 VERSION="1.2.0"
 DATE="Feb 27 2015"

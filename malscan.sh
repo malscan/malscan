@@ -6,10 +6,10 @@ VERSION="1.3.2"
 DATE="Feb 27 2015"
 
 # Email Notification List
-EMAIL="jgrancell@campbellmarketing.com"
+EMAIL="joshua@grancell.org"
 
 # The ClamAV User Account - almost always clamav, except for legacy installs
-USER="clam"
+USER="clamav"
 
 # The local Malscan directory locations
 MAINDIR="/var/lib/clamav"
