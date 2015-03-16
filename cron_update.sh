@@ -22,6 +22,14 @@ cat custom.ndb > "$MAINDIR"/custom.ndb
 
 DATE=$(date)
 
+if [[ ! -d "$MAINDIR"/log ]]; then
+	mkdir "$MAINDIR"/log
+fi
+
+if [[ ! -d "$MAINDIR"/quarantine ]]; then
+	mkdir "$MAINDIR"/quarantine
+fi
+
 echo "$DATE" >> "$MAINDIR"/log/update.log
 
 rm -rf "$TEMP"
