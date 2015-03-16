@@ -111,7 +111,7 @@ function lengthscan {
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[32mScanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters: \033[37m]"
+	echo -e "\033[32mScanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters: \033[37m"
 
 	while IFS= read -r FILE
 	do
