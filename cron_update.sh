@@ -31,8 +31,7 @@ if [[ ! -d "$MAINDIR"/quarantine ]]; then
 fi
 
 if [[ ! -h "$MALSCAN_BINARY_LOCATION" ]]; then
-	LOCATION=$(pwd)
-	ln -s "$LOCATION"/malscan.sh $MALSCAN_BINARY_LOCATION
+	ln -s "$MAINDIR"/malscan.sh $MALSCAN_BINARY_LOCATION
 fi
 
 
