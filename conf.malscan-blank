@@ -1,0 +1,20 @@
+#!/bin/bash
+# Malscan configuration file
+
+# Directory and User Structure
+MAINDIR="/usr/local/share/clamav"
+USER="clamav"
+
+# Remote Server Connection
+REMOTE_QUARANTINE_ENABLED="0" #Set to 0 for disabled, or 1 for enabled
+REMOTE_LOGGING_ENABLED="0"
+REMOTE_SSH=""
+REMOTE_QUARANTINE=""
+REMOTE_LOGGING=""
+
+# Whitelist
+MIME_WHITELIST=""		## Comma separated whitelist for mime-type scanning. See documentation.
+AVSCAN_WHITELIST="'quarantine'"	## Comma separated whitelist for malware scanning. See documentation.
+
+# String Length scanning
+LENGTH_MINIMUM="15000"
