@@ -84,6 +84,8 @@ elif [[ $# -eq 2 ]]; then
 	if [[ "$1" =~ s ]]; then
 		AVSCAN=1
 	fi
+elif [[ -d "$1" || -f "$1" ]]; then
+	AVSCAN=1
 else
 	## Help functionality
 	echo "Malscan version $VERSION compiled on $DATE"
