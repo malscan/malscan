@@ -113,9 +113,9 @@ function lengthscan {
 
 	echo -e "\033[32mScanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters: \033[37m]"
 
-	while IFS= read -r -d '' file
+	while IFS= read -r FILE
 	do
-		SIZE=$(wc -L "$FILE" | awk "$1")
+		SIZE=$(wc -L "$FILE" | awk '{$1}')
 		if [[ "$SIZE" -ge "$LENGTH_MIMIMUM" ]]; then
             echo -ne "\033[35m"
             echo "DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
