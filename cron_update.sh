@@ -5,7 +5,7 @@
 VERSION="1.4.0"
 DATE="Mar 16 2015"
 
-source conf.mailscan
+source conf.malscan
 
 TEMP=$(mktemp -d)
 cd "$TEMP"
