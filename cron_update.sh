@@ -30,7 +30,7 @@ if [[ ! -d "$MAINDIR"/quarantine ]]; then
 	mkdir "$MAINDIR"/quarantine
 fi
 
-if [[ ! -h "$BINARY_LOCATION" ]]; then
+if [[ ! -h "$MALSCAN_BINARY_LOCATION" ]]; then
 	LOCATION=$(pwd)
 	ln -s "$LOCATION"/malscan.sh $BINARY_LOCATION/malscan
 fi
