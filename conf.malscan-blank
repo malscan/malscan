@@ -1,9 +1,14 @@
 #!/bin/bash
 # Malscan configuration file
+# 
+# Once you have completed filling out this file run the cron_update.sh script 
+# to build any missing binaries, signature databases, and directories
 
 # Directory and User Structure
 MAINDIR="/usr/local/share/clamav"
 USER="clamav"
+MALSCAN_BINARY_LOCATION="/usr/local/bin/malscan"
+CLAMSCAN_BINARY_LOCATION="/usr/local/bin/clamscan"
 
 # Remote Server Connection
 REMOTE_QUARANTINE_ENABLED="0" #Set to 0 for disabled, or 1 for enabled
