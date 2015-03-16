@@ -150,7 +150,7 @@ function mimescan {
 	TEMPLOG=$(mktemp)
 
 	# Sed'ing the whitelist into something we can use with find
-	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name}
+	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
 	echo -ne "\033[32mCompiling a full list of potential files... "
 	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
