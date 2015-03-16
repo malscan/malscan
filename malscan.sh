@@ -2,22 +2,22 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.3.2"
-DATE="Feb 27 2015"
+VERSION="1.3.3"
+DATE="Mar 16 2015"
 
 # Email Notification List
-EMAIL="joshua@grancell.org"
+EMAIL=""
 
 # The ClamAV User Account - almost always clamav, except for legacy installs
 USER="clamav"
 
 # The local Malscan directory locations
-MAINDIR="/var/lib/clamav"
+MAINDIR="/usr/local/share/clamav"
 LOGDIR="$MAINDIR/log"
 QDIR="$MAINDIR/quarantine"
 
 # The remote repository for signature reporting and quarantining -- this is in the format of an rsync call
-REMOTE="jgrancell@192.168.25.20:/home/jgrancell/quarantine/$HOSTNAME/"
+REMOTE="user@server:/REMOTE/PATH/HERE/PLEASE/quarantine/$HOSTNAME/"
 
 CLAMSCAN=$(which clamscan)
 

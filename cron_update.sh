@@ -2,19 +2,23 @@
 # ClamAV Enhanced Scanner Daily Cron Updater
 # Written by Josh Grancell
 
-MAINDIR="/var/lib/clamav"
+MAINDIR="/usr/local/share/clamav"
 USER="clamav"
 
-VERSION="1.2.0"
-DATE="Feb 27 2015"
+VERSION="1.3.0"
+DATE="Mar 16 2015"
 TEMP=$(mktemp -d)
 cd "$TEMP"
 
 wget -q https://www.rfxn.com/downloads/rfxn.hdb
 wget -q https://www.rfxn.com/downloads/rfxn.ndb
+wget -q https://www.joshgrancell.com/custom.hdb
+wget -q https://www.joshgrancell.com/custom.ndb
 
 cat rfxn.hdb > "$MAINDIR"/rfxn.hdb
 cat rfxn.ndb > "$MAINDIR"/rfxn.ndb
+cat custom.hdb > "$MAINDIR"/custom.hdb
+cat custom.ndb > "$MAINDIR"/custom.ndb
 
 DATE=$(date)
 
