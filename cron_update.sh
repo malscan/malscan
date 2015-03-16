@@ -2,11 +2,11 @@
 # ClamAV Enhanced Scanner Daily Cron Updater
 # Written by Josh Grancell
 
-MAINDIR="/usr/local/share/clamav"
-USER="clamav"
-
-VERSION="1.3.0"
+VERSION="1.4.0"
 DATE="Mar 16 2015"
+
+source conf.mailscan
+
 TEMP=$(mktemp -d)
 cd "$TEMP"
 
