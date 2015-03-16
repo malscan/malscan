@@ -32,7 +32,7 @@ fi
 
 if [[ ! -h "$MALSCAN_BINARY_LOCATION" ]]; then
 	LOCATION=$(pwd)
-	ln -s "$LOCATION"/malscan.sh $BINARY_LOCATION/malscan
+	ln -s "$LOCATION"/malscan.sh $MALSCAN_BINARY_LOCATION
 fi
 
 
