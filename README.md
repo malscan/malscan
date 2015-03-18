@@ -59,7 +59,11 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
-#### Version 1.1.0
+#### Version 1.4.1
+*Released: March 18, 2015*
+* Bugfix: Proper detection of the malscan program path when run as a cronjob or from outside of the Malscan directory.
+
+#### Version 1.4.0
 *Released: March 16, 2015*
 * First offical public release
 
