@@ -3,6 +3,8 @@
 # 
 # Once you have completed filling out this file run the cron_update.sh script 
 # to build any missing binaries, signature databases, and directories
+#
+# Since: 1.0
 
 # Directory and User Structure
 MAINDIR="/usr/local/share/clamav"

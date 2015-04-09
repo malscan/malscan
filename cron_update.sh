@@ -1,9 +1,7 @@
 #!/bin/bash
 # ClamAV Enhanced Scanner Daily Cron Updater
 # Written by Josh Grancell
-
-VERSION="1.4.0"
-DATE="Mar 16 2015"
+# Since: 1.0
 
 source conf.malscan
 

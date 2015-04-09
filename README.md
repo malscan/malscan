@@ -59,6 +59,10 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
+#### Version 1.4.2
+*Released: April 09, 2015*
+* Bugfix: Corrected an error with the AV-Scan whitelisting functionality, causing malscan to ignore whitelistings. It is now working properly.
+
 #### Version 1.4.1
 *Released: March 18, 2015*
 * Bugfix: Proper detection of the malscan program path when run as a cronjob or from outside of the Malscan directory.
