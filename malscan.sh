@@ -1,10 +1,9 @@
-
 #!/bin/bash
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.4.0"
-DATE="Mar 16 2015"
+VERSION="1.4.1"
+DATE="Apr 09 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -131,7 +130,7 @@ function lengthscan {
             echo "DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
             echo -ne "\033[37m"
         fi
-    done <   <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
+    done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
 
 	# Checking to see if we have hits.
 	if [[ -f "$LENGTHLOG" ]]; then
@@ -205,14 +204,14 @@ function avscan {
 	CLAMSCAN=$(which clamscan)
 
 	# Setting up the whitelist
-	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/--exclude}
+	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
 	# Creating the scan log file for this scan
 	SCANLOG="$LOGDIR"/$(date +%F-%s)
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
-	"$CLAMSCAN" -d "$MAINDIR"/rfxn.hdb -d "$MAINDIR"/rfxn.ndb -d "$MAINDIR"/custom.hdb -d "$MAINDIR"/custom.ndb -i -r --no-summary --exclude="$AVSCAN_IGNORE" "$TARGET" | tee -a "$SCANLOG"
+	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN" -d "$MAINDIR"/rfxn.hdb -d "$MAINDIR"/rfxn.ndb -d "$MAINDIR"/custom.hdb -d "$MAINDIR"/custom.ndb -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
 	echo -ne "\033[37m"
 
 	## If no files were found, we'll add a note into the scanlog accordingly.
