@@ -17,14 +17,14 @@ Malscan is a powerful malware scanner, leveraging
 
 ## Features
 * Multiple channels of malware signatures
-** RFX Networks Signatures
-** Metasploit Signatures
-** JoshGrancell.com Signatures
-** ClamAV Main Signatures
+  * RFX Networks Signatures
+  * Metasploit Signatures
+  * JoshGrancell.com Signatures
+  * ClamAV Main Signatures
 * Multiple Detection Methods
-** Standard HEX or MD5 based detections
-** String length detections
-** MimeType mismatch detections
+  * Standard HEX or MD5 based detections
+  * String length detections
+  * MimeType mismatch detections
 * Easy File Quarantining
 * Built-in new file signature generation
 * Customizable email notifications
