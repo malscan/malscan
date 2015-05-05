@@ -59,6 +59,12 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
+#### Version 1.4.3
+*Released: May 5, 2015*
+* Bugfix: Corrected a logging path issue. All log files will now be correctly generated in the 'log' directory inside your chosen path in conf.malscan
+* Bugfix: Corrected the URL for the custom virus definitions
+* Feature: Included freshclam updates within the cron_update.sh script
+
 #### Version 1.4.2
 *Released: April 09, 2015*
 * Bugfix: Corrected an error with the AV-Scan whitelisting functionality, causing malscan to ignore whitelistings. It is now working properly.
