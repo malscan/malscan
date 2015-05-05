@@ -162,13 +162,12 @@ function mimescan {
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
 	echo -ne "\033[32mCompiling a full list of potential files... "
-	find "$TARGET" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
+	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
 	echo "Completed!"
 	echo -e "Searching found files for any MIME mismatch against the given extensions.\033[37m"	
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
-
                 if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf).*?(PHP)'; then
                         if  [ "$(basename $FILE)" != "license.txt" ]; then
                                 echo -ne "\033[35m"
