@@ -13,6 +13,10 @@ MALSCAN_BINARY_LOCATION="/usr/local/bin/malscan"
 CLAMSCAN_BINARY_LOCATION="/usr/local/bin/clamscan"
 FRESHCLAM_BINARY_LOCATION="/usr/local/bin/freshclam"
 
+# Notifications
+NOFITY_ENABLE="1"
+EMAIL=""
+
 # Remote Server Connection
 REMOTE_QUARANTINE_ENABLED="0" #Set to 0 for disabled, or 1 for enabled
 REMOTE_LOGGING_ENABLED="0"
