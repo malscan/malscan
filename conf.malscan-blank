@@ -11,6 +11,7 @@ MAINDIR="/usr/local/share/clamav"
 USER="clamav"
 MALSCAN_BINARY_LOCATION="/usr/local/bin/malscan"
 CLAMSCAN_BINARY_LOCATION="/usr/local/bin/clamscan"
+FRESHCLAM_BINARY_LOCATION="/usr/local/bin/freshclam"
 
 # Remote Server Connection
 REMOTE_QUARANTINE_ENABLED="0" #Set to 0 for disabled, or 1 for enabled

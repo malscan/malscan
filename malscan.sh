@@ -2,8 +2,8 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.4.1"
-DATE="Apr 09 2015"
+VERSION="1.4.2"
+DATE="May 5 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -16,7 +16,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 ## Loading the configuration file from the Malscan directory
 source /"$DIR"/"conf.malscan"
-
+LOGDIR="$MAINDIR/log"
 ####################
 ## DOING THE WORK ##
 ####################
@@ -162,7 +162,7 @@ function mimescan {
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
 	echo -ne "\033[32mCompiling a full list of potential files... "
-	find "$TARGET" -not -name $MIME_IGNORE -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
+	find "$TARGET" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
 	echo "Completed!"
 	echo -e "Searching found files for any MIME mismatch against the given extensions.\033[37m"	
 
