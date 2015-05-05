@@ -52,7 +52,7 @@ Malscan is a powerful malware scanner, leveraging
 * Step 6: Run the scanner as needed
   * Manually: `malscan -[options] /path/to/target/directory/or/file`
   * Via Cronjob: `30 3 * * * /usr/local/bin/malscan -[options] /path/to/target/directory/or/file`
-* 
+ 
 ## Usage
 
 See `malscan -h` for more detailed program usage.
