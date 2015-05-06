@@ -44,12 +44,13 @@ Malscan is a powerful malware scanner, leveraging
   * For RedHat/CentOS: `cd /usr/local/share/clamav`
   * For Debian/Ubuntu: `cd /var/lib/clamav`
 * Step 3: Clone this git repository with `git clone https://github.com/jgrancell/Malscan.git`
-* Step 4: Run the cron_update.sh script to update the signatures and build any needed directories/binaries with `./cron_update.sh`
-* Step 5: Set the cron_update.sh to run at least daily through `crontab -e` setting the cronjob to run daily
+* Step 4: Copy the `conf.malscan-blank` file to `conf-malscan` and complete all of the needed information.
+* Step 5: Run the cron_update.sh script to update the signatures and build any needed directories/binaries with `./cron_update.sh`
+* Step 6: Set the cron_update.sh to run at least daily through `crontab -e` setting the cronjob to run daily
   * Daily: `0 2 * * * /path/to/clamav/cron_update.sh`
   * Twice Daily: `0 */2 * * * /path/to/clamav/cron_update.sh`
   * NOTE: If running daily, ensure that the update is run BEFORE any scheduled scans.
-* Step 6: Run the scanner as needed
+* Step 7: Run the scanner as needed
   * Manually: `malscan -[options] /path/to/target/directory/or/file`
   * Via Cronjob: `30 3 * * * /usr/local/bin/malscan -[options] /path/to/target/directory/or/file`
  
