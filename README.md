@@ -59,6 +59,12 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
+#### Version 1.4.4
+*Released: May 6, 2015*
+* Bugfix: Corrected an issue with notifications not being sent because there was no way to specify receiving email addresses. Fixed in conf.malscan-blank.
+* Bugfix: Corrected an issue with whitelisting not working properly. It should now function correctly, and is working in test RHEL 6 and CentOS 7 testing environments.
+* Special Note: The changes to conf.malscan-blank will need to be manually added to any active conf.malscan files. 
+
 #### Version 1.4.3
 *Released: May 5, 2015*
 * Bugfix: Corrected a logging path issue. All log files will now be correctly generated in the 'log' directory inside your chosen path in conf.malscan
