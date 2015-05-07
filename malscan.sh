@@ -223,11 +223,6 @@ function tripwire {
 			CURRENT_HASH=$(md5sum "$FILE"| awk '{print $1}')
 
 			if [[ "$WHITELISTED_HASH" != "$CURRENT_HASH" ]]; then
-				
-				echo "$CURRENT_HASH"
-				echo "$WHITELISTED_HASH"
-				grep "$FILE:" "$WHITELIST_DB" | cut -d: -f2
-				exit 1
 				echo -ne "\033[35m"
 				echo -n "DETECTION: $FILE has been modified since being whitelisted." | tee -a "$TRIPWIRE_LOG"
 				echo -e "\033[37m"
