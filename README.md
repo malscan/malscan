@@ -25,6 +25,7 @@ Malscan is a powerful malware scanner, leveraging
   * Standard HEX or MD5 based detections
   * String length detections
   * MimeType mismatch detections
+  * Tripwire Scanning - detects files that have been changed from the reference base
 * Easy File Quarantining
 * Built-in new file signature generation
 * Customizable email notifications
@@ -59,6 +60,12 @@ Malscan is a powerful malware scanner, leveraging
 See `malscan -h` for more detailed program usage.
 
 ## Changelog
+
+#### Version 1.5.0
+*Release: TBD*
+* Feature: Added automated whitelisting of file trees for known clean files (such as imports from development enviroments or fresh installs)
+* Feature: New Tripwire scanning mode. Identifies any files that have been changed or did not exist from the whitelist reference. Excellent for static sites or minimally changing applications.
+* Feature: New installer.
 
 #### Version 1.4.4
 *Released: May 6, 2015*
