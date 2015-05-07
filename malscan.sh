@@ -179,7 +179,7 @@ function whitelist {
 	echo -e "Creating file whitelist signatures...\033[32m"
 
 	while IFS= read -r FILE; do
-		MD5=$(md5sum $FILE | awk '{print $1}')
+		MD5=$(md5sum "$FILE" | awk '{print $1}')
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
 			OLDHASH=$(grep "$FILE:" "$WHITELIST_DB" | cut -d: -f2)
 			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB")
