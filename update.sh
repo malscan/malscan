@@ -35,18 +35,6 @@ echo "Running the freshclam updater."
 
 DATE=$(date)
 
-if [[ ! -d "$MALSCAN_DIRECTORY"/log ]]; then
-	mkdir "$MALSCAN_DIRECTORY"/log
-fi
-
-if [[ ! -d "$MALSCAN_DIRECTORY"/quarantine ]]; then
-	mkdir "$MALSCAN_DIRECTORY"/quarantine
-fi
-
-if [[ ! -h "$MALSCAN_BINARY_LOCATION" ]]; then
-	ln -s "$MALSCAN_DIRECTORY"/malscan.sh $MALSCAN_BINARY_LOCATION
-fi
-
 echo "Cleaning up..."
 
 echo "$DATE" >> "$MALSCAN_DIRECTORY"/log/update.log
