@@ -1,14 +1,6 @@
 #!/bin/bash
 # Malscan installer - Authored by Josh Grancell
-# Version 1.0.0 - Updated 5/6/2015
-
-
-# Looking for the clamscan executable
-if find -type f -name "clamscan" -executable; then
-	CLAMAV="1"
-else
-	CLAMAV="0"
-fi
+# Version 1.1.0 - Updated 5/14/2015
 
 clear
 
@@ -16,8 +8,12 @@ clear
 if [[ -f "/etc/redhat-release" ]]; then
 	if grep -qs "CentOS" /etc/redhat-release; then
 		DISTRO="CentOS"
+		yum -y install epel-release
+		yum -y install clamav git
 	elif grep -qs "RedHat" /etc/redhat-release; then
 		DISTRO="RHEL"
+		yum -y install epel-release
+		yum -y install clamav git
 	else
 		DISTRO="Unsupported"
 		echo "The current Operating System Distribution is unsupported."
@@ -30,6 +26,7 @@ elif [[ -f /etc/lsb-release ]]; then
 	/etc/lsb-release
 	if [[ "$DISTRIB_ID" == "Ubuntu" ]]; then
 		DISTRO="Ubuntu"
+		apt-get -y install clamav git
 	else
 		DISTRO="UNSUPPORTED"
                 echo "The current Operating System Distribution is unsupported."
@@ -40,44 +37,14 @@ elif [[ -f /etc/lsb-release ]]; then
 	fi
 fi
 
-if [[ "$CLAMAV" == 0 ]]; then
-	echo "Preparing to install ClamAV and all dependencies..."
-	case "$DISTRO" in
-		"Ubuntu")
-			apt-get -y install clamav git > /dev/null 
-			;;
-		"CentOS")
-			yum -y install epel-release > /dev/null
-			yum -y install clamav git > /dev/null
-			;;
-		"RHEL")
-			yum -y install epel-release > /dev/null
-			yum -y install clamav git > /dev/null
-			;;
-		*)
-			echo "Unsupported distribution detected. Exiting."
-			exit 1
-			;;
-	esac
-fi
- clear
+#clear
 
 ## Getting directory names
 CLAMAV_DIRECTORY=$(find / -name "main.c*d" -path "*/clamav/*" -type f)
 CLAMAV_USER=$(ls -ld "$CLAMAV_DIRECTORY" | awk '{print $3}')
-STARTING_DIRECTORY=$(pwd)
 
-if [[ -f "/usr/bin/clamscan" ]]; then
-	CLAMSCAN="/usr/local/bin/clamscan"
-else
-	CLAMSCAN="/usr/bin/clamscan"
-fi
-
-if [[ -f "/usr/bin/freshclam" ]]; then
-	FRESHCLAM="/usr/local/bin/freshclam"
-else
-	FRESHCLAM="/usr/bin/freshclam"
-fi
+CLAMSCAN=$(find / -name "clamscan" -executable -path "*bin*")
+FRESHCLAM=$(find / -name "freshclam" -executable -path "*bin*")
 
 ## Creating the Malscan directory
 mkdir -p /usr/local/share/malscan
@@ -88,10 +55,6 @@ MAIN_DIRECTORY="/usr/local/share/malscan"
 git clone https://github.com/jgrancell/Malscan.git
 rsync -aqzP /usr/local/share/malscan/Malscan/ /usr/local/share/malscan/
 rm -rf ./Malscan
-
-## Configuring Malscan
-cp conf.malscan-blank conf.malscan
-rm conf.malscan-blank
 
 ## Echoing the beginning of the configuration file
 {
@@ -108,7 +71,7 @@ echo "CLAMSCAN_BINARY_LOCATION=\"$CLAMSCAN\""
 echo "FRESHCLAM_BINARY_LOCATION=\"$FRESHCLAM\""
 } >> conf.malscan
 
-clear
+#clear
 
 ## Getting the user's input on email notifications
 echo -e "\033[33mBeginning the malscan configuration process..."
@@ -195,7 +158,7 @@ echo "LENGTH_MINIMUM=15000"
 } >> conf.malscan
 
 ## Beginning the signature update process.
-clear
+#clear
 echo -e "\033[032mMalscan has been successfully configured! Beginning initial update...\033[37m"
 wget -q https://www.rfxn.com/downloads/rfxn.hdb
 wget -q https://www.rfxn.com/downloads/rfxn.ndb
@@ -204,8 +167,7 @@ wget -q https://repo.joshgrancell.com/custom.ndb
 
 "$FRESHCLAM" >> /dev/null
 
-mkdir /usr/local/share/malscan/log
-mkdir /usr/local/share/malscan/quarantine
+mkdir -p /usr/local/share/malscan/log
 ln -s /usr/local/share/malscan/malscan.sh /usr/local/bin/malscan
 
 chown -R "$CLAMAV_USER":"$CLAMAV_USER" /usr/local/share/malscan
@@ -216,15 +178,16 @@ read BEGIN_WHITELIST
 if [[ "$BEGIN_WHITELIST" == "y" || "$BEGIN_WHITELIST" == "Y" || "$BEGIN_WHITELIST" == "yes" || "$BEGIN_WHITELIST" == "YES" ]]; then
 	echo -e "\033[33mThe whitelist process will scan an entire file tree, including all subdirectories and files.\033[37m"
 	echo -e "\033[33mBy whitelisting a file, it will not trigger any type of detection in its current state. Any type of alteration to the file once whitelisted will trigger a detection."
-	echo -e "\033[33mAll files found within the file tree will be whitelisted. This is only recommended for known clean systems.\033[37m"
+	echo -e "\033[33mAll files found within the file tree will be whitelisted. This is only recommended for known clean systems, such as default installs or imports from secure staging servers.\033[37m"
 	echo -ne "\033[33mIf you would like to whitelist a specific directory, please provide the full directory path now. If you would like to cancel, type the word cancel: \033[37m"
 	read WHITELIST_DIRECTORY
 
 	if [[ "$WHITELIST_DIRECTORY" == "cancel" ]]; then
 		echo -e "\033[33mWhitelisting has been cancelled. You can whitelist again at any time using the malscan program directly."
 	else
-		/usr/local/share/malscan -w "$WHITELIST_DIRECTORY"
+		/usr/local/bin/malscan -w "$WHITELIST_DIRECTORY"
 	fi
 fi
 echo "Malscan has been successfully configured and instantited."
-/usr/local/share/malscan -h
+/usr/local/bin/malscan -h
+exit 0
