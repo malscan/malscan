@@ -16,7 +16,10 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 ## Loading the configuration file from the Malscan directory
 source /"$DIR"/"conf.malscan"
-LOGDIR="$MAINDIR/log"
+
+echo "$DIR"
+echo "$MALSCAN_DIRECTORY"
+LOGGING_DIRECTORY="$MALSCAN_DIRECTORY/log"
 ####################
 ## DOING THE WORK ##
 ####################
@@ -130,7 +133,7 @@ fi
 ## Defining the lengthscan function
 function lengthscan {
 	#Creating the logging directories
-	LENGTHLOG="$LOGDIR"/'length-scan-'$(date +%F-%s)
+	LENGTHLOG="$LOGGING_DIRECTORY"/"length-scan-$(date +%F-%s)"
 	TEMPLOG=$(mktemp)	
 
 	# Building the whitelist
@@ -171,7 +174,7 @@ function lengthscan {
 ## Defining the whitelist function
 function whitelist {
 	# Identifying the whitelist.db
-	WHITELIST_DB="$MAINDIR/whitelist.db"
+	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)	
 
 	echo -e "\033[33mGenerating a list of files to whitelist."
@@ -209,9 +212,9 @@ function whitelist {
 }
 
 function tripwire {
-	WHITELIST_DB="$MAINDIR/whitelist.db"
+	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)
-	TRIPWIRE_LOG="$LOGDIR/tripwire-$(date +%F-%s)"
+	TRIPWIRE_LOG="$LOGGING_DIRECTORY/tripwire-$(date +%F-%s)"
 
 	echo -e "\033[33mCompiling list of all files."
 	find "$TARGET" -type f >> "$TEMPLOG"
@@ -261,14 +264,14 @@ function tripwire {
 ## Defining the mimescan function
 function mimescan {
 	# Creating the logging directories
-	MIMELOG="$LOGDIR"/'mimecheck-'$(date +%F-%s)
+	MIMELOG="$LOGGING_DIRECTORY"/"mimecheck-$(date +%F-%s)"
 	TEMPLOG=$(mktemp)
 
-	# Sed'ing the whitelist into something we can use with find
+	# SEDing the whitelist into something we can use with find
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
 	echo -ne "\033[32mCompiling a full list of potential files... "
-	find "$TARGET" -not -name $MIME_IGNORE -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
+	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
 	echo "Completed!"
 	echo -e "Searching found files for any MIME mismatch against the given extensions.\033[37m"	
 
@@ -312,11 +315,11 @@ function avscan {
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
 	# Creating the scan log file for this scan
-	SCANLOG="$LOGDIR"/$(date +%F-%s)
+	SCANLOG="$LOGGING_DIRECTORY"/$(date +%F-%s)
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
-	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN" -d "$MAINDIR"/rfxn.hdb -d "$MAINDIR"/rfxn.ndb -d "$MAINDIR"/custom.hdb -d "$MAINDIR"/custom.ndb -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
+	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
 	echo -ne "\033[37m"
 
 	## If no files were found, we will add a note into the scanlog accordingly.
@@ -355,7 +358,7 @@ function quarantine {
 
 			# Setting the files to 000 permissions so they cannot be accessed
 			chmod 000 "$QDIR""$ABSPATH"
-			echo -e "\033[36m$FILE quarantined and locked down in $QDIR and sent to Centauri.\033[37m" | tee -a "$LOGDIR"/quarantine.log
+			echo -e "\033[36m$FILE quarantined and locked down in $QDIR and sent to Centauri.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
 		done < <(cat"$SCANLOG" | cut -d: -f1)
 }
 
@@ -374,7 +377,7 @@ function notification {
 		echo "<body>"
 
 		if [[ -n "$QUARANTINE" && -n "$AVSCAN" ]]; then
-			echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGDIR/quarantine.log for further information.<br />"
+			echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine.log for further information.<br />"
 		elif [[ -n "$AVSCAN" ]]; then
 			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined. Please see $SCANLOG for further information.<br />"
 		fi
@@ -394,7 +397,7 @@ function notification {
 
 function report {
 	# Creating the report file name
-	REPORTFILE="$LOGDIR"/report-"$HOSTNAME"-$(date +%s).log
+	REPORTFILE="$LOGGING_DIRECTORY"/report-"$HOSTNAME"-$(date +%s).log
 
 	# Generating the malware signature
 	sigtool --md5 "$TARGET" >> "$REPORTFILE"
@@ -442,6 +445,6 @@ if [[ -n "$NOTIFICATION" ]]; then
 fi
 
 # Cleaning up by chowning everything ot the clam user
-chown -R "$USER":"$USER" "$MAINDIR"
+chown -R "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY"
 
 exit 0
