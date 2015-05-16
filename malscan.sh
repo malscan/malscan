@@ -16,9 +16,6 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 ## Loading the configuration file from the Malscan directory
 source /"$DIR"/"conf.malscan"
-
-echo "$DIR"
-echo "$MALSCAN_DIRECTORY"
 LOGGING_DIRECTORY="$MALSCAN_DIRECTORY/log"
 
 ####################
