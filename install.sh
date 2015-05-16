@@ -173,7 +173,7 @@ ln -s /usr/local/share/malscan/malscan.sh /usr/local/bin/malscan
 
 chown -R "$CLAMAV_USER":"$CLAMAV_USER" /usr/local/share/malscan
 
-echo -ne "\033[32mMalware signatures have been updated successfully. Would you like to whitelist known clean files at this time? [Y/n] "
+echo -ne "\033[32mMalware signatures have been updated successfully. Would you like to whitelist known clean files at this time? [Y/n] \033[37m"
 read BEGIN_WHITELIST
 
 if [[ "$BEGIN_WHITELIST" == "y" || "$BEGIN_WHITELIST" == "Y" || "$BEGIN_WHITELIST" == "yes" || "$BEGIN_WHITELIST" == "YES" ]]; then
@@ -184,7 +184,7 @@ if [[ "$BEGIN_WHITELIST" == "y" || "$BEGIN_WHITELIST" == "Y" || "$BEGIN_WHITELIS
 	read WHITELIST_DIRECTORY
 
 	if [[ "$WHITELIST_DIRECTORY" == "cancel" ]]; then
-		echo -e "\033[33mWhitelisting has been cancelled. You can whitelist again at any time using the malscan program directly."
+		echo -e "\033[33mWhitelisting has been cancelled. You can whitelist again at any time using the malscan program directly.\033[37m"
 	else
 		/usr/local/bin/malscan -w "$WHITELIST_DIRECTORY"
 	fi
