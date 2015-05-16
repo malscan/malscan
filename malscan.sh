@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 VERSION="1.5.0"
-DATE="May 7 2015"
+DATE="May 16 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -20,6 +20,7 @@ source /"$DIR"/"conf.malscan"
 echo "$DIR"
 echo "$MALSCAN_DIRECTORY"
 LOGGING_DIRECTORY="$MALSCAN_DIRECTORY/log"
+
 ####################
 ## DOING THE WORK ##
 ####################
@@ -309,8 +310,6 @@ function mimescan {
 ## Defining the scanning function
 function avscan {
 
-	CLAMSCAN=$(which clamscan)
-
 	# Setting up the whitelist
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
@@ -319,7 +318,7 @@ function avscan {
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
-	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
+	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN_BINARY_LOCATION" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -d "$CLAMAV_DIRECTORY"/ -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
 	echo -ne "\033[37m"
 
 	## If no files were found, we will add a note into the scanlog accordingly.
