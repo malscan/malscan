@@ -10,6 +10,13 @@ if [[ -f "/etc/redhat-release" ]]; then
 		DISTRO="CentOS"
 		yum -y install epel-release
 		yum -y install clamav git
+
+		# CentOS 7 doesn't install freshclam by default, so we need to add in another package
+		if grep -qs "release 7" /etc/redhat-release; then
+			yum -y install clamav-update
+			# We also need to manially identify the clamav path and the user
+			CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs basename)
+			CLAMAV_
 	elif grep -qs "RedHat" /etc/redhat-release; then
 		DISTRO="RHEL"
 		yum -y install epel-release
@@ -40,7 +47,10 @@ fi
 #clear
 
 ## Getting directory names
-CLAMAV_DIRECTORY=$(grep "DatabaseDirectory" /etc/freshclam.conf | awk '{print $2}')
+if [[ -z $CLAMAV_DIRECTORY ]]; then
+	CLAMAV_DIRECTORY=$(grep "DatabaseDirectory" /etc/freshclam.conf | awk '{print $2}')
+fi
+
 CLAMAV_USER=$(ls -ld "$CLAMAV_DIRECTORY" | awk '{print $3}')
 
 CLAMSCAN=$(find / -name "clamscan" -executable -path "*bin*")
