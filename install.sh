@@ -10,13 +10,13 @@ if [[ -f "/etc/redhat-release" ]]; then
 		DISTRO="CentOS"
 		yum -y install epel-release
 		yum -y install clamav git
-
 		# CentOS 7 doesn't install freshclam by default, so we need to add in another package
 		if grep -qs "release 7" /etc/redhat-release; then
 			yum -y install clamav-update
 			# We also need to manially identify the clamav path and the user
 			CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs basename)
-			CLAMAV_
+			# Freshclam's config by default disabled it, which is annoying. We're removing that disable here, but not touching anything else.
+			sed -i 's/Example//g'
 	elif grep -qs "RedHat" /etc/redhat-release; then
 		DISTRO="RHEL"
 		yum -y install epel-release
@@ -36,11 +36,11 @@ elif [[ -f /etc/lsb-release ]]; then
 		apt-get -y install clamav git
 	else
 		DISTRO="UNSUPPORTED"
-                echo "The current Operating System Distribution is unsupported."
-                echo "Only Ubuntu is supported at this time from the Debian family."
-                echo "Please submit a bug at https://github.com/jgrancell/Malscan/issues with the following output:"
-                echo "Distro: $DISTRIB_ID / Release: $DISTRIB_RELEASE / Details: $DISTRIB_DESCRIPTION"
-                exit 1
+        echo "The current Operating System Distribution is unsupported."
+        echo "Only Ubuntu is supported at this time from the Debian family."
+        echo "Please submit a bug at https://github.com/jgrancell/Malscan/issues with the following output:"
+        echo "Distro: $DISTRIB_ID / Release: $DISTRIB_RELEASE / Details: $DISTRIB_DESCRIPTION"
+        exit 1
 	fi
 fi
 
