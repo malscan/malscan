@@ -65,6 +65,8 @@ MAIN_DIRECTORY="/usr/local/share/malscan"
 git clone https://github.com/jgrancell/Malscan.git
 rsync -aqzP /usr/local/share/malscan/Malscan/ /usr/local/share/malscan/
 rm -rf ./Malscan
+git checkout 1.5.0-dev
+git pull origin 1.5.0-dev
 
 ## Echoing the beginning of the configuration file
 {
