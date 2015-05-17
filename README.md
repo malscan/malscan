@@ -36,10 +36,18 @@ Malscan is a powerful malware scanner, leveraging
 * SSH Access
 
 ## Installation
+
+#### CentOS 6, CentOS 7, Ubuntu 14.04
+
+* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/Malscan/1.5.0-dev/install.sh && bash install.sh`
+* Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
+
+#### Other Operating Systems
 * Step 1: Install ClamAV on your server
   * For Redhat/CentOS:
     * Install the EPEL Repository using `yum install epel-release`
     * Install clamav using `yum install clamav`
+    * Some variants of CentOS may not include freshclam in the clamav package. If your CentOS does not include this, you also need use `yum install clamav-update`
   * For Debian/Ubuntu, install directly from the repositories using `apt-get install clamav`
 * Step 2: Navigate to your clamav directory.
   * For RedHat/CentOS: `cd /usr/local/share/clamav`
@@ -66,6 +74,8 @@ See `malscan -h` for more detailed program usage.
 * Feature: Added automated whitelisting of file trees for known clean files (such as imports from development enviroments or fresh installs)
 * Feature: New Tripwire scanning mode. Identifies any files that have been changed or did not exist from the whitelist reference. Excellent for static sites or minimally changing applications.
 * Feature: New installer.
+  * New installer is compatible with CentOS 6, CentOS 7, and Ubuntu 14.04.
+  * Other Operating Systems remain supported by Malscan, however installationr requires manually installing ClamAV and Freshclam.
 
 #### Version 1.4.4
 *Released: May 6, 2015*
