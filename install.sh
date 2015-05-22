@@ -6,8 +6,14 @@ clear
 
 ## Getting the OS information
 if [[ -f "/etc/redhat-release" ]]; then
-	if grep -qs "CentOS" /etc/redhat-release; then
-		DISTRO="CentOS"
+	# Checking to see if this is cPanel
+	if [[ -d /usr/local/cpanel ]]; then
+		# Checking to see if ClamAV plugin is installed
+		if [[ ! -d /usr/local/cpanel/3rdparty/share/clamav ]]; then
+			echo -e "\033[31mThis server is currently running cPanel. ClamAV must be installed through WHM before this installation can proceed. Please install that now, and then re-run this installer.\033[37m"
+			exit 1
+		fi
+	elif grep -qs "CentOS" /etc/redhat-release; then
 		yum -y install epel-release
 		yum -y install clamav git file
 		# CentOS 7 doesn't install freshclam by default, so we need to add in another package
@@ -19,11 +25,9 @@ if [[ -f "/etc/redhat-release" ]]; then
 			sed -i 's/Example//g'
 		fi
 	elif grep -qs "RedHat" /etc/redhat-release; then
-		DISTRO="RHEL"
 		yum -y install epel-release
 		yum -y install clamav git file
 	else
-		DISTRO="Unsupported"
 		echo "The current Operating System Distribution is unsupported."
 		echo "Only RedHat Enterprise Linux and CentOS are supported from the RHEL family."
 		echo "Please submit a bug at https://github.com/jgrancell/Malscan/issues with the following output:"
@@ -33,10 +37,8 @@ if [[ -f "/etc/redhat-release" ]]; then
 elif [[ -f /etc/lsb-release ]]; then
 	/etc/lsb-release
 	if [[ "$DISTRIB_ID" == "Ubuntu" ]]; then
-		DISTRO="Ubuntu"
 		apt-get -y install clamav git file
 	else
-		DISTRO="UNSUPPORTED"
         echo "The current Operating System Distribution is unsupported."
         echo "Only Ubuntu is supported at this time from the Debian family."
         echo "Please submit a bug at https://github.com/jgrancell/Malscan/issues with the following output:"
@@ -54,8 +56,8 @@ fi
 
 CLAMAV_USER=$(ls -ld "$CLAMAV_DIRECTORY" | awk '{print $3}')
 
-CLAMSCAN=$(find / -name "clamscan" -executable -path "*bin*")
-FRESHCLAM=$(find / -name "freshclam" -executable -path "*bin*")
+CLAMSCAN=$(find / -name "clamscan" -executable -path "*bin*" | head -n 1)
+FRESHCLAM=$(find / -name "freshclam" -executable -path "*bin*" | head -n 1)
 
 ## Creating the Malscan directory
 mkdir -p /usr/local/share/malscan
