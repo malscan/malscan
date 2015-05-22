@@ -20,7 +20,7 @@ if [[ -f "/etc/redhat-release" ]]; then
 		if grep -qs "release 7" /etc/redhat-release; then
 			yum -y install clamav-update
 			# We also need to manially identify the clamav path and the user
-			CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs basename)
+			CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs dirname)
 			# Freshclam's config by default disabled it, which is annoying. We're removing that disable here, but not touching anything else.
 			sed -i 's/Example//g'
 		fi
@@ -38,6 +38,7 @@ elif [[ -f /etc/lsb-release ]]; then
 	if grep -qs Ubuntu /etc/lsb-release; then
 		apt-get update
 		apt-get -y install clamav git file
+		CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs dirname)
 	else
         echo "The current Operating System Distribution is unsupported."
         echo "Only Ubuntu is supported at this time from the Debian family."
