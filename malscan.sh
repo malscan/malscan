@@ -268,7 +268,7 @@ function mimescan {
 	# SEDing the whitelist into something we can use with find
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
-	echo -ne "\033[33mCompiling a full list of potential files...\033[37m] "
+	echo -ne "\033[33mCompiling a full list of potential files...\033[37m "
 	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
 	echo -e "\033[32mCompleted!\033[37m"
 	echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m"
@@ -298,7 +298,7 @@ function mimescan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo "No suspicious files detected." | tee -a "$MIMELOG"
+		echo -n "No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	fi
