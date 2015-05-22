@@ -9,7 +9,7 @@ if [[ -f "/etc/redhat-release" ]]; then
 	if grep -qs "CentOS" /etc/redhat-release; then
 		DISTRO="CentOS"
 		yum -y install epel-release
-		yum -y install clamav git
+		yum -y install clamav git file
 		# CentOS 7 doesn't install freshclam by default, so we need to add in another package
 		if grep -qs "release 7" /etc/redhat-release; then
 			yum -y install clamav-update
@@ -20,7 +20,7 @@ if [[ -f "/etc/redhat-release" ]]; then
 	elif grep -qs "RedHat" /etc/redhat-release; then
 		DISTRO="RHEL"
 		yum -y install epel-release
-		yum -y install clamav git
+		yum -y install clamav git file
 	else
 		DISTRO="Unsupported"
 		echo "The current Operating System Distribution is unsupported."
@@ -33,7 +33,7 @@ elif [[ -f /etc/lsb-release ]]; then
 	/etc/lsb-release
 	if [[ "$DISTRIB_ID" == "Ubuntu" ]]; then
 		DISTRO="Ubuntu"
-		apt-get -y install clamav git
+		apt-get -y install clamav git file
 	else
 		DISTRO="UNSUPPORTED"
         echo "The current Operating System Distribution is unsupported."
