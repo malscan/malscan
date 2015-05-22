@@ -181,7 +181,8 @@ wget -q https://www.rfxn.com/downloads/rfxn.ndb
 wget -q https://repo.joshgrancell.com/custom.hdb
 wget -q https://repo.joshgrancell.com/custom.ndb
 
-"$FRESHCLAM" >> /dev/null
+echo -e "\033[032mRunning Freshclam updater. This can potentially take a very long time...\033[37m"
+"$FRESHCLAM" 
 
 mkdir -p /usr/local/share/malscan/log
 ln -s /usr/local/share/malscan/malscan.sh /usr/local/bin/malscan
