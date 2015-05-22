@@ -35,8 +35,8 @@ if [[ -f "/etc/redhat-release" ]]; then
 		exit 1
 	fi
 elif [[ -f /etc/lsb-release ]]; then
-	/etc/lsb-release
-	if [[ "$DISTRIB_ID" == "Ubuntu" ]]; then
+	if grep -qs Ubuntu /etc/lsb-release; then
+		apt-get update
 		apt-get -y install clamav git file
 	else
         echo "The current Operating System Distribution is unsupported."
