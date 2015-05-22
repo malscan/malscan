@@ -137,7 +137,7 @@ function lengthscan {
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[32mScanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters: \033[37m"
+	echo -e "\033[33mScanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters... \033[37m"
 
 	while IFS= read -r FILE
 	do
@@ -268,10 +268,10 @@ function mimescan {
 	# SEDing the whitelist into something we can use with find
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
-	echo -ne "\033[32mCompiling a full list of potential files... "
+	echo -ne "\033[33mCompiling a full list of potential files...\033[37m] "
 	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
-	echo "Completed!"
-	echo -e "Searching found files for any MIME mismatch against the given extensions.\033[37m"	
+	echo -e "\033[32mCompleted!\033[37m"
+	echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m"
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
