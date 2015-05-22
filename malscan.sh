@@ -298,7 +298,7 @@ function mimescan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo -n "No suspicious files detected." | tee -a "$MIMELOG"
+		echo  "No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	fi
