@@ -13,5 +13,9 @@ quarantine
 ## RFXN Signatures
 rfxn*
 
+## Malscan signatures
+custom.*
+whitelist.db
+
 ## Malscan configuration files
 conf.malscan
