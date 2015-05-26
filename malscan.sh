@@ -180,12 +180,12 @@ function whitelist {
 	echo -e "Creating file whitelist signatures...\033[32m"
 
 	while IFS= read -r FILE; do
-		MD5=$(md5sum "$FILE" | awk '{print $1}')
+		SHA256=$(sha256sum "$FILE" | awk '{print $1}')
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
 			OLDHASH=$(grep "$FILE:" "$WHITELIST_DB" | cut -d: -f2)
 			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB")
 
-			if [[ "$OLDHASH" != "$MD5" ]]; then
+			if [[ "$OLDHASH" != "$SHA256" ]]; then
 				echo -e "\033[33mThe file at $FILE has been previously whitelisted, however the signature has changed."
 				echo -ne "Would you like to overwrite the previous signature? [y/N] \033[37m"
 				read -u 3 OVERWRITE
@@ -199,7 +199,7 @@ function whitelist {
 			fi
 
 		else		
-			echo "$FILE:$MD5" >> "$WHITELIST_DB"
+			echo "$FILE:$SHA256" >> "$WHITELIST_DB"
 		fi
 			
 	done 3<&0 <"$TEMPLOG"
@@ -221,7 +221,7 @@ function tripwire {
 	while IFS= read -r FILE; do
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
 			WHITELISTED_HASH=$(grep "$FILE:" "$WHITELIST_DB" | cut -d: -f2)
-			CURRENT_HASH=$(md5sum "$FILE"| awk '{print $1}')
+			CURRENT_HASH=$(sha256sum "$FILE"| awk '{print $1}')
 
 			if [[ "$WHITELISTED_HASH" != "$CURRENT_HASH" ]]; then
 				echo -ne "\033[35m"
