@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 VERSION="1.5.0"
-DATE="May 16 2015"
+DATE="May 26 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -344,18 +344,18 @@ function quarantine {
 			# Building the file structure for quarantine
 			DIR=$(dirname "$ABSPATH")
 			FILE=$(basename "$ABSPATH")
-			mkdir -p "$QDIR"/"$DIR"
-			mv "$ABSPATH" "$QDIR""$ABSPATH"
+			mkdir -p "$QUARANTINE_PATH"/"$DIR"
+			mv "$ABSPATH" "$QUARANTINE_PATH""$ABSPATH"
 
 			# If remote quarantine is set up, copying these files to the remote quarantine server
 			if [[ "$REMOTE_QUARANTINE_ENABLED" == 1 ]]; then
-				rsync -avzP "$QDIR"/ -e ssh "$REMOTE_SSH:$REMOTE_QUARANTINE" >> /dev/null
+				rsync -avzP "$QUARANTINE_PATH"/ -e ssh "$REMOTE_SSH:$REMOTE_QUARANTINE" >> /dev/null
 			fi
 
 			# Setting the files to 000 permissions so they cannot be accessed
-			chmod 000 "$QDIR""$ABSPATH"
-			echo -e "\033[36m$FILE quarantined and locked down in $QDIR and sent to Centauri.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
-		done < <(cat"$SCANLOG" | cut -d: -f1)
+			chmod 000 "$QUARANTINE_PATH""$ABSPATH"
+			echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
+		done < <(cat "$SCANLOG" | cut -d: -f1)
 }
 
 function notification {
