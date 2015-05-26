@@ -403,7 +403,7 @@ function report {
 		rsync -avzP "$REPORTFILE" -e ssh "$REMOTE_SSH:$REMOTE_LOGGING"/"$HOSTNAME"/
 	fi
 
-	echo -e "\033[36mFile signatured generated and reported to Centauri for inclusion in the DB.\033[37m"
+	echo -e "\033[36mFile signatured generated and reported to the Malscan central repository for inclusion in the Malscan signature database.\033[37m"
 	exit 0
 }
 
