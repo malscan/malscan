@@ -22,7 +22,7 @@ if [[ -f "/etc/redhat-release" ]]; then
 			# We also need to manially identify the clamav path and the user
 			CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs dirname)
 			# Freshclam's config by default disabled it, which is annoying. We're removing that disable here, but not touching anything else.
-			sed -i 's/Example//g'
+			sed -i 's/Example//g' /etc/freshclam.conf
 		fi
 	elif grep -qs "RedHat" /etc/redhat-release; then
 		yum -y install epel-release
