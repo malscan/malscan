@@ -18,7 +18,7 @@ source /"$DIR"/"conf.malscan"
 TEMP=$(mktemp -d)
 cd "$TEMP"
 
-echo "Downloading the latest supplimental malware definitions."
+echo -e "\033[33mDownloading the latest Malscan malware definitions."
 
 wget -q https://www.rfxn.com/downloads/rfxn.hdb
 wget -q https://www.rfxn.com/downloads/rfxn.ndb
@@ -30,12 +30,21 @@ cat rfxn.ndb > "$MALSCAN_DIRECTORY"/rfxn.ndb
 cat custom.hdb > "$MALSCAN_DIRECTORY"/custom.hdb
 cat custom.ndb > "$MALSCAN_DIRECTORY"/custom.ndb
 
-echo "Running the freshclam updater."
+if [[ -s "$MALSCAN_DIRECTORY/rfxn.hdb" && -s "$MALSCAN_DIRECTORY/rfxn.ndb" && -s "$MALSCAN_DIRECTORY/custom.ndb" && -s "$MALSCAN_DIRECTORY/custom.hdb" && ]]
+	echo -e "\033[32mMalscan signatures updated successfully!"
+	MALSCAN_SUCCESS=1
+else
+	echo -e "\033[31mMalscan signatures have failed to update correctly. Please try again later."
+	MALSCAN_SUCCESS=0
+fi
+
+echo -e "\033[33mRunning the freshclam updater. This can take some time..."
 "$FRESHCLAM_BINARY_LOCATION"
+echo -e "\033[32mClamAV malware definitions have been updated!\033[37m"
 
 DATE=$(date)
 
-echo "Cleaning up..."
+echo -e "\033[33mBeginning the cleanup process...\033[37m"
 
 echo "$DATE" >> "$MALSCAN_DIRECTORY"/log/update.log
 
