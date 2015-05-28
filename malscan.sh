@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 VERSION="1.5.0"
-DATE="May 26 2015"
+DATE="May 27 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -269,17 +269,17 @@ function mimescan {
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
 	echo -ne "\033[33mCompiling a full list of potential files...\033[37m "
-	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -not -regex '.*.php' >>"$TEMPLOG"
+	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
 	echo -e "\033[32mCompleted!\033[37m"
 	echo -ne "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
-                if file "$FILE" | egrep -q '.*?(PHP)'; then
-                    echo -ne "\033[35m"
-                    echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
-                    echo -ne "\033[37m"
-                fi
+        if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
+            echo -ne "\033[35m"
+            echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
+            echo -ne "\033[37m"
+        fi
 	done < <(cat "$TEMPLOG")
 
 	# Checking to see if we have hits.
@@ -300,6 +300,8 @@ function mimescan {
 		echo -ne "\033[37m"
 		DETECTION=0
 	fi
+
+	rm -f "$TEMPLOG"
 }
 
 ## Defining the scanning function
@@ -330,30 +332,30 @@ function avscan {
 
 ## Defining the quarantine function
 function quarantine {
-		## This logic actively quarantines files that are not on our whitelist
-		while read -r; do
-			ABSPATH=$(readlink -f "$REPLY")
-			
-			## Setting the detection variable to 1, which allows us to parse the correct notification
-			if [[ -f "$ABSPATH" ]]; then
-				DETECTION=1
-			fi
-			
-			# Building the file structure for quarantine
-			DIR=$(dirname "$ABSPATH")
-			FILE=$(basename "$ABSPATH")
-			mkdir -p "$QUARANTINE_PATH"/"$DIR"
-			mv "$ABSPATH" "$QUARANTINE_PATH""$ABSPATH"
+	## This logic actively quarantines files that are not on our whitelist
+	while read -r; do
+		ABSPATH=$(readlink -f "$REPLY")
+		
+		## Setting the detection variable to 1, which allows us to parse the correct notification
+		if [[ -f "$ABSPATH" ]]; then
+			DETECTION=1
+		fi
+		
+		# Building the file structure for quarantine
+		DIR=$(dirname "$ABSPATH")
+		FILE=$(basename "$ABSPATH")
+		mkdir -p "$QUARANTINE_PATH"/"$DIR"
+		mv "$ABSPATH" "$QUARANTINE_PATH""$ABSPATH"
 
-			# If remote quarantine is set up, copying these files to the remote quarantine server
-			if [[ "$REMOTE_QUARANTINE_ENABLED" == 1 ]]; then
-				rsync -avzP "$QUARANTINE_PATH"/ -e ssh "$REMOTE_SSH:$REMOTE_QUARANTINE" >> /dev/null
-			fi
+		# If remote quarantine is set up, copying these files to the remote quarantine server
+		if [[ "$REMOTE_QUARANTINE_ENABLED" == 1 ]]; then
+			rsync -avzP "$QUARANTINE_PATH"/ -e ssh "$REMOTE_SSH:$REMOTE_QUARANTINE" >> /dev/null
+		fi
 
-			# Setting the files to 000 permissions so they cannot be accessed
-			chmod 000 "$QUARANTINE_PATH""$ABSPATH"
-			echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
-		done < <(cat "$SCANLOG" | cut -d: -f1)
+		# Setting the files to 000 permissions so they cannot be accessed
+		chmod 000 "$QUARANTINE_PATH""$ABSPATH"
+		echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
+	done < <(cat "$SCANLOG" | cut -d: -f1)
 }
 
 function notification {
