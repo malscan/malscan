@@ -269,18 +269,16 @@ function mimescan {
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
 	echo -ne "\033[33mCompiling a full list of potential files...\033[37m "
-	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf)' >>"$TEMPLOG"
+	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -not -regex '.*.php' >>"$TEMPLOG"
 	echo -e "\033[32mCompleted!\033[37m"
-	echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m"
+	echo -ne "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
-                if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf).*?(PHP)'; then
-                        if  [ "$(basename $FILE)" != "license.txt" ]; then
-                                echo -ne "\033[35m"
-                                echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
-                                echo -ne "\033[37m"
-                        fi
+                if file "$FILE" | egrep -q '.*?(PHP)'; then
+                    echo -ne "\033[35m"
+                    echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
+                    echo -ne "\033[37m"
                 fi
 	done < <(cat "$TEMPLOG")
 
