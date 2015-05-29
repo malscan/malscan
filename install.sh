@@ -104,17 +104,17 @@ elif grep -qs Ubuntu /etc/lsb-release; then
 	VERSION="Placeholder"
 
 	## Checking to see if clamav is installed
-	if dpkg -l | grep -E '^ii' | grep clamav; then
+	if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw clamav; then
 		CLAMAV_PACKAGE=1
 	fi
 
 	## Checking to see if file is installed
-	if dpkg -l | grep -E '^ii' | grep file; then
+	if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw file; then
 		FILE_PACKAGE=1
 	fi
 
 	## Checking to see if git is installed
-	if dpkg -l | grep -E '^ii' | grep git; then
+	if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw git; then
 		GIT_PACKAGE=1
 	fi
 
@@ -155,7 +155,7 @@ else
 fi
 
 ## Checking Distro compatibility
-if [[ "$DISTRO" == "Unsupported" || "$VERSION" == "Unsupported" || "$VERSION" == "5" ]]; then
+if [[ "$DISTRO" == "Unsupported" || "$VERSION" == "Unsupported" ]]; then
 	## Incompatible distro, exiting
 	echo -e "\033[31mMalscan has detected that this server is not running a supported operating system."
 	echo "Malscan is currently only available for installation on the following Operating Systems: "
@@ -203,21 +203,21 @@ elif [[ "$DISTRO" == "Ubuntu" ]]; then
 		apt-get -y install git file clamav
 
 		## Confirming installation
-		if dpkg -l | grep -E '^ii' | grep clamav; then
+		if ddpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw clamav; then
 			CLAMAV_PACKAGE=1
 		else
 			CLAMAV_PACKAGE=0
 		fi
 
 		## Checking to see if file is installed
-		if dpkg -l | grep -E '^ii' | grep file; then
+		if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw file; then
 			FILE_PACKAGE=1
 		else
 			FILE_PACKAGE=0
 		fi
 
 		## Checking to see if git is installed
-		if dpkg -l | grep -E '^ii' | grep git; then
+		if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw git; then
 			GIT_PACKAGE=1
 		else
 			GIT_PACKAGE=0
