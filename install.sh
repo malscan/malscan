@@ -243,14 +243,15 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
 	if [[ "$VERSION" == "7" ]]; then
 		CLAMAV_DIRECTORY=$(find / -name "daily.cvd" | xargs dirname | head -n 1 )
 	else
-		CLAMAV_DIRECTORY=$(grep "DatabaseDirectory" /etc/freshclam.conf | awk '{print $2}')
+		FRESHCLAM_CONF_LOCATION=$(find / -name "freshclam.conf")
+		CLAMAV_DIRECTORY=$(grep "DatabaseDirectory" "$FRESHCLAM_CONF_LOCATION" | awk '{print $2}')
 	fi
 
 	## Next, we'll identify the Clamav Update user, which will either be clamav/clam/clamupdate or something equally confusing.
 	CLAMAV_USER=$(ls -ld "$CLAMAV_DIRECTORY" | awk '{print $3}')
 
 	## Now we are checking to see if Freshclam has a conf file that is still using default Example information.
-	if [[ -f /etc/freshclam.conf ]]; then
+	if [[ ! -z "$FRESHCLAM_CONF_LOCATION" ]]; then
 		sed -i 's/Example//g' /etc/freshclam.conf
 	fi
 
