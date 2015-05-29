@@ -137,6 +137,16 @@ elif grep -qs Ubuntu /etc/lsb-release; then
 		if [[ -z "$CLAMAV_PACKAGE" ]]; then
 			echo "    clamav"
 		fi
+
+		echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
+		echo "  1. Automatically install all missing packages."
+		echo "  2. Exit installer and manually install missing packages."
+		read INSTALL_OPTION
+
+		if [[ "$INSTALL_OPTION" == "2" ]]; then
+			echo -e "\033[31mYou have selected to manually install the missing packages. Please run this installer again once the missing packages have been installed.\033[37m"
+			exit 0
+		fi
 	else
 		INSTALL_REQUIRED=0
 	fi
@@ -156,7 +166,7 @@ if [[ "$DISTRO" == "Unsupported" || "$VERSION" == "Unsupported" || "$VERSION" ==
 	exit 0
 elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" ]]; then
 	## Checking to see if we have a Package installation queued for CentOS.
-	if [[ "$INSTALL_OPTION" == "1" ]]; then
+	if [[ "$INSTALL_REQUIRED" == "1" && "$INSTALL_OPTION" == "1" ]]; then
 		echo -e "\033[33mInstalling required packages now...\033[37m"
 		## Installing Epel for ClamAV unless it's already installed.
 		if [[ -z "$EPEL_PACKAGE" ]]; then
@@ -188,8 +198,9 @@ elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" ]]; then
 	fi
 elif [[ "$DISTRO" == "Ubuntu" ]]; then
 	## Checking to see if we have a Package installation queued for Ubuntu
-	if [[ "$INSTALL_REQUIRED" == "1" ]]; then
-		apt-get -y install git file clamav	>> /var/log/malscan_install.log
+	if [[ "$INSTALL_REQUIRED" == "1" && "$INSTALL_OPTION" == "1" ]]; then
+		apt-get update
+		apt-get -y install git file clamav
 
 		## Confirming installation
 		if dpkg -l | grep -E '^ii' | grep clamav; then
