@@ -159,16 +159,16 @@ elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" ]]; then
 	if [[ "$INSTALL_OPTION" == "1" ]]; then
 		echo -e "\033[33mInstalling required packages now...\033[37m"
 		## Installing Epel for ClamAV unless it's already installed.
-		if [[ ! -z "$EPEL_PACKAGE" ]]; then
-			yum -y install epel-release >> /var/log/malscan_install.log
+		if [[ -z "$EPEL_PACKAGE" ]]; then
+			yum -y install epel-release
 		fi
 
 		## Installing all needed packages
-		yum -y install git file clamav >> /var/log/malscan_install.log
+		yum -y install git file clamav
 
 		## If we're on CentOS 7, we need to install Freshclam separately
 		if [[ "$VERSION" == "7" ]]; then
-			yum -y install clamav-update >> /var/log/malscan_install.log
+			yum -y install clamav-update
 		fi
 
 		## Confirming that all packages installed properly
@@ -179,7 +179,7 @@ elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" ]]; then
 			echo -e "\033[31mInstallation of required packages has failed. Please manually install the following packages, and then restart the installer: "
 			echo "    git"
 			echo "    file"
-			echo -e"    clamav\033[37m"
+			echo -e "    clamav\033[37m"
 			exit 1
 		fi
 	else
