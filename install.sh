@@ -203,7 +203,7 @@ elif [[ "$DISTRO" == "Ubuntu" ]]; then
 		apt-get -y install git file clamav
 
 		## Confirming installation
-		if ddpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw clamav; then
+		if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw clamav; then
 			CLAMAV_PACKAGE=1
 		else
 			CLAMAV_PACKAGE=0
