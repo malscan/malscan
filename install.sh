@@ -93,6 +93,7 @@ if [[ -f "/etc/redhat-release" ]]; then
 			if [[ "$INSTALL_OPTION" == "2" ]]; then
 				echo -e "\033[31mYou have selected to manually install the missing packages. Please run this installer again once the missing packages have been installed.\033[37m"
 				exit 0
+			fi
 		fi
 	else
 		INSTALL_REQUIRED=0
