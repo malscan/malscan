@@ -82,7 +82,7 @@ See `malscan -h` for more detailed program usage.
 ## Changelog
 
 #### Version 1.5.0
-*Release: TBD*
+*Release: June 1, 2015*
 * Feature: Added automated whitelisting of file trees for known clean files (such as imports from development enviroments or fresh installs)
 * Feature: New Tripwire scanning mode. Identifies any files that have been changed or did not exist from the whitelist reference. Excellent for static sites or minimally changing applications.
 * Feature: New installer.
