@@ -1,6 +1,6 @@
 #!/bin/bash
 # Malscan installer - Authored by Josh Grancell
-# Version 1.5.0 - Updated 5/26/2015
+# Version 1.5.0 - Updated 6/01/2015
 
 clear
 
