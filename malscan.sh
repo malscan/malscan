@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 VERSION="1.5.0"
-DATE="May 27 2015"
+DATE="June 01 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -271,7 +271,7 @@ function mimescan {
 	echo -ne "\033[33mCompiling a full list of potential files...\033[37m "
 	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
 	echo -e "\033[32mCompleted!\033[37m"
-	echo -ne "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "
+	echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
@@ -306,6 +306,8 @@ function mimescan {
 
 ## Defining the scanning function
 function avscan {
+
+	echo -ne "\033[33mBeginning malware scan of $TARGET...\033[37m "
 
 	# Setting up the whitelist
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
