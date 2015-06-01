@@ -44,6 +44,7 @@ Malscan is a powerful malware scanner, leveraging
 #### CentOS 6, CentOS 7, Ubuntu 14.04
 
 * Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/Malscan/1.5.0-dev/install.sh && bash install.sh`
+  * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/Malscan/1.5.0-dev/install.sh --no-check-certificate && bash install.sh` instead.
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
 
 #### Other Operating Systems
