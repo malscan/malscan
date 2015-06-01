@@ -251,7 +251,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
 	CLAMAV_USER=$(ls -ld "$CLAMAV_DIRECTORY" | awk '{print $3}')
 
 	## Now we are checking to see if Freshclam has a conf file that is still using default Example information.
-	if [[ ! -z "$FRESHCLAM_CONF_LOCATION" ]]; then
+	if [[ -z "$FRESHCLAM_CONF_LOCATION" ]]; then
 		sed -i 's/Example//g' /etc/freshclam.conf
 	fi
 
