@@ -43,8 +43,8 @@ Malscan is a powerful malware scanner, leveraging
 
 #### CentOS 6, CentOS 7, Ubuntu 14.04
 
-* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/Malscan/1.5.0-dev/install.sh && bash install.sh`
-  * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/Malscan/1.5.0-dev/install.sh --no-check-certificate && bash install.sh` instead.
+* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/Malscan/master/install.sh && bash install.sh`
+  * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/Malscan/master/install.sh --no-check-certificate && bash install.sh` instead.
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
 
 #### Other Operating Systems
@@ -86,12 +86,13 @@ See `malscan -h` for more detailed program usage.
 * Feature: Added automated whitelisting of file trees for known clean files (such as imports from development enviroments or fresh installs)
 * Feature: New Tripwire scanning mode. Identifies any files that have been changed or did not exist from the whitelist reference. Excellent for static sites or minimally changing applications.
 * Feature: New installer.
-  * New installer is compatible with CentOS 6, CentOS 7, and Ubuntu 14.04. 
+  * New installer is compatible with and fully tested on CentOS 6, CentOS 7, and Ubuntu 14.04.
     * Installer may work with other 6.x and 7.x RHEL derivatives as well as Ubuntu 12.x, 13.x, 14.x, and 15.x, however these are officially unsupported.
     * If you run into issues with any non-supported Operating Systems, please submit a Github issue so that I can correct it and add that OS to the supported list.
     * Added package installation sanity checking, to ensure everything is set up properly
-* Updated Mimetype scanning to add additional filetypes to the scan.
-* Updated a substantial number of prompts, both in text and color.
+  * New installer may work with other RHEL derivatives as well as RHEL/CentOS 5
+* Updated: Mimetype scanning to add additional filetypes to the scan.
+* Updated: A substantial number of prompts, both in text and color.
 
 
 #### Version 1.4.4
