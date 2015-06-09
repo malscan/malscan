@@ -30,7 +30,7 @@ cat rfxn.ndb > "$MALSCAN_DIRECTORY"/rfxn.ndb
 cat custom.hdb > "$MALSCAN_DIRECTORY"/custom.hdb
 cat custom.ndb > "$MALSCAN_DIRECTORY"/custom.ndb
 
-if [[ -s "$MALSCAN_DIRECTORY/rfxn.hdb" && -s "$MALSCAN_DIRECTORY/rfxn.ndb" && -s "$MALSCAN_DIRECTORY/custom.ndb" && -s "$MALSCAN_DIRECTORY/custom.hdb" && ]]
+if [[ -s "$MALSCAN_DIRECTORY/rfxn.hdb" && -s "$MALSCAN_DIRECTORY/rfxn.ndb" && -s "$MALSCAN_DIRECTORY/custom.ndb" && -s "$MALSCAN_DIRECTORY/custom.hdb" ]]; then
 	echo -e "\033[32mMalscan signatures updated successfully!"
 	MALSCAN_SUCCESS=1
 else
@@ -38,8 +38,8 @@ else
 	MALSCAN_SUCCESS=0
 fi
 
-echo -e "\033[33mRunning the freshclam updater. This can take some time..."
-"$FRESHCLAM_BINARY_LOCATION"
+echo -e "\033[33mRunning the freshclam updater. This can take a very long time, depending on the ClamAV repository status. Do not exit while the update is ongoing."
+"$FRESHCLAM_BINARY_LOCATION" >> /dev/null
 echo -e "\033[32mClamAV malware definitions have been updated!\033[37m"
 
 DATE=$(date)
@@ -52,4 +52,5 @@ rm -rf "$TEMP"
 
 chown "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY" -R
 
+echo -e "\033[32mCleanup completed. Malscan has been fully updated with the latest defintions and signatures."
 exit 0
