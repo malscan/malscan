@@ -81,6 +81,15 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
+#### Version 1.5.1
+*Release: June 16, 2015*
+* Bugfix: Corrected a bug with update.sh causing a fatal error.
+* Updated: Added output identifying when different scan types are starting, for more verbose and informative output.
+* Updated: Incremented the version in malscan.sh
+* Updated: Removed the version information in the comment header in install.sh, added a Since version header instead.
+* Updated: Removed the output text from the freshclam updater, which was getting too messy.
+* Updated: Added a warning in update.sh indicating the now-silent freshclam update portion can take a long time.
+
 #### Version 1.5.0
 *Release: June 1, 2015*
 * Feature: Added automated whitelisting of file trees for known clean files (such as imports from development enviroments or fresh installs)
@@ -93,7 +102,6 @@ See `malscan -h` for more detailed program usage.
   * New installer may work with other RHEL derivatives as well as RHEL/CentOS 5
 * Updated: Mimetype scanning to add additional filetypes to the scan.
 * Updated: A substantial number of prompts, both in text and color.
-
 
 #### Version 1.4.4
 *Released: May 6, 2015*
