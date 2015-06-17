@@ -13,7 +13,7 @@ Robust ClamAV-based malware scanner for web servers.
 
 ## Summary
 
-Malscan is a powerful malware scanner, leveraging 
+Malscan is a robust and fully featured scanning platform for Linux servers that greatly simplifies keeping your web servers secure and malware-free. It is built upon the ClamAV platform, providing all of the features of Clamscan with a host of new features and detection modes.
 
 ## Features
 * Multiple channels of malware signatures
