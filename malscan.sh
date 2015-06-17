@@ -137,7 +137,8 @@ function lengthscan {
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[33mScanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters... \033[37m"
+	echo -e "\033[33mBeginning the Stringlength scan."
+	echo -e "Scanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters... \033[37m"
 
 	while IFS= read -r FILE
 	do
@@ -214,7 +215,8 @@ function tripwire {
 	TEMPLOG=$(mktemp)
 	TRIPWIRE_LOG="$LOGGING_DIRECTORY/tripwire-$(date +%F-%s)"
 
-	echo -e "\033[33mCompiling list of all files."
+	echo -e "\033[33mBeginning the Tripwire scan."
+	echo -e "Compiling list of all files within the target directory."
 	find "$TARGET" -type f >> "$TEMPLOG"
 	echo -e "Identifying any changed files...\033[37m"
 
@@ -268,7 +270,8 @@ function mimescan {
 	# SEDing the whitelist into something we can use with find
 	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
 
-	echo -ne "\033[33mCompiling a full list of potential files...\033[37m "
+	echo -e "\033[33mBeginning the Mimetype scan."
+	echo -e "Compiling a full list of potential files...\033[37m "
 	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
 	echo -e "\033[32mCompleted!\033[37m"
 	echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "
@@ -307,7 +310,7 @@ function mimescan {
 ## Defining the scanning function
 function avscan {
 
-	echo -ne "\033[33mBeginning malware scan of $TARGET...\033[37m "
+	echo -e "\033[33mBeginning malware scan of $TARGET...\033[37m "
 
 	# Setting up the whitelist
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
