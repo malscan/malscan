@@ -267,14 +267,22 @@ function mimescan {
 	MIMELOG="$LOGGING_DIRECTORY"/"mimecheck-$(date +%F-%s)"
 	TEMPLOG=$(mktemp)
 
-	# SEDing the whitelist into something we can use with find
-	MIME_IGNORE=${MIME_WHITELIST//,/ -not -name }
+  	WHITELIST_FILE=(mktemp)
+    echo "$MIME_WHITELIST" > "$WHITELIST_FILE"
+    sed -i 's/,/ /g' "$WHITELIST_FILE"
 
-	echo -e "\033[33mBeginning the Mimetype scan."
-	echo -e "Compiling a full list of potential files...\033[37m "
-	find "$TARGET" -not -name "$MIME_IGNORE" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-	echo -e "\033[32mCompleted!\033[37m"
-	echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "
+    MIME_IGNORE_LIST=""
+
+    for IGNORE in $(cat "$WHITELIST_FILE" ); do
+            MIME_IGNORE_LIST="$MIME_IGNORE_LIST -not -name $IGNORE"
+    done
+
+    echo -e "\033[33mBeginning the Mimetype scan."
+    echo -e "Compiling a full list of potential files...\033[37m "
+    find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
+    echo -e "\033[32mCompleted!\033[37m"
+    echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "    
+
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
@@ -305,6 +313,7 @@ function mimescan {
 	fi
 
 	rm -f "$TEMPLOG"
+	rm -f "$WHITELIST_FILE"
 }
 
 ## Defining the scanning function
