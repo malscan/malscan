@@ -81,6 +81,10 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
+#### Version 1.5.2
+*Release: July 13, 2015*
+* Bugfix: Corrected the Mimetype scan to properly ignore files listed in conf.malscan
+
 #### Version 1.5.1
 *Release: June 16, 2015*
 * Bugfix: Corrected a bug with update.sh causing a fatal error.
