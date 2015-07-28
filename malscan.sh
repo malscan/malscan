@@ -2,8 +2,8 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.5.2"
-DATE="July 13 2015"
+VERSION="1.5.3"
+DATE="July 28 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -149,12 +149,12 @@ function updater {
 
 	STARTING_DIRECTORY=$(pwd)
 	cd "$MALSCAN_DIRECTORY"
-	git fetch
-	git pull origin master
+	git fetch >> /dev/null
+	git pull origin master >> /dev/null
 
 	./update.sh
 
-	echo "Update completed."
+	echo "Update completed. Malscan is running version $VERSION"
 }
 
 ## Defining the lengthscan function
@@ -307,9 +307,8 @@ function mimescan {
     done
 
     echo -e "\033[33mBeginning the Mimetype scan."
-    echo -e "Compiling a full list of potential files...\033[37m "
+    echo -e "Compiling a full list of potential files.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo -e "\033[32mCompleted!\033[37m"
     echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "    
 
 
