@@ -28,16 +28,17 @@ if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
 	echo "Malscan version $VERSION compiled on $DATE"
 	echo "Configuration options can be found in conf.malscan"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	echo "       -s  -- Scan the specified file or directory"
-	echo "       -q  -- Quarantine a file"
-	echo "       -m  -- Checks the extension to verify it matches the MIME"
-	echo "       -l  -- Checks files for lines over a certain length"
-	echo "       -r  -- Report a file."
-	echo "       -n  -- Send email notification."
 	echo "       -h  -- Display this help text"
+	echo "       -l  -- Checks files for lines over a certain length"
+	echo "       -m  -- Checks the extension to verify it matches the MIME"
+	echo "       -n  -- Send email notification."
+	echo "       -q  -- Quarantine a file"
+	echo "       -r  -- Report a file."
+	echo "       -s  -- Scan the specified file or directory"
+	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
+	echo "       -u  -- Updates all signatures and the core application"
 	echo "       -v  -- Display version information"
 	echo "       -w  -- Adds specified file tree to whitelist."
-	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
 	echo "Malscan is a robust file scanning toll that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
 	exit 1	
@@ -45,26 +46,29 @@ elif [[ $# == 1 ]]; then
 	if [[ "$1" == "-v" ]]; then
 		echo "Malscan version $VERSION -- last update $DATE"
 		exit 0
+	elif [[ "$1" = "-u" ]]; then
+		UPDATER=1
 	elif [[ -f "$1" || -d "$1" ]]; then
 		AVSCAN=1
 		TARGET="$1"
 	else
 		## Help functionality
-	        echo "Malscan version $VERSION compiled on $DATE"
-	        echo "Configuration options can be found in conf.malscan"
-	        echo "Usage: malscan [options] /path/to/scanned/directory"
-	        echo "       -s  -- Scan the specified file or directory"
-	        echo "       -q  -- Quarantine a file"
-	        echo "       -m  -- Checks the extension to verify it matches the MIME"
-	        echo "       -l  -- Checks files for lines over a certain length"
-	        echo "       -r  -- Report a file."
-	        echo "       -n  -- Send email notification."
-	        echo "       -h  -- Display this help text"
-	        echo "       -v  -- Display version information"
-	        echo "       -w  -- Adds specified file tree to whitelist."
+		echo "Malscan version $VERSION compiled on $DATE"
+		echo "Configuration options can be found in conf.malscan"
+		echo "Usage: malscan [options] /path/to/scanned/directory"
+		echo "       -h  -- Display this help text"
+		echo "       -l  -- Checks files for lines over a certain length"
+		echo "       -m  -- Checks the extension to verify it matches the MIME"
+		echo "       -n  -- Send email notification."
+		echo "       -q  -- Quarantine a file"
+		echo "       -r  -- Report a file."
+		echo "       -s  -- Scan the specified file or directory"
 		echo "       -t  -- Runs a tripwire scan for any files that have been modified."
-	        echo "Malscan is a robust file scanning toll that combines the"
-	        echo "ClamAV virus scanner with enhanced definition sets."
+		echo "       -u  -- Updates all signatures and the core application"
+		echo "       -v  -- Display version information"
+		echo "       -w  -- Adds specified file tree to whitelist."
+		echo "Malscan is a robust file scanning toll that combines the"
+		echo "ClamAV virus scanner with enhanced definition sets."
 		exit 1	
 	fi
 elif [[ $# -eq 2 ]]; then
@@ -120,18 +124,22 @@ elif [[ -d "$1" || -f "$1" ]]; then
 else
 	## Help functionality
 	echo "Malscan version $VERSION compiled on $DATE"
+	echo "Configuration options can be found in conf.malscan"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	echo "       -q|--quarantine  -- Quarantine a file"
-	echo "       -m|--mime-check  -- Checks the extension to verify it matches the MIME"
-	echo "       -l|--line-length -- Checks files for lines over a certain length"
-	echo "       -r|--report      -- Report a file."
-	echo "       -n|--notify      -- Send email notification. This flag cannot be used by itself, and must be followed by -r, -q, or -m."
-	echo "       -h|--help        -- See this text"
-	echo "       -v|--version     -- See version information"
-	echo "       -u|--update      -- Updates all signatures and the core application"
+	echo "       -h  -- Display this help text"
+	echo "       -l  -- Checks files for lines over a certain length"
+	echo "       -m  -- Checks the extension to verify it matches the MIME"
+	echo "       -n  -- Send email notification."
+	echo "       -q  -- Quarantine a file"
+	echo "       -r  -- Report a file."
+	echo "       -s  -- Scan the specified file or directory"
+	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
+	echo "       -u  -- Updates all signatures and the core application"
+	echo "       -v  -- Display version information"
+	echo "       -w  -- Adds specified file tree to whitelist."
 	echo "Malscan is a robust file scanning toll that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
-	exit 1
+	exit 1	
 fi
 
 ## Defining the update function
