@@ -123,10 +123,26 @@ else
 	echo "       -n|--notify      -- Send email notification. This flag cannot be used by itself, and must be followed by -r, -q, or -m."
 	echo "       -h|--help        -- See this text"
 	echo "       -v|--version     -- See version information"
+	echo "       -u|--update      -- Updates all signatures and the core application"
 	echo "Malscan is a robust file scanning toll that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
 	exit 1
 fi
+
+## Defining the update function
+function update {
+	TEMPLOG=$(mktemp)
+	UPDATELOG="$LOGGING_DIRECTORY"/"update-$(date +%F-%s)"
+
+	STARTING_DIRECTORY=$(pwd)
+	cd "$MALSCAN_DIRECTORY"
+	git fetch
+	git pull origin master
+
+	./update.sh
+
+	echo "Update completed."
+}
 
 ## Defining the lengthscan function
 function lengthscan {
