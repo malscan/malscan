@@ -81,6 +81,12 @@ See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
+#### Version 1.5.3
+*Release: July 28, 2015
+* Bugfix: Corrected text coloring on the update.sh script to terminate properly
+* Bugfix: Removed some excess text from the Mimescan
+* Feature: Added new -u update functionality, which updates both the core application as well as the signatures
+
 #### Version 1.5.2
 *Release: July 13, 2015*
 * Bugfix: Corrected the Mimetype scan to properly ignore files listed in conf.malscan
