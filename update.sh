@@ -52,5 +52,5 @@ rm -rf "$TEMP"
 
 chown "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY" -R
 
-echo -e "\033[32mCleanup completed. Malscan has been fully updated with the latest defintions and signatures."
+echo -e "\033[32mCleanup completed. Malscan has been fully updated with the latest defintions and signatures.\033[37m"
 exit 0
