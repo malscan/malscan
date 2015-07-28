@@ -71,6 +71,11 @@ elif [[ $# -eq 2 ]]; then
 	## Setting the scanning target
 	TARGET="$2"
 
+	## Enabling Update
+	if [[ "$1" =~ u ]]; then
+		UPDATER=1
+	fi
+
 	## Enabling Quarantine
 	if [[ "$1" =~ q ]]; then
 		QUARANTINE=1
@@ -130,7 +135,7 @@ else
 fi
 
 ## Defining the update function
-function update {
+function updater {
 	TEMPLOG=$(mktemp)
 	UPDATELOG="$LOGGING_DIRECTORY"/"update-$(date +%F-%s)"
 
@@ -464,6 +469,10 @@ if [[ -n "$AVSCAN" ]]; then
 	if [[ -n "$QUARANTINE" ]]; then
 		quarantine
 	fi
+fi
+
+if [[ -n "$UPDATER" ]]; then
+	updater
 fi
 
 if [[ -n "$NOTIFICATION" ]]; then
