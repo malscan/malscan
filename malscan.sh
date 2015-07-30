@@ -39,7 +39,7 @@ if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
 	echo "       -u  -- Updates all signatures and the core application"
 	echo "       -v  -- Display version information"
 	echo "       -w  -- Adds specified file tree to whitelist."
-	echo "Malscan is a robust file scanning toll that combines the"
+	echo "Malscan is a robust file scanning tool that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
 	exit 1	
 elif [[ $# == 1 ]]; then
@@ -67,7 +67,7 @@ elif [[ $# == 1 ]]; then
 		echo "       -u  -- Updates all signatures and the core application"
 		echo "       -v  -- Display version information"
 		echo "       -w  -- Adds specified file tree to whitelist."
-		echo "Malscan is a robust file scanning toll that combines the"
+		echo "Malscan is a robust file scanning tool that combines the"
 		echo "ClamAV virus scanner with enhanced definition sets."
 		exit 1	
 	fi
@@ -137,7 +137,7 @@ else
 	echo "       -u  -- Updates all signatures and the core application"
 	echo "       -v  -- Display version information"
 	echo "       -w  -- Adds specified file tree to whitelist."
-	echo "Malscan is a robust file scanning toll that combines the"
+	echo "Malscan is a robust file scanning tool that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
 	exit 1	
 fi
