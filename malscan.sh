@@ -208,9 +208,9 @@ function whitelist {
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)	
 
-	echo -e "\033[33mGenerating a list of files to whitelist."
+	echo -e "\033[33mWhitelist: Generating file list.\033[37m"
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "Creating file whitelist signatures...\033[32m"
+	echo -e "\033[33mWhitelist: Creating file whitelist signatures.\033[37m"
 
 	while IFS= read -r FILE; do
 		SHA256=$(sha256sum "$FILE" | awk '{print $1}')
@@ -219,15 +219,15 @@ function whitelist {
 			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB")
 
 			if [[ "$OLDHASH" != "$SHA256" ]]; then
-				echo -e "\033[33mThe file at $FILE has been previously whitelisted, however the signature has changed."
-				echo -ne "Would you like to overwrite the previous signature? [y/N] \033[37m"
+				echo -e "\033[31mWhitelist: The file at $FILE has been previously whitelisted, however the signature has changed.\033[37m"
+				echo -ne "\033[31mWhitelist: Would you like to overwrite the previous signature? [y/N] \033[37m"
 				read -u 3 OVERWRITE
 
 				if [[ "$OVERWRITE" == "y" || "$OVERWRITE" == "Y" || "$OVERWRITE" == "yes" ]]; then
 					sed -i "${HASH_LINE}s/$OLDHASH/$NEWHASH/" "$WHITELIST_DB"
-					echo -e "\033[32mWhitelist signature updated for $FILE\033[37m"
+					echo -e "\033[32mWhitelist: Sgnature updated for $FILE\033[37m"
 				else
-					echo -e "\033[31mNew signature skipped. The old signature has been retained. Please investigate this file change.\033[37m"
+					echo -e "\033[31mWhitelist: New signature skipped. The old signature has been retained. Please investigate this file change.\033[37m"
 				fi
 			fi
 
@@ -239,7 +239,7 @@ function whitelist {
 	
 	rm "$TEMPLOG"
 
-	echo -e "Whitelist updated completed!\033[37m"
+	echo -e "\033[32mWhitelist: Complete.\033[37m"
 }
 
 function tripwire {
