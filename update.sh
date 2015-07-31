@@ -28,8 +28,8 @@ wget -q https://repo.joshgrancell.com/custom.ndb
 SIGNATURE_CHANGE=0
 
 for DATABASE in rfxn.hdb rfxn.ndb custom.hdb custom.ndb; do
-	NEWDB_COUNT=$(wc -l "$DATABASE")
-	OLDDB_COUNT=$(wc -l "$MALSCAN_DIRECTORY/$DATABASE")
+	NEWDB_COUNT=$(wc -l "$DATABASE" | awk '{print $1}')
+	OLDDB_COUNT=$(wc -l "$MALSCAN_DIRECTORY/$DATABASE" | awk '{print $1}')
 
 	if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
 		DIFFERENCE=$(($NEWDB_COUNT - $OLDDB_COUNT))
