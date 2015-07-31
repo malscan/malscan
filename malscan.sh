@@ -216,15 +216,15 @@ function whitelist {
 		SHA256=$(sha256sum "$FILE" | awk '{print $1}')
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
 			OLDHASH=$(grep "$FILE:" "$WHITELIST_DB" | cut -d: -f2)
-			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB")
+			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB" | cut -d: -f1)
 
 			if [[ "$OLDHASH" != "$SHA256" ]]; then
-				echo -e "\033[31mWhitelist: The file at $FILE has been previously whitelisted, however the signature has changed.\033[37m"
-				echo -ne "\033[31mWhitelist: Would you like to overwrite the previous signature? [y/N] \033[37m"
+				echo -e "\033[35mWhitelist: The file at $FILE has been previously whitelisted, however the signature has changed.\033[37m"
+				echo -ne "\033[35mWhitelist: Would you like to overwrite the previous signature? [y/N] \033[37m"
 				read -u 3 OVERWRITE
 
 				if [[ "$OVERWRITE" == "y" || "$OVERWRITE" == "Y" || "$OVERWRITE" == "yes" ]]; then
-					sed -i "${HASH_LINE}s/$OLDHASH/$NEWHASH/" "$WHITELIST_DB"
+					sed -i "${HASH_LINE}s/$OLDHASH/$SHA256/" "$WHITELIST_DB"
 					echo -e "\033[32mWhitelist: Sgnature updated for $FILE\033[37m"
 				else
 					echo -e "\033[31mWhitelist: New signature skipped. The old signature has been retained. Please investigate this file change.\033[37m"
@@ -248,9 +248,9 @@ function tripwire {
 	TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
 
 	echo -e "\033[33mTripwire: Beginning scan.\033[37m"
-	echo -e "\033[33mTripwire: Compiling a full file list of $TARGET.\033[37m"
+	echo -e "\033[33mTripwire: Compiling a full file list for $TARGET.\033[37m"
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "Tripwire: Identifying any changed files.\033[37m"
+	echo -e "\033[33mTripwire: Identifying any changed files.\033[37m"
 
 	while IFS= read -r FILE; do
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
@@ -292,7 +292,6 @@ function tripwire {
 
 
 	rm "$TEMPLOG"
-	echo "Scan completed."
 }
 
 ## Defining the mimescan function
@@ -312,7 +311,7 @@ function mimescan {
     done
 
     echo -e "\033[33mMIME Scan: Beginning scan.\033[37m"
-    echo -e "\033[33mMIME Scan: Compiling a full file list.\033[37m "
+    echo -e "\033[33mMIME Scan: Compiling a full file list for $TARGET.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
     echo -e "\033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
