@@ -25,13 +25,28 @@ wget -q https://www.rfxn.com/downloads/rfxn.ndb
 wget -q https://repo.joshgrancell.com/custom.hdb
 wget -q https://repo.joshgrancell.com/custom.ndb
 
+SIGNATURE_CHANGE=0
+
+for DATABASE in rfxn.hdb rfxn.ndb custom.hdb custom.ndb; do
+	NEWDB_COUNT=$(wc -l "$DATABASE")
+	OLDDB_COUNT=$(wc -l "$MALSCAN_DIRECTORY/$DATABASE")
+
+	if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
+		SIGNATURE_CHANGE=$SIGNATURE_CHANGE+($NEWDB_COUNT-$OLDDB_COUNT)
+	fi
+done
+
 cat rfxn.hdb > "$MALSCAN_DIRECTORY"/rfxn.hdb
 cat rfxn.ndb > "$MALSCAN_DIRECTORY"/rfxn.ndb
 cat custom.hdb > "$MALSCAN_DIRECTORY"/custom.hdb
 cat custom.ndb > "$MALSCAN_DIRECTORY"/custom.ndb
 
 if [[ -s "$MALSCAN_DIRECTORY/rfxn.hdb" && -s "$MALSCAN_DIRECTORY/rfxn.ndb" && -s "$MALSCAN_DIRECTORY/custom.ndb" && -s "$MALSCAN_DIRECTORY/custom.hdb" ]]; then
-	echo -e "\033[32mUpdate: Malscan signatures updated successfully."
+	if [[ "$SIGNATURE_CHANGE" > 0 ]]; then
+		echo -e "\033[32mUpdate: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
+	else
+		echo -e "\033[32mUpdate: No new Malscan signatures avaiable.\033[37m"
+	fi
 	MALSCAN_SUCCESS=1
 else
 	echo -e "\033[31mUpdate: Malscan signatures have failed to update correctly. Please try again later."
