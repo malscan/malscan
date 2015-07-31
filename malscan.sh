@@ -340,6 +340,7 @@ function mimescan {
 	if [[ -n "$MIME_DETECTION" ]]; then
 		# Notifying of detections
 		echo -e "\033[31mMIME Scan: Completed. See $MIMELOG for a full list of detected files.\033[37m"
+		echo ""
 
 		# If remote logging is enabled, reporting this to our remote SSH server
 		if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
