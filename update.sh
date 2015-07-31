@@ -56,7 +56,7 @@ fi
 
 echo -e "\033[33mUpdate: Updating ClamAV definitions. This can take a long time."
 "$FRESHCLAM_BINARY_LOCATION" >> /dev/null
-echo -e "\033[32mUpdate: ClamAV malware definitions have been updated!\033[37m"
+echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
 
 DATE=$(date)
 
