@@ -156,7 +156,7 @@ function updater {
 	git fetch --quiet >> /dev/null
 	git pull origin master --quiet >> /dev/null
 
-	NEW_MALSCAN_VERSION=$(grep "VERSION=" malscan.sh | cut -d \" -f2)
+	NEW_MALSCAN_VERSION=$(grep "VERSION=" malscan.sh | cut -d \" -f2 | head -1)
 
 	if [[ "$NEW_MALSCAN_VERSION" == "$VERSION" ]]; then
 		echo -e "\033[32mUpdate: No Malscan application update required. Current version is $VERSION\033[37m"
