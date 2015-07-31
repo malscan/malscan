@@ -185,7 +185,7 @@ function lengthscan {
 		if [[ "$SIZE" -ge "$LENGTH_MIMIMUM" ]]; then
 			LENGTHSCAN_DETECTION=1
             echo -ne "\033[35m"
-            echo "    DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
+            echo "DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
             echo -ne "\033[37m"
         fi
     done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
@@ -194,6 +194,7 @@ function lengthscan {
 	if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
 		# Notifying of detections
 		echo -e "\033[31mString Length Scan: Completed. See $LENGTHLOG for a full list of detected files.\033[37m"
+		echo ""
 
 		# If remote logging is enabled, reporting this to our remote SSH server
 		if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -206,6 +207,7 @@ function lengthscan {
 		echo -ne "\033[32m"
 		echo "String Length Scan: Completed. No suspicious files detected." | tee -a "$LENGTHLOG"
 		echo -ne "\033[37m"
+		echo ""
 		DETECTION=0
 	fi
 }
@@ -319,9 +321,9 @@ function mimescan {
     done
 
     echo -e "\033[33mMIME Scan: Beginning scan.\033[37m"
-    echo -e "    \033[33mMIME Scan: Compiling a full file list for $TARGET.\033[37m "
+    echo -e "\033[33mMIME Scan: Compiling a full file list for $TARGET.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo -e "    \033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
+    echo -e "\033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
 
 	# Working through the temporary file list to match files with mimetypes.
@@ -329,7 +331,7 @@ function mimescan {
         if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
         	MIME_DETECTION=1
             echo -ne "\033[35m"
-            echo "    DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
+            echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
             echo -ne "\033[37m"
         fi
 	done < <(cat "$TEMPLOG")
@@ -350,6 +352,7 @@ function mimescan {
 		echo -ne "\033[32m"
 		echo  "MIME Scan: Completed. No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
+		echo ""
 		DETECTION=0
 	fi
 
@@ -462,6 +465,8 @@ function report {
 	exit 0
 }
 
+echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $(tail -1 $LOGGING_DIRECTORY/update.log)\033[37m"
+echo ""
 
 # Executing the Functions
 if [[ -n "$REPORT" ]]; then
