@@ -3,7 +3,7 @@ Malscan
 
 Robust ClamAV-based malware scanner for web servers.
 
-[![GitHub version](https://badge.fury.io/gh/jgrancell%2FMalscan.svg)](http://badge.fury.io/gh/jgrancell%2FMalscan)
+[![GitHub version](https://img.shields.io/badge/version-1.5.3-green.svg)](https://github.com/jgrancell/Malscan)
 
 #Table of Contents
 * [Features](#features)
@@ -82,7 +82,7 @@ See `malscan -h` for more detailed program usage.
 ## Changelog
 
 #### Version 1.5.3
-*Release: July 28, 2015
+*Release: July 31, 2015
 * Bugfix: Corrected text coloring on the update.sh script to terminate properly
 * Bugfix: Removed some excess text from the Mimescan
 * Feature: Added new -u update functionality, which updates both the core application as well as the signatures
