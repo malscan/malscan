@@ -176,8 +176,8 @@ function lengthscan {
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[33mString Length Scan: Beginning scan.\033[37m"
-	echo -e "    \033[33mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
+	echo -e "  \033[33mString Length Scan: Beginning scan.\033[37m"
+	echo -e "  \033[33mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
 
 	while IFS= read -r FILE
 	do
@@ -185,7 +185,7 @@ function lengthscan {
 		if [[ "$SIZE" -ge "$LENGTH_MIMIMUM" ]]; then
 			LENGTHSCAN_DETECTION=1
             echo -ne "\033[35m"
-            echo "DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
+            echo "  DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
             echo -ne "\033[37m"
         fi
     done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
@@ -193,7 +193,7 @@ function lengthscan {
 	# Checking to see if we have hits.
 	if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
 		# Notifying of detections
-		echo -e "\033[31mString Length Scan: Completed. See $LENGTHLOG for a full list of detected files.\033[37m"
+		echo -e "  \033[31mString Length Scan: Completed. See $LENGTHLOG for a full list of detected files.\033[37m"
 		echo ""
 
 		# If remote logging is enabled, reporting this to our remote SSH server
@@ -205,7 +205,7 @@ function lengthscan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo "String Length Scan: Completed. No suspicious files detected." | tee -a "$LENGTHLOG"
+		echo "  String Length Scan: Completed. No suspicious files detected." | tee -a "$LENGTHLOG"
 		echo -ne "\033[37m"
 		echo ""
 		DETECTION=0
@@ -320,10 +320,10 @@ function mimescan {
             MIME_IGNORE_LIST="$MIME_IGNORE_LIST -not -name $IGNORE"
     done
 
-    echo -e "\033[33mMIME Scan: Beginning scan.\033[37m"
-    echo -e "\033[33mMIME Scan: Compiling a full file list for $TARGET.\033[37m "
+    echo -e "  \033[33mMIME Scan: Beginning scan.\033[37m"
+    echo -e "  \033[33mMIME Scan: Compiling a full file list for $TARGET.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo -e "\033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
+    echo -e "  \033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
 
 	# Working through the temporary file list to match files with mimetypes.
@@ -331,7 +331,7 @@ function mimescan {
         if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
         	MIME_DETECTION=1
             echo -ne "\033[35m"
-            echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
+            echo "  DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
             echo -ne "\033[37m"
         fi
 	done < <(cat "$TEMPLOG")
@@ -339,7 +339,7 @@ function mimescan {
 	# Checking to see if we have hits.
 	if [[ -n "$MIME_DETECTION" ]]; then
 		# Notifying of detections
-		echo -e "\033[31mMIME Scan: Completed. See $MIMELOG for a full list of detected files.\033[37m"
+		echo -e "  \033[31mMIME Scan: Completed. See $MIMELOG for a full list of detected files.\033[37m"
 		echo ""
 
 		# If remote logging is enabled, reporting this to our remote SSH server
@@ -351,7 +351,7 @@ function mimescan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo  "MIME Scan: Completed. No suspicious files detected." | tee -a "$MIMELOG"
+		echo  "  MIME Scan: Completed. No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
 		echo ""
 		DETECTION=0
