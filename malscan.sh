@@ -168,7 +168,7 @@ function lengthscan {
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[33mString Length Scan: Beginning.\033[37m"
+	echo -e "\033[33mString Length Scan: Beginning scan.\033[37m"
 	echo -e "\033[33mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
 
 	while IFS= read -r FILE
@@ -196,7 +196,7 @@ function lengthscan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo "String Length Scan: No suspicious files detected." | tee -a "$LENGTHLOG"
+		echo "String Length Scan: Completed. No suspicious files detected." | tee -a "$LENGTHLOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	fi
@@ -247,10 +247,10 @@ function tripwire {
 	TEMPLOG=$(mktemp)
 	TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
 
-	echo -e "\033[33mBeginning the Tripwire scan."
-	echo -e "Compiling list of all files within the target directory."
+	echo -e "\033[33mTripwire: Beginning scan.\033[37m"
+	echo -e "\033[33mTripwire: Compiling a full file list of $TARGET.\033[37m"
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "Identifying any changed files...\033[37m"
+	echo -e "Tripwire: Identifying any changed files.\033[37m"
 
 	while IFS= read -r FILE; do
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
@@ -258,11 +258,13 @@ function tripwire {
 			CURRENT_HASH=$(sha256sum "$FILE"| awk '{print $1}')
 
 			if [[ "$WHITELISTED_HASH" != "$CURRENT_HASH" ]]; then
+				TRIPWIRE_DETECTION=1
 				echo -ne "\033[35m"
 				echo -n "DETECTION: $FILE has been modified since being whitelisted." | tee -a "$TRIPWIRE_LOG"
 				echo -e "\033[37m"
 			fi
 		else
+			TRIPWIRE_DETECTION=1
 			echo -ne "\033[35m"
 			echo -n "DETECTION: $FILE is not found in the whitelist, and may be newly created." | tee -a "$TRIPWIRE_LOG"
 			echo -e "\033[37m"	
@@ -270,9 +272,9 @@ function tripwire {
 	done 3<&0 <"$TEMPLOG"
 
         # Checking to see if we have hits.
-        if [[ -f "$TRIPWIRE_LOG" ]]; then
+        if [[ -n "$TRIPWIRE_DETECTION" ]]; then
                 # Notifying of detections
-                echo -e "\033[31mSee $TRIPWIRE_LOG for a full list of detected files.\033[37m"
+                echo -e "\033[31mTripwire: See $TRIPWIRE_LOG for a full list of detected files.\033[37m"
 
                 # If remote logging is enabled, reporting this to our remote SSH server
                 if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -283,7 +285,7 @@ function tripwire {
         else
                 # No detections
                 echo -ne "\033[32m"
-                echo "No suspicious files detected." | tee -a "$TRIPWIRE_LOG"
+                echo "Tripwire: Completed. No suspicious files detected." | tee -a "$TRIPWIRE_LOG"
                 echo -ne "\033[37m"
                 DETECTION=0
         fi
