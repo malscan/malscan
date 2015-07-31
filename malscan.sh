@@ -160,8 +160,6 @@ function updater {
 	echo -e "\033[32mUpdate: Core application update complete.\033[37m"
 
 	./update.sh
-
-	echo "Update completed. Malscan is running version $VERSION"
 }
 
 ## Defining the lengthscan function
