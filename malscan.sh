@@ -149,10 +149,15 @@ function updater {
 	TEMPLOG=$(mktemp)
 	UPDATELOG="$LOGGING_DIRECTORY"/"update-$(date +%F-%s)"
 
+	echo -e "\033[33mUpdate: Running core application update.\033[37m"
+
 	STARTING_DIRECTORY=$(pwd)
 	cd "$MALSCAN_DIRECTORY"
-	git fetch >> /dev/null
-	git pull origin master >> /dev/null
+	git fetch --quiet >> /dev/null
+	git pull origin master --quiet >> /dev/null
+
+	echo -e "\033[33mUpdate: Malscan is now running version $VERSION\033[37m"
+	echo -e "\033[32mUpdate: Core application update complete.\033[37m"
 
 	./update.sh
 
