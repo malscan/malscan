@@ -18,6 +18,8 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source /"$DIR"/"conf.malscan"
 LOGGING_DIRECTORY="$MALSCAN_DIRECTORY/log"
 
+LOGGING_DATE=$(date +%F-%s)
+
 ####################
 ## DOING THE WORK ##
 ####################
@@ -160,14 +162,14 @@ function updater {
 ## Defining the lengthscan function
 function lengthscan {
 	#Creating the logging directories
-	LENGTHLOG="$LOGGING_DIRECTORY"/"length-scan-$(date +%F-%s)"
+	LENGTHLOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	TEMPLOG=$(mktemp)	
 
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[33mBeginning the Stringlength scan."
-	echo -e "Scanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters... \033[37m"
+	echo -e "\033[33mString Length Scan: Beginning.\033[37m"
+	echo -e "\033[33mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
 
 	while IFS= read -r FILE
 	do
@@ -182,7 +184,7 @@ function lengthscan {
 	# Checking to see if we have hits.
 	if [[ -f "$LENGTHLOG" ]]; then
 		# Notifying of detections
-		echo -e "\033[31mSee $LENGTHLOG for a full list of detected files.\033[37m"
+		echo -e "\033[31mString Length Scan: See $LENGTHLOG for a full list of detected files.\033[37m"
 
 		# If remote logging is enabled, reporting this to our remote SSH server
 		if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -193,7 +195,7 @@ function lengthscan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo "No suspicious files detected." | tee -a "$LENGTHLOG"
+		echo "String Length Scan: No suspicious files detected." | tee -a "$LENGTHLOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	fi
@@ -242,7 +244,7 @@ function whitelist {
 function tripwire {
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)
-	TRIPWIRE_LOG="$LOGGING_DIRECTORY/tripwire-$(date +%F-%s)"
+	TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
 
 	echo -e "\033[33mBeginning the Tripwire scan."
 	echo -e "Compiling list of all files within the target directory."
@@ -293,7 +295,7 @@ function tripwire {
 ## Defining the mimescan function
 function mimescan {
 	# Creating the logging directories
-	MIMELOG="$LOGGING_DIRECTORY"/"mimecheck-$(date +%F-%s)"
+	MIMELOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	TEMPLOG=$(mktemp)
 
   	WHITELIST_FILE=(mktemp)
@@ -306,10 +308,10 @@ function mimescan {
             MIME_IGNORE_LIST="$MIME_IGNORE_LIST -not -name $IGNORE"
     done
 
-    echo -e "\033[33mBeginning the Mimetype scan."
-    echo -e "Compiling a full list of potential files.\033[37m "
+    echo -e "\033[33mMIME Scan: Beginning scan.\033[37m"
+    echo -e "\033[33mMIME Scan: Compiling a full file list.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "    
+    echo -e "\033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
 
 	# Working through the temporary file list to match files with mimetypes.
@@ -324,7 +326,7 @@ function mimescan {
 	# Checking to see if we have hits.
 	if [[ -f "$MIMELOG" ]]; then
 		# Notifying of detections
-		echo -e "\033[31mSee $MIMELOG for a full list of detected files.\033[37m"
+		echo -e "\033[31mMIMET Scan: See $MIMELOG for a full list of detected files.\033[37m"
 
 		# If remote logging is enabled, reporting this to our remote SSH server
 		if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -335,7 +337,7 @@ function mimescan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo  "No suspicious files detected." | tee -a "$MIMELOG"
+		echo  "MIME Scan: No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	fi
@@ -353,7 +355,7 @@ function avscan {
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
 	# Creating the scan log file for this scan
-	SCANLOG="$LOGGING_DIRECTORY"/$(date +%F-%s)
+	SCANLOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
@@ -396,7 +398,7 @@ function quarantine {
 
 		# Setting the files to 000 permissions so they cannot be accessed
 		chmod 000 "$QUARANTINE_PATH""$ABSPATH"
-		echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
+		echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	done < <(cat "$SCANLOG" | cut -d: -f1)
 }
 
