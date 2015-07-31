@@ -175,6 +175,7 @@ function lengthscan {
 	do
 		SIZE=$(wc -L "$FILE" | awk '{$1}')
 		if [[ "$SIZE" -ge "$LENGTH_MIMIMUM" ]]; then
+			LENGTHSCAN_DETECTION=1
             echo -ne "\033[35m"
             echo "DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
             echo -ne "\033[37m"
@@ -182,7 +183,7 @@ function lengthscan {
     done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
 
 	# Checking to see if we have hits.
-	if [[ -f "$LENGTHLOG" ]]; then
+	if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
 		# Notifying of detections
 		echo -e "\033[31mString Length Scan: See $LENGTHLOG for a full list of detected files.\033[37m"
 
@@ -317,6 +318,7 @@ function mimescan {
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
         if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
+        	MIME_DETECTION=1
             echo -ne "\033[35m"
             echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
             echo -ne "\033[37m"
@@ -324,7 +326,7 @@ function mimescan {
 	done < <(cat "$TEMPLOG")
 
 	# Checking to see if we have hits.
-	if [[ -f "$MIMELOG" ]]; then
+	if [[ -n "$MIME_DETECTION" ]]; then
 		# Notifying of detections
 		echo -e "\033[31mMIMET Scan: See $MIMELOG for a full list of detected files.\033[37m"
 
@@ -488,7 +490,7 @@ if [[ -n "$NOTIFICATION" ]]; then
 	notification
 fi
 
-# Cleaning up by chowning everything ot the clam user
+# Cleaning up by chowning everything to the clam user
 chown -R "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY"
 
 exit 0
