@@ -272,8 +272,8 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
 	rm -rf /usr/local/share/malscan/Malscan
 
 	## Placeholder - Switching to the dev branch for install testing.
-	git checkout master --quiet
-	git pull origin master --quiet
+	git checkout 1.5.3-dev --quiet
+	git pull origin 1.5.3-dev --quiet
 
 	## Echoing the beginning of the configuration file
 	{
