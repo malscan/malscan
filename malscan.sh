@@ -184,7 +184,7 @@ function lengthscan {
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
 	echo -e "  \033[33mString Length Scan: Beginning scan.\033[37m"
-	echo -e "  \033[33mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
+	echo -e "  \033[37mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
 
 	while IFS= read -r FILE
 	do
@@ -224,10 +224,10 @@ function whitelist {
 	# Identifying the whitelist.db
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)	
-
-	echo -e "\033[33mWhitelist: Generating file list.\033[37m"
+	echo -e "\033[33mWhitelist: Beginning whitelist process.\033[37m"
+	echo "Whitelist: Generating file list."
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "\033[33mWhitelist: Creating file whitelist signatures.\033[37m"
+	echo "Whitelist: Creating file whitelist signatures."
 
 	while IFS= read -r FILE; do
 		SHA256=$(sha256sum "$FILE" | awk '{print $1}')
@@ -265,9 +265,9 @@ function tripwire {
 	TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
 
 	echo -e "\033[33mTripwire: Beginning scan.\033[37m"
-	echo -e "    \033[33mTripwire: Compiling a full file list for $TARGET.\033[37m"
+	echo "  Tripwire: Compiling a full file list for $TARGET."
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "    \033[33mTripwire: Identifying any changed files.\033[37m"
+	echo "  Tripwire: Identifying any changed files."
 
 	while IFS= read -r FILE; do
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
@@ -277,13 +277,13 @@ function tripwire {
 			if [[ "$WHITELISTED_HASH" != "$CURRENT_HASH" ]]; then
 				TRIPWIRE_DETECTION=1
 				echo -ne "\033[35m"
-				echo -n "    DETECTION: $FILE has been modified since being whitelisted." | tee -a "$TRIPWIRE_LOG"
+				echo -n "  DETECTION: $FILE has been modified since being whitelisted." | tee -a "$TRIPWIRE_LOG"
 				echo -e "\033[37m"
 			fi
 		else
 			TRIPWIRE_DETECTION=1
 			echo -ne "\033[35m"
-			echo -n "    DETECTION: $FILE is not found in the whitelist, and may be newly created." | tee -a "$TRIPWIRE_LOG"
+			echo -n "  DETECTION: $FILE is not found in the whitelist, and may be newly created." | tee -a "$TRIPWIRE_LOG"
 			echo -e "\033[37m"	
 		fi
 	done 3<&0 <"$TEMPLOG"
@@ -292,6 +292,7 @@ function tripwire {
         if [[ -n "$TRIPWIRE_DETECTION" ]]; then
                 # Notifying of detections
                 echo -e "\033[31mTripwire: Completed. See $TRIPWIRE_LOG for a full list of detected files.\033[37m"
+                echo ""
 
                 # If remote logging is enabled, reporting this to our remote SSH server
                 if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -303,6 +304,7 @@ function tripwire {
                 # No detections
                 echo -ne "\033[32m"
                 echo "Tripwire: Completed. No suspicious files detected." | tee -a "$TRIPWIRE_LOG"
+                echo ""
                 echo -ne "\033[37m"
                 DETECTION=0
         fi
@@ -328,9 +330,9 @@ function mimescan {
     done
 
     echo -e "  \033[33mMIME Scan: Beginning scan.\033[37m"
-    echo -e "  \033[33mMIME Scan: Compiling a full file list for $TARGET.\033[37m "
+    echo "  MIME Scan: Compiling a full file list for $TARGET.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo -e "  \033[33mMIME Scan: Searching file list for MIME mismatches.\033[37m "    
+    echo "  MIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
 
 	# Working through the temporary file list to match files with mimetypes.
@@ -358,7 +360,7 @@ function mimescan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo  "  MIME Scan: Completed. No suspicious files detected." | tee -a "$MIMELOG"
+		echo  "MIME Scan: Completed. No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
 		echo ""
 		DETECTION=0
@@ -378,19 +380,21 @@ function avscan {
 
 	# Creating the scan log file for this scan
 	SCANLOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
+	DETECTLOG=$(mktemp)
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
-	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN_BINARY_LOCATION" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -d "$CLAMAV_DIRECTORY"/ -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
+	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN_BINARY_LOCATION" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -d "$CLAMAV_DIRECTORY"/ -i -r --no-summary "$TARGET" | tee -a "$DETECTLOG"
 	echo -ne "\033[37m"
 
 	## If no files were found, we will add a note into the scanlog accordingly.
-	if [[ ! -s "$SCANLOG" ]]; then
+	if [[ ! -s "$DETECTLOG" ]]; then
 		echo -ne "\033[32m"
 		echo "Malware scan completed. No malicious files found." | tee -a "$SCANLOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	else
+		cat "$DETECTLOG" >> "$SCANLOG"
 		echo -e "\033[31mSee $SCANLOG for a full list of detected files.\033[37m"
 	fi
 
@@ -420,7 +424,7 @@ function quarantine {
 
 		# Setting the files to 000 permissions so they cannot be accessed
 		chmod 000 "$QUARANTINE_PATH""$ABSPATH"
-		echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
+		echo -e "  \033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	done < <(cat "$SCANLOG" | cut -d: -f1)
 }
 
