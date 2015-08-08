@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 VERSION="1.5.3"
-DATE="July 28 2015"
+DATE="August 7 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -164,7 +164,11 @@ function updater {
 		echo -e "\033[32mUpdate: Core application updated. New Malscan version is $NEW_MALSCAN_VERSION\033[37m"
 	fi
 
+	echo ""
+
 	./update.sh
+
+	exit 0
 }
 
 ## Defining the lengthscan function
