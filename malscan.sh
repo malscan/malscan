@@ -154,7 +154,7 @@ function updater {
 	STARTING_DIRECTORY=$(pwd)
 	cd "$MALSCAN_DIRECTORY"
 	git fetch --quiet >> /dev/null
-	git pull origin master --quiet >> /dev/null
+	git pull origin 1.5.3-dev --quiet >> /dev/null
 
 	NEW_MALSCAN_VERSION=$(grep "VERSION=" malscan.sh | cut -d \" -f2 | head -1)
 
