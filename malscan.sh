@@ -152,13 +152,16 @@ function updater {
 	echo -e "\033[33mUpdate: Running core application update.\033[37m"
 
 	STARTING_DIRECTORY=$(pwd)
+
+	ORIGINAL_SHA256=$(sha256sum "$MALSCAN_DIRECTORY/malscan.sh" | awk '{print $1}')
 	cd "$MALSCAN_DIRECTORY"
 	git fetch --quiet >> /dev/null
 	git pull origin 1.5.3-dev --quiet >> /dev/null
 
 	NEW_MALSCAN_VERSION=$(grep "VERSION=" malscan.sh | cut -d \" -f2 | head -1)
+	NEW_SHA256=$(sha256sum "$MALSCAN_DIRECTORY/malscan.sh" | awk '{print $1}')
 
-	if [[ "$NEW_MALSCAN_VERSION" == "$VERSION" ]]; then
+	if [[ "$NEW_MALSCAN_VERSION" == "$VERSION" && "$NEW_SHA256" == "$ORIGINAL_SHA256" ]]; then
 		echo -e "\033[32mUpdate: No Malscan application update required. Current version is $VERSION\033[37m"
 	else
 		echo -e "\033[32mUpdate: Core application updated. New Malscan version is $NEW_MALSCAN_VERSION\033[37m"
