@@ -85,6 +85,8 @@ See `malscan -h` for more detailed program usage.
 *Release: July 31, 2015
 * Bugfix: Corrected text coloring on the update.sh script to terminate properly
 * Bugfix: Removed some excess text from the Mimescan
+* Updated: All malscan runs now include the current Malscan version and the time that signatures were last updated.
+* Updated: Unified logging files for all scantypes into a single scan log for each scan
 * Feature: Added new -u update functionality, which updates both the core application as well as the signatures
 
 #### Version 1.5.2
