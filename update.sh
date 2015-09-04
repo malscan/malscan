@@ -18,7 +18,7 @@ source /"$DIR"/"conf.malscan"
 TEMP=$(mktemp -d)
 cd "$TEMP"
 
-echo -e "\033[33mUpdate: Downloading the latest Malscan malware definitions."
+echo -e "\033[37mUpdate: Downloading the latest Malscan malware definitions."
 
 wget -q https://www.rfxn.com/downloads/rfxn.hdb
 wget -q https://www.rfxn.com/downloads/rfxn.ndb
@@ -56,7 +56,7 @@ fi
 
 echo ""
 
-echo -e "\033[33mUpdate: Updating ClamAV definitions. This can take a long time."
+echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
 "$FRESHCLAM_BINARY_LOCATION" >> /dev/null
 echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
 echo ""
