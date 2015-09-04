@@ -4,6 +4,11 @@
 
 clear
 
+if [[ "$EUID" != 0 ]]; then
+	echo -e "\033[31m The installer must be run as the root user, or using sudo. Please try again.\033[37m"
+	exit 1
+fi
+
 ## Checking to see if we're on CentOS/RHEL
 if [[ -f "/etc/redhat-release" ]]; then
 
