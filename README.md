@@ -3,7 +3,7 @@ Malscan
 
 Robust ClamAV-based malware scanner for web servers.
 
-[![GitHub version](https://img.shields.io/badge/version-1.5.3-green.svg)](https://github.com/jgrancell/Malscan)
+[![GitHub version](https://img.shields.io/badge/version-1.5.3-green.svg)](https://github.com/jgrancell/malscan)
 
 #Table of Contents
 * [Features](#features)
@@ -43,8 +43,8 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 
 #### CentOS 6, CentOS 7, Ubuntu 14.04
 
-* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/Malscan/master/install.sh && bash install.sh`
-  * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/Malscan/master/install.sh --no-check-certificate && bash install.sh` instead.
+* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
+  * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh --no-check-certificate && bash install.sh` instead.
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
 
 #### Other Operating Systems
@@ -62,8 +62,8 @@ To manually install Malscan
   * For Debian/Ubuntu, install directly from the repositories using `apt-get install clamav git file`
 * Step 2: Create a Malscan directory, and navigate into it:
   * `mkdir /usr/local/share/malscan && cd /usr/local/share/malscan`
-* Step 3: Clone this git repository with `git clone https://github.com/jgrancell/Malscan.git`
-* Step 4: Move the repository into the /usr/local/share/malscan directory directly with `rsync -avzP /usr/local/share/malscan/Malscan /usr/local/share/malscan && rm -rf /usr/local/share/malscan/Malscan`
+* Step 3: Clone this git repository with `git clone https://github.com/jgrancell/malscan.git`
+* Step 4: Move the repository into the /usr/local/share/malscan directory directly with `rsync -avzP /usr/local/share/malscan/malscan /usr/local/share/malscan && rm -rf /usr/local/share/malscan/malscan`
 * Step 5: Copy the `conf.malscan-blank` file to `conf-malscan` and replace all of the example information with your own custom information.
 * Step 6: Create the Malscan executable with the command `ln -s /usr/local/share/malscan/malscan.sh /usr/local/bin/malscan`
 * Step 5: Update the Malscan signatures with `malscan -u`
