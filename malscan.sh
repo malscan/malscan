@@ -149,6 +149,8 @@ function updater {
 	TEMPLOG=$(mktemp)
 	UPDATELOG="$LOGGING_DIRECTORY"/"update-$(date +%F-%s)"
 
+	touch "$UPDATELOG"
+
 	echo -e "Update: Running core application update."
 
 	STARTING_DIRECTORY=$(pwd)
