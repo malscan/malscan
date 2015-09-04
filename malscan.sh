@@ -2,8 +2,8 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.5.2"
-DATE="July 13 2015"
+VERSION="1.5.3"
+DATE="August 7 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
@@ -18,6 +18,8 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source /"$DIR"/"conf.malscan"
 LOGGING_DIRECTORY="$MALSCAN_DIRECTORY/log"
 
+LOGGING_DATE=$(date +%F-%s)
+
 ####################
 ## DOING THE WORK ##
 ####################
@@ -28,48 +30,57 @@ if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
 	echo "Malscan version $VERSION compiled on $DATE"
 	echo "Configuration options can be found in conf.malscan"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	echo "       -s  -- Scan the specified file or directory"
-	echo "       -q  -- Quarantine a file"
-	echo "       -m  -- Checks the extension to verify it matches the MIME"
-	echo "       -l  -- Checks files for lines over a certain length"
-	echo "       -r  -- Report a file."
-	echo "       -n  -- Send email notification."
 	echo "       -h  -- Display this help text"
+	echo "       -l  -- Checks files for lines over a certain length"
+	echo "       -m  -- Checks the extension to verify it matches the MIME"
+	echo "       -n  -- Send email notification."
+	echo "       -q  -- Quarantine a file"
+	echo "       -r  -- Report a file."
+	echo "       -s  -- Scan the specified file or directory"
+	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
+	echo "       -u  -- Updates all signatures and the core application"
 	echo "       -v  -- Display version information"
 	echo "       -w  -- Adds specified file tree to whitelist."
-	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
-	echo "Malscan is a robust file scanning toll that combines the"
+	echo "Malscan is a robust file scanning tool that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
 	exit 1	
 elif [[ $# == 1 ]]; then
 	if [[ "$1" == "-v" ]]; then
 		echo "Malscan version $VERSION -- last update $DATE"
 		exit 0
+	elif [[ "$1" = "-u" ]]; then
+		UPDATER=1
 	elif [[ -f "$1" || -d "$1" ]]; then
 		AVSCAN=1
 		TARGET="$1"
 	else
 		## Help functionality
-	        echo "Malscan version $VERSION compiled on $DATE"
-	        echo "Configuration options can be found in conf.malscan"
-	        echo "Usage: malscan [options] /path/to/scanned/directory"
-	        echo "       -s  -- Scan the specified file or directory"
-	        echo "       -q  -- Quarantine a file"
-	        echo "       -m  -- Checks the extension to verify it matches the MIME"
-	        echo "       -l  -- Checks files for lines over a certain length"
-	        echo "       -r  -- Report a file."
-	        echo "       -n  -- Send email notification."
-	        echo "       -h  -- Display this help text"
-	        echo "       -v  -- Display version information"
-	        echo "       -w  -- Adds specified file tree to whitelist."
+		echo "Malscan version $VERSION compiled on $DATE"
+		echo "Configuration options can be found in conf.malscan"
+		echo "Usage: malscan [options] /path/to/scanned/directory"
+		echo "       -h  -- Display this help text"
+		echo "       -l  -- Checks files for lines over a certain length"
+		echo "       -m  -- Checks the extension to verify it matches the MIME"
+		echo "       -n  -- Send email notification."
+		echo "       -q  -- Quarantine a file"
+		echo "       -r  -- Report a file."
+		echo "       -s  -- Scan the specified file or directory"
 		echo "       -t  -- Runs a tripwire scan for any files that have been modified."
-	        echo "Malscan is a robust file scanning toll that combines the"
-	        echo "ClamAV virus scanner with enhanced definition sets."
+		echo "       -u  -- Updates all signatures and the core application"
+		echo "       -v  -- Display version information"
+		echo "       -w  -- Adds specified file tree to whitelist."
+		echo "Malscan is a robust file scanning tool that combines the"
+		echo "ClamAV virus scanner with enhanced definition sets."
 		exit 1	
 	fi
 elif [[ $# -eq 2 ]]; then
 	## Setting the scanning target
 	TARGET="$2"
+
+	## Enabling Update
+	if [[ "$1" =~ u ]]; then
+		UPDATER=1
+	fi
 
 	## Enabling Quarantine
 	if [[ "$1" =~ q ]]; then
@@ -115,45 +126,82 @@ elif [[ -d "$1" || -f "$1" ]]; then
 else
 	## Help functionality
 	echo "Malscan version $VERSION compiled on $DATE"
+	echo "Configuration options can be found in conf.malscan"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	echo "       -q|--quarantine  -- Quarantine a file"
-	echo "       -m|--mime-check  -- Checks the extension to verify it matches the MIME"
-	echo "       -l|--line-length -- Checks files for lines over a certain length"
-	echo "       -r|--report      -- Report a file."
-	echo "       -n|--notify      -- Send email notification. This flag cannot be used by itself, and must be followed by -r, -q, or -m."
-	echo "       -h|--help        -- See this text"
-	echo "       -v|--version     -- See version information"
-	echo "Malscan is a robust file scanning toll that combines the"
+	echo "       -h  -- Display this help text"
+	echo "       -l  -- Checks files for lines over a certain length"
+	echo "       -m  -- Checks the extension to verify it matches the MIME"
+	echo "       -n  -- Send email notification."
+	echo "       -q  -- Quarantine a file"
+	echo "       -r  -- Report a file."
+	echo "       -s  -- Scan the specified file or directory"
+	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
+	echo "       -u  -- Updates all signatures and the core application"
+	echo "       -v  -- Display version information"
+	echo "       -w  -- Adds specified file tree to whitelist."
+	echo "Malscan is a robust file scanning tool that combines the"
 	echo "ClamAV virus scanner with enhanced definition sets."
-	exit 1
+	exit 1	
 fi
+
+## Defining the update function
+function updater {
+	TEMPLOG=$(mktemp)
+	UPDATELOG="$LOGGING_DIRECTORY"/"update-$(date +%F-%s)"
+
+	echo -e "Update: Running core application update."
+
+	STARTING_DIRECTORY=$(pwd)
+
+	ORIGINAL_SHA256=$(sha256sum "$MALSCAN_DIRECTORY/malscan.sh" | awk '{print $1}')
+	cd "$MALSCAN_DIRECTORY"
+	git fetch --quiet >> /dev/null
+	git pull origin 1.5.3-dev --quiet >> /dev/null
+
+	NEW_MALSCAN_VERSION=$(grep "VERSION=" malscan.sh | cut -d \" -f2 | head -1)
+	NEW_SHA256=$(sha256sum "$MALSCAN_DIRECTORY/malscan.sh" | awk '{print $1}')
+
+	if [[ "$NEW_MALSCAN_VERSION" == "$VERSION" && "$NEW_SHA256" == "$ORIGINAL_SHA256" ]]; then
+		echo -e "\033[32mUpdate: No Malscan application update required. Current version is $VERSION\033[37m"
+	else
+		echo -e "\033[32mUpdate: Core application updated. New Malscan version is $NEW_MALSCAN_VERSION\033[37m"
+	fi
+
+	echo ""
+
+	./update.sh
+
+	exit 0
+}
 
 ## Defining the lengthscan function
 function lengthscan {
 	#Creating the logging directories
-	LENGTHLOG="$LOGGING_DIRECTORY"/"length-scan-$(date +%F-%s)"
+	LENGTHLOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	TEMPLOG=$(mktemp)	
 
 	# Building the whitelist
 	LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
-	echo -e "\033[33mBeginning the Stringlength scan."
-	echo -e "Scanning $TARGET for files with strings longer than $LENGTH_MINIMUM characters... \033[37m"
+	echo -e "  \033[33mString Length Scan: Beginning scan.\033[37m"
+	echo -e "  \033[37mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
 
 	while IFS= read -r FILE
 	do
 		SIZE=$(wc -L "$FILE" | awk '{$1}')
 		if [[ "$SIZE" -ge "$LENGTH_MIMIMUM" ]]; then
+			LENGTHSCAN_DETECTION=1
             echo -ne "\033[35m"
-            echo "DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
+            echo "  DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LENGTHLOG"
             echo -ne "\033[37m"
         fi
     done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
 
 	# Checking to see if we have hits.
-	if [[ -f "$LENGTHLOG" ]]; then
+	if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
 		# Notifying of detections
-		echo -e "\033[31mSee $LENGTHLOG for a full list of detected files.\033[37m"
+		echo -e "  \033[31mString Length Scan: Completed. See $LENGTHLOG for a full list of detected files.\033[37m"
+		echo ""
 
 		# If remote logging is enabled, reporting this to our remote SSH server
 		if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -164,8 +212,9 @@ function lengthscan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo "No suspicious files detected." | tee -a "$LENGTHLOG"
+		echo "  String Length Scan: Completed. No suspicious files detected." | tee -a "$LENGTHLOG"
 		echo -ne "\033[37m"
+		echo ""
 		DETECTION=0
 	fi
 }
@@ -175,27 +224,27 @@ function whitelist {
 	# Identifying the whitelist.db
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)	
-
-	echo -e "\033[33mGenerating a list of files to whitelist."
+	echo -e "\033[33mWhitelist: Beginning whitelist process.\033[37m"
+	echo "Whitelist: Generating file list."
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "Creating file whitelist signatures...\033[32m"
+	echo "Whitelist: Creating file whitelist signatures."
 
 	while IFS= read -r FILE; do
 		SHA256=$(sha256sum "$FILE" | awk '{print $1}')
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
 			OLDHASH=$(grep "$FILE:" "$WHITELIST_DB" | cut -d: -f2)
-			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB")
+			HASH_LINE=$(grep -nr "$FILE:" "$WHITELIST_DB" | cut -d: -f1)
 
 			if [[ "$OLDHASH" != "$SHA256" ]]; then
-				echo -e "\033[33mThe file at $FILE has been previously whitelisted, however the signature has changed."
-				echo -ne "Would you like to overwrite the previous signature? [y/N] \033[37m"
+				echo -e "\033[35mWhitelist: The file at $FILE has been previously whitelisted, however the signature has changed.\033[37m"
+				echo -ne "\033[35mWhitelist: Would you like to overwrite the previous signature? [y/N] \033[37m"
 				read -u 3 OVERWRITE
 
 				if [[ "$OVERWRITE" == "y" || "$OVERWRITE" == "Y" || "$OVERWRITE" == "yes" ]]; then
-					sed -i "${HASH_LINE}s/$OLDHASH/$NEWHASH/" "$WHITELIST_DB"
-					echo -e "\033[32mWhitelist signature updated for $FILE\033[37m"
+					sed -i "${HASH_LINE}s/$OLDHASH/$SHA256/" "$WHITELIST_DB"
+					echo -e "\033[32mWhitelist: Sgnature updated for $FILE\033[37m"
 				else
-					echo -e "\033[31mNew signature skipped. The old signature has been retained. Please investigate this file change.\033[37m"
+					echo -e "\033[31mWhitelist: New signature skipped. The old signature has been retained. Please investigate this file change.\033[37m"
 				fi
 			fi
 
@@ -207,18 +256,18 @@ function whitelist {
 	
 	rm "$TEMPLOG"
 
-	echo -e "Whitelist updated completed!\033[37m"
+	echo -e "\033[32mWhitelist: Complete.\033[37m"
 }
 
 function tripwire {
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)
-	TRIPWIRE_LOG="$LOGGING_DIRECTORY/tripwire-$(date +%F-%s)"
+	TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
 
-	echo -e "\033[33mBeginning the Tripwire scan."
-	echo -e "Compiling list of all files within the target directory."
+	echo -e "\033[33mTripwire: Beginning scan.\033[37m"
+	echo "  Tripwire: Compiling a full file list for $TARGET."
 	find "$TARGET" -type f >> "$TEMPLOG"
-	echo -e "Identifying any changed files...\033[37m"
+	echo "  Tripwire: Identifying any changed files."
 
 	while IFS= read -r FILE; do
 		if grep -qs "$FILE:" "$WHITELIST_DB"; then
@@ -226,21 +275,24 @@ function tripwire {
 			CURRENT_HASH=$(sha256sum "$FILE"| awk '{print $1}')
 
 			if [[ "$WHITELISTED_HASH" != "$CURRENT_HASH" ]]; then
+				TRIPWIRE_DETECTION=1
 				echo -ne "\033[35m"
-				echo -n "DETECTION: $FILE has been modified since being whitelisted." | tee -a "$TRIPWIRE_LOG"
+				echo -n "  DETECTION: $FILE has been modified since being whitelisted." | tee -a "$TRIPWIRE_LOG"
 				echo -e "\033[37m"
 			fi
 		else
+			TRIPWIRE_DETECTION=1
 			echo -ne "\033[35m"
-			echo -n "DETECTION: $FILE is not found in the whitelist, and may be newly created." | tee -a "$TRIPWIRE_LOG"
+			echo -n "  DETECTION: $FILE is not found in the whitelist, and may be newly created." | tee -a "$TRIPWIRE_LOG"
 			echo -e "\033[37m"	
 		fi
 	done 3<&0 <"$TEMPLOG"
 
         # Checking to see if we have hits.
-        if [[ -f "$TRIPWIRE_LOG" ]]; then
+        if [[ -n "$TRIPWIRE_DETECTION" ]]; then
                 # Notifying of detections
-                echo -e "\033[31mSee $TRIPWIRE_LOG for a full list of detected files.\033[37m"
+                echo -e "\033[31mTripwire: Completed. See $TRIPWIRE_LOG for a full list of detected files.\033[37m"
+                echo ""
 
                 # If remote logging is enabled, reporting this to our remote SSH server
                 if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -251,20 +303,20 @@ function tripwire {
         else
                 # No detections
                 echo -ne "\033[32m"
-                echo "No suspicious files detected." | tee -a "$TRIPWIRE_LOG"
+                echo "Tripwire: Completed. No suspicious files detected." | tee -a "$TRIPWIRE_LOG"
+                echo ""
                 echo -ne "\033[37m"
                 DETECTION=0
         fi
 
 
 	rm "$TEMPLOG"
-	echo "Scan completed."
 }
 
 ## Defining the mimescan function
 function mimescan {
 	# Creating the logging directories
-	MIMELOG="$LOGGING_DIRECTORY"/"mimecheck-$(date +%F-%s)"
+	MIMELOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	TEMPLOG=$(mktemp)
 
   	WHITELIST_FILE=(mktemp)
@@ -277,26 +329,27 @@ function mimescan {
             MIME_IGNORE_LIST="$MIME_IGNORE_LIST -not -name $IGNORE"
     done
 
-    echo -e "\033[33mBeginning the Mimetype scan."
-    echo -e "Compiling a full list of potential files...\033[37m "
+    echo -e "  \033[33mMIME Scan: Beginning scan.\033[37m"
+    echo "  MIME Scan: Compiling a full file list for $TARGET.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo -e "\033[32mCompleted!\033[37m"
-    echo -e "\033[33mSearching found files for any MIME mismatch against the given extensions.\033[37m "    
+    echo "  MIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
 
 	# Working through the temporary file list to match files with mimetypes.
 	while IFS= read -r FILE; do
         if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
+        	MIME_DETECTION=1
             echo -ne "\033[35m"
-            echo "DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
+            echo "  DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$MIMELOG"
             echo -ne "\033[37m"
         fi
 	done < <(cat "$TEMPLOG")
 
 	# Checking to see if we have hits.
-	if [[ -f "$MIMELOG" ]]; then
+	if [[ -n "$MIME_DETECTION" ]]; then
 		# Notifying of detections
-		echo -e "\033[31mSee $MIMELOG for a full list of detected files.\033[37m"
+		echo -e "  \033[31mMIME Scan: Completed. See $MIMELOG for a full list of detected files.\033[37m"
+		echo ""
 
 		# If remote logging is enabled, reporting this to our remote SSH server
 		if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
@@ -307,8 +360,9 @@ function mimescan {
 	else
 		# No detections
 		echo -ne "\033[32m"
-		echo  "No suspicious files detected." | tee -a "$MIMELOG"
+		echo  "MIME Scan: Completed. No suspicious files detected." | tee -a "$MIMELOG"
 		echo -ne "\033[37m"
+		echo ""
 		DETECTION=0
 	fi
 
@@ -325,20 +379,22 @@ function avscan {
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
 	# Creating the scan log file for this scan
-	SCANLOG="$LOGGING_DIRECTORY"/$(date +%F-%s)
+	SCANLOG="$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
+	DETECTLOG=$(mktemp)
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
-	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN_BINARY_LOCATION" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -d "$CLAMAV_DIRECTORY"/ -i -r --no-summary "$TARGET" | tee -a "$SCANLOG"
+	echo "--exclude=$AVSCAN_IGNORE" | xargs "$CLAMSCAN_BINARY_LOCATION" -d "$MALSCAN_DIRECTORY"/rfxn.hdb -d "$MALSCAN_DIRECTORY"/rfxn.ndb -d "$MALSCAN_DIRECTORY"/custom.hdb -d "$MALSCAN_DIRECTORY"/custom.ndb -d "$CLAMAV_DIRECTORY"/ -i -r --no-summary "$TARGET" | tee -a "$DETECTLOG"
 	echo -ne "\033[37m"
 
 	## If no files were found, we will add a note into the scanlog accordingly.
-	if [[ ! -s "$SCANLOG" ]]; then
+	if [[ ! -s "$DETECTLOG" ]]; then
 		echo -ne "\033[32m"
 		echo "Malware scan completed. No malicious files found." | tee -a "$SCANLOG"
 		echo -ne "\033[37m"
 		DETECTION=0
 	else
+		cat "$DETECTLOG" >> "$SCANLOG"
 		echo -e "\033[31mSee $SCANLOG for a full list of detected files.\033[37m"
 	fi
 
@@ -368,7 +424,7 @@ function quarantine {
 
 		# Setting the files to 000 permissions so they cannot be accessed
 		chmod 000 "$QUARANTINE_PATH""$ABSPATH"
-		echo -e "\033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/quarantine.log
+		echo -e "  \033[36m$FILE quarantined and locked down in $QUARANTINE_PATH.\033[37m" | tee -a "$LOGGING_DIRECTORY"/"scan-results-$LOGGING_DATE"
 	done < <(cat "$SCANLOG" | cut -d: -f1)
 }
 
@@ -421,6 +477,8 @@ function report {
 	exit 0
 }
 
+echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $(tail -1 $LOGGING_DIRECTORY/update.log)\033[37m"
+echo ""
 
 # Executing the Functions
 if [[ -n "$REPORT" ]]; then
@@ -450,11 +508,15 @@ if [[ -n "$AVSCAN" ]]; then
 	fi
 fi
 
+if [[ -n "$UPDATER" ]]; then
+	updater
+fi
+
 if [[ -n "$NOTIFICATION" ]]; then
 	notification
 fi
 
-# Cleaning up by chowning everything ot the clam user
+# Cleaning up by chowning everything to the clam user
 chown -R "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY"
 
 exit 0

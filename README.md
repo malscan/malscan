@@ -3,7 +3,7 @@ Malscan
 
 Robust ClamAV-based malware scanner for web servers.
 
-[![GitHub version](https://badge.fury.io/gh/jgrancell%2FMalscan.svg)](http://badge.fury.io/gh/jgrancell%2FMalscan)
+[![GitHub version](https://img.shields.io/badge/version-1.5.3-green.svg)](https://github.com/jgrancell/Malscan)
 
 #Table of Contents
 * [Features](#features)
@@ -66,10 +66,10 @@ To manually install Malscan
 * Step 4: Move the repository into the /usr/local/share/malscan directory directly with `rsync -avzP /usr/local/share/malscan/Malscan /usr/local/share/malscan && rm -rf /usr/local/share/malscan/Malscan`
 * Step 5: Copy the `conf.malscan-blank` file to `conf-malscan` and replace all of the example information with your own custom information.
 * Step 6: Create the Malscan executable with the command `ln -s /usr/local/share/malscan/malscan.sh /usr/local/bin/malscan`
-* Step 5: Run the update.sh script to update the Malscan signatures with `/usr/local/share/malscan/update.sh`
+* Step 5: Update the Malscan signatures with `malscan -u`
 * Step 6: Set the update.sh to run at least daily through `crontab -e` setting the cronjob to run daily
-  * Daily: `0 2 * * * /usr/local/share/malscan/update.sh`
-  * Twice Daily: `0 */2 * * * /usr/local/share/malscan/update.sh`
+  * To Update Daily: `0 2 * * * /usr/local/bin/malscan -u`
+  * To Update Twice Daily: `0 */2 * * * /usr/local/bin/malscan -u`
   * NOTE: If running daily, ensure that the update is run BEFORE any scheduled scans.
 * Step 7: Run the scanner as needed
   * Manually: `malscan -[options] /path/to/target/directory/or/file`
@@ -80,6 +80,14 @@ To manually install Malscan
 See `malscan -h` for more detailed program usage.
 
 ## Changelog
+
+#### Version 1.5.3
+*Release: September 4, 2015
+* Bugfix: Corrected text coloring on the update.sh script to terminate properly
+* Bugfix: Removed some excess text from the Mimescan
+* Updated: All malscan runs now include the current Malscan version and the time that signatures were last updated.
+* Updated: Unified logging files for all scantypes into a single scan log for each scan
+* Feature: Added new -u update functionality, which updates both the core application as well as the signatures
 
 #### Version 1.5.2
 *Release: July 13, 2015*
