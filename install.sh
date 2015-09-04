@@ -236,6 +236,7 @@ elif [[ "$DISTRO" == "Ubuntu" ]]; then
 	else
 		## No installation required, just configuration
 		CONFIGURATION_REQUIRED=1
+	fi
 fi
 
 ## Beginning the main Malscan configuration
