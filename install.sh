@@ -233,7 +233,9 @@ elif [[ "$DISTRO" == "Ubuntu" ]]; then
 			echo -e"    clamav\033[37m"
 			exit 1
 		fi	
-	fi
+	else
+		## No installation required, just configuration
+		CONFIGURATION_REQUIRED=1
 fi
 
 ## Beginning the main Malscan configuration

@@ -330,9 +330,9 @@ function mimescan {
     done
 
     echo -e "  \033[33mMIME Scan: Beginning scan.\033[37m"
-    echo "  MIME Scan: Compiling a full file list for $TARGET.\033[37m "
+    echo -e "  MIME Scan: Compiling a full file list for $TARGET.\033[37m "
     find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
-    echo "  MIME Scan: Searching file list for MIME mismatches.\033[37m "    
+    echo -e "  MIME Scan: Searching file list for MIME mismatches.\033[37m "    
 
 
 	# Working through the temporary file list to match files with mimetypes.
