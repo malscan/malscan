@@ -82,7 +82,7 @@ See `malscan -h` for more detailed program usage.
 ## Changelog
 
 #### Version 1.5.3
-*Release: July 31, 2015
+*Release: September 4, 2015
 * Bugfix: Corrected text coloring on the update.sh script to terminate properly
 * Bugfix: Removed some excess text from the Mimescan
 * Updated: All malscan runs now include the current Malscan version and the time that signatures were last updated.
