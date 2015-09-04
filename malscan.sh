@@ -156,7 +156,7 @@ function updater {
 	ORIGINAL_SHA256=$(sha256sum "$MALSCAN_DIRECTORY/malscan.sh" | awk '{print $1}')
 	cd "$MALSCAN_DIRECTORY"
 	git fetch --quiet >> /dev/null
-	git pull origin 1.5.3-dev --quiet >> /dev/null
+	git pull origin master --quiet >> /dev/null
 
 	NEW_MALSCAN_VERSION=$(grep "VERSION=" malscan.sh | cut -d \" -f2 | head -1)
 	NEW_SHA256=$(sha256sum "$MALSCAN_DIRECTORY/malscan.sh" | awk '{print $1}')
