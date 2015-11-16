@@ -444,7 +444,7 @@ function notification {
 		EMAIL_TMP=$(mktemp)
 		{
 		echo "To:$EMAIL"
-		echo "From:automated-malscan-service@campbellmarketing.services"
+		echo "From:$SENDER"
 		echo "Subject: Malware Detections: $HOSTNAME - $(date)" 
 		echo "MIME-Version: 1.0"
 		echo "Content-Type: text/html; charset="us-ascii" "
