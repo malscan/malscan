@@ -459,7 +459,9 @@ function notification {
 		elif [[ -n "$AVSCAN" ]]; then
 			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
 			echo "The detected malicious or suspicious files are: <br />"
-			cat "$SCANLOG"
+			for FILE in $(cat "$SCANLOG"); do
+				echo "$FILE <br />"
+			done
 			echo "Please see $SCANLOG for further information.<br />"
 		fi
 
