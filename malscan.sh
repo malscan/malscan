@@ -460,7 +460,7 @@ function notification {
 			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
 			echo "The detected malicious or suspicious files are: <br />"
 
-			white IFS='' read -r line || [[ -n "$line" ]]; do
+			while IFS='' read -r line || [[ -n "$line" ]]; do
 				echo "$FILE <br />"
 			done < "$SCANLOG"
 
