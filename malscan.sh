@@ -446,7 +446,7 @@ function notification {
 		{
 		echo "To:$NOTIFICATION_ADDRESSES"
 		echo "From:$SENDER_ADDRESS"
-		echo "Subject: Malware Detections: $HOSTNAME - $(date)" 
+		echo "Subject: Malware Detection: $HOSTNAME - $(date)" 
 		echo "MIME-Version: 1.0"
 		echo "Content-Type: text/html; charset="us-ascii" "
 		echo "Content-Disposition: inline"
@@ -457,7 +457,10 @@ function notification {
 		if [[ -n "$QUARANTINE" && -n "$AVSCAN" ]]; then
 			echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine.log for further information.<br />"
 		elif [[ -n "$AVSCAN" ]]; then
-			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined. Please see $SCANLOG for further information.<br />"
+			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
+			echo "The detected malicious or suspicious files are: <br />"
+			cat "$SCANLOG"
+			echo "Please see $SCANLOG for further information.<br />"
 		fi
 
 		if [[ -n "$MIMECHECK" ]]; then
@@ -469,7 +472,11 @@ function notification {
 		fi
 		} >> "$EMAIL_TMP"
 
-		sendmail -f "$SENDER_ADDRESS" -i -t < "$EMAIL_TMP"	
+		sendmail -f "$SENDER_ADDRESS" -i -t < "$EMAIL_TMP"
+
+		echo ""
+		echo -e"\033[33mNotification: Successfully sent notification to $NOTIFICATION_ADDRESSES\033[37m"
+		echo ""
 	fi
 }
 
