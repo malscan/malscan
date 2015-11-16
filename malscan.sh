@@ -459,10 +459,12 @@ function notification {
 		elif [[ -n "$AVSCAN" ]]; then
 			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
 			echo "The detected malicious or suspicious files are: <br />"
-			for FILE in $(cat "$SCANLOG"); do
+
+			white IFS='' read -r line || [[ -n "$line" ]]; do
 				echo "$FILE <br />"
-			done
-			echo "Please see $SCANLOG for further information.<br />"
+			done < "$SCANLOG"
+
+			echo "Please see $SCANLOG for any additional details.<br />"
 		fi
 
 		if [[ -n "$MIMECHECK" ]]; then
@@ -474,7 +476,7 @@ function notification {
 		fi
 		} >> "$EMAIL_TMP"
 
-		sendmail -f "$SENDER_ADDRESS" -i -t < "$EMAIL_TMP"
+		sendmail -f "Malscan AntiMalware Scanner" -f "$SENDER_ADDRESS" -i -t < "$EMAIL_TMP"
 
 		echo ""
 		echo -e "  \033[33m* Notification: Successfully sent notification to $NOTIFICATION_ADDRESSES\033[37m"
