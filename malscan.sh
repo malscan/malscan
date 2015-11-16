@@ -457,14 +457,16 @@ function notification {
 		if [[ -n "$QUARANTINE" && -n "$AVSCAN" ]]; then
 			echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine.log for further information.<br />"
 		elif [[ -n "$AVSCAN" ]]; then
-			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
-			echo "The detected malicious or suspicious files are: <br />"
+			echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined."
+			echo ""
+			echo "The detected malicious or suspicious files are:"
 
 			while IFS='' read -r line || [[ -n "$line" ]]; do
-				echo "$line <br />"
+				echo "$line"
 			done < "$SCANLOG"
 
-			echo "Please see $SCANLOG for any additional details.<br />"
+			echo ""
+			echo "Please see $SCANLOG for any additional details."
 		fi
 
 		if [[ -n "$MIMECHECK" ]]; then
