@@ -443,8 +443,8 @@ function notification {
 	if [[ "$DETECTION" == 1 ]]; then
 		EMAIL_TMP=$(mktemp)
 		{
-		echo "To:$EMAIL"
-		echo "From:$SENDER"
+		echo "To:$NOTIFICATION_ADDRESSES"
+		echo "From:$SENDER_ADDRESS"
 		echo "Subject: Malware Detections: $HOSTNAME - $(date)" 
 		echo "MIME-Version: 1.0"
 		echo "Content-Type: text/html; charset="us-ascii" "
@@ -468,7 +468,7 @@ function notification {
 		fi
 		} >> "$EMAIL_TMP"
 
-		sendmail -i -t < "$EMAIL_TMP"	
+		sendmail -f "$SENDER_ADDRESS" -i -t < "$EMAIL_TMP"	
 	fi
 }
 
