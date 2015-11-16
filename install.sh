@@ -19,6 +19,8 @@ if [[ -f "/etc/redhat-release" ]]; then
     	DISTRO="CentOS"
     elif grep -qs "RedHat" /etc/redhat-release; then
     	DISTRO="RHEL"
+    elif grep -qs "Fedora" /etc/redhat-release; then
+    	DISTRO="Fedora"
     fi
 
     ## Getting the Distro version. RHEL/CentOS 5 is currently unsupported, however we're detecting it for future support.
@@ -28,6 +30,8 @@ if [[ -f "/etc/redhat-release" ]]; then
 		VERSION="6"
 	elif grep -qs "release 5" /etc/redhat-release; then
 		VERSION="5"
+	elif grep -qs "release 23" /etc/redhat-release; then
+		VERSION="23"
 	else
 		VERSION="Unsupported"
 	fi
@@ -73,7 +77,7 @@ if [[ -f "/etc/redhat-release" ]]; then
 			echo "    file"
 		fi
 
-		if [[ -z "$EPEL_PACKAGE" && "$DISTRO" != "cPanel" ]]; then
+		if [[ -z "$EPEL_PACKAGE" && "$DISTRO" != "cPanel" && "$DISTRO" != "Fedora" ]]; then
 			echo "    epel-release"
 		fi
 
