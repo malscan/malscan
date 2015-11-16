@@ -2,8 +2,8 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.5.3"
-DATE="August 7 2015"
+VERSION="1.6.0"
+DATE="November 16 2015"
 
 ## Identifying where we're running the script from
 SOURCE="${BASH_SOURCE[0]}"
