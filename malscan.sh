@@ -375,7 +375,7 @@ function mimescan {
 ## Defining the scanning function
 function avscan {
 
-	echo -e "  * \033[33mMalware Scan: Beginning scan of $TARGET...\033[37m "
+	echo -e "  \033[33m* Malware Scan: Beginning scan of $TARGET...\033[37m "
 
 	# Setting up the whitelist
 	AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
@@ -475,7 +475,7 @@ function notification {
 		sendmail -f "$SENDER_ADDRESS" -i -t < "$EMAIL_TMP"
 
 		echo ""
-		echo -e"\033[33mNotification: Successfully sent notification to $NOTIFICATION_ADDRESSES\033[37m"
+		echo -e "  \033[33m* Notification: Successfully sent notification to $NOTIFICATION_ADDRESSES\033[37m"
 		echo ""
 	fi
 }
