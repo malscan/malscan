@@ -402,6 +402,7 @@ function avscan {
             echo -ne "\033[31m"
             echo "  - DETECTION: $FILE "
 		done < <(cat "$DETECTLOG")
+		DETECTION=1
 
 		echo -e "  * \033[31mMalware Scan: Malicious files detected. See $SCANLOG for a full list of detected files.\033[37m"
 
