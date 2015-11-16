@@ -461,7 +461,7 @@ function notification {
 			echo "The detected malicious or suspicious files are: <br />"
 
 			while IFS='' read -r line || [[ -n "$line" ]]; do
-				echo "$FILE <br />"
+				echo "$line <br />"
 			done < "$SCANLOG"
 
 			echo "Please see $SCANLOG for any additional details.<br />"
