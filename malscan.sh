@@ -2,21 +2,11 @@
 # Malscan - Enhanced ClamAV Scanning System
 # Written by Josh Grancell
 
-VERSION="1.6.0"
+VERSION="1.7.0"
 DATE="November 16 2015"
 
-## Identifying where we're running the script from
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-
 ## Loading the configuration file from the Malscan directory
-source /"$DIR"/"conf.malscan"
-LOGGING_DIRECTORY="$MALSCAN_DIRECTORY/log"
+source /etc/malscan/malscan.conf
 
 LOGGING_DATE=$(date +%F-%s)
 
@@ -30,6 +20,7 @@ if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
 	echo "Malscan version $VERSION compiled on $DATE"
 	echo "Configuration options can be found in conf.malscan"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
+	echo "       -c [option]"
 	echo "       -h  -- Display this help text"
 	echo "       -l  -- Checks files for lines over a certain length"
 	echo "       -m  -- Checks the extension to verify it matches the MIME"
