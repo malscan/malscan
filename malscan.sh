@@ -3,7 +3,7 @@
 # Written by Josh Grancell
 
 VERSION="1.7.0"
-DATE="November 16 2015"
+DATE="January 28, 2016"
 
 ## Loading the configuration file from the Malscan directory
 source /etc/malscan/malscan.conf
@@ -14,29 +14,30 @@ LOGGING_DATE=$(date +%F-%s)
 ## DOING THE WORK ##
 ####################
 
+## Getting the total number of arguments that have been passed
+
+
 ## Parsing through the arguments
-if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+if [[ $# -eq 0 || ( $# == 1 && ( "$1" == "-h" || "$1" == "--help" ) ) ]]; then
 	## Help functionality
-	echo "Malscan version $VERSION compiled on $DATE"
-	echo "Configuration options can be found in conf.malscan"
+	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	echo "       -c [option]"
-	echo "       -h  -- Display this help text"
-	echo "       -l  -- Checks files for lines over a certain length"
-	echo "       -m  -- Checks the extension to verify it matches the MIME"
-	echo "       -n  -- Send email notification."
-	echo "       -q  -- Quarantine a file"
-	echo "       -r  -- Report a file."
-	echo "       -s  -- Scan the specified file or directory"
-	echo "       -t  -- Runs a tripwire scan for any files that have been modified."
-	echo "       -u  -- Updates all signatures and the core application"
-	echo "       -v  -- Display version information"
-	echo "       -w  -- Adds specified file tree to whitelist."
-	echo "Malscan is a robust file scanning tool that combines the"
-	echo "ClamAV virus scanner with enhanced definition sets."
+	echo "       -c -- shows all configuration options and values"
+	echo "       -c [option] -- displays a current configuration option value"
+	echo "       -c [option] [value] -- dupdates the value of a configuration option to a new value"
+	echo "       -h  -- display this help text"
+	echo "       -l  -- line scan mode"
+	echo "       -m  -- MIME scan mode"
+	echo "       -n  -- send email notification on detection"
+	echo "       -q  -- quarantine any malicious files"
+	echo "       -s  -- basic malware scan"
+	echo "       -t  -- tripwire scan mode"
+	echo "       -u  -- force-update of all signatures"
+	echo "       -v  -- display core application and signature database version information"
+	echo "       -w  -- adds specified file tree to whitelist."
 	exit 1	
 elif [[ $# == 1 ]]; then
-	if [[ "$1" == "-v" ]]; then
+	if [[ "$1" == "-v" || "$1" == "--version" ]]; then
 		echo "Malscan version $VERSION -- last update $DATE"
 		exit 0
 	elif [[ "$1" = "-u" ]]; then
