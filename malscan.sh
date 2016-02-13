@@ -15,7 +15,7 @@ DATE="February 13, 2016"
 # -------------------------------------------------
 
 ## Loading the configuration file from the Malscan directory
-source /etc/malscan/malscan.conf
+source /etc/malscan.conf
 
 ## Setting up some default binary locations
 FRESHCLAM_BINARY_LOCATION=$(which freshclam)
