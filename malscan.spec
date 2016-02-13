@@ -53,7 +53,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 * Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.2
 - Bug Fix: Corrected an invalid argument
-* Bug Fix: Removed several sections of unused code
+- Bug Fix: Removed several sections of unused code
 
 * Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.1
 - Feature: Initial packaging test for malscan
