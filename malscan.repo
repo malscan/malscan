@@ -1,0 +1,17 @@
+# -------------------------------------------------
+#
+# Package: Malscan
+# Author: Josh Grancell <josh@joshgrancell.com>
+# Description: Linux malware scanner for web servers
+# Copyright: 2015-2016 Josh Grancell
+# License: MIT License
+# 
+# -------------------------------------------------
+
+[malscan]
+name=Malscan repository - Fedora $releasever - $basearch
+baseurl=https://repo.joshgrancell.com/malscan/fedora/$releasever/noarch/
+enabled=1
+gpgcheck=0
+failovermethod=roundrobin
+fastestmirror=1

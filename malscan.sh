@@ -34,7 +34,7 @@ TEMPLOG_DIRECTORY=$(mktemp -d)
 ## Parsing through the arguments
 
 ## No arguments passed
-if [[ $# -wq 0 || $# == 1 && ( "$1" == "-h" || "$1" == "--help" || "$1" == "help" ) ]]; then
+if [[ $# -eq 0 || $# == 1 && ( "$1" == "-h" || "$1" == "--help" || "$1" == "help" ) ]]; then
 
 	## Showing the help outupt
 	SHOW_HELP=1
@@ -172,7 +172,7 @@ function updater {
 
 	if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
 
-		if [[ "$SIGNATURE_CHANGE" > 0 ]]; then
+		if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
 			echo -e "\033[32mUpdate: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
 		else
 			echo -e "\033[32mUpdate: No new Malscan signatures avaiable.\033[37m"
@@ -189,7 +189,7 @@ function updater {
 	echo ""
 
 	echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
-	"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" 2>&1 >> /dev/null
+	"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> 2>&1 /dev/null
 	echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
 	echo ""
 
@@ -330,11 +330,6 @@ function tripwire {
                 echo -e "  * \033[31mTripwire: Completed. See $TRIPWIRE_LOG for a full list of detected files.\033[37m"
                 echo ""
 
-                # If remote logging is enabled, reporting this to our remote SSH server
-                if [[ "$REMOTE_LOGGING_ENABLED" == 1 ]]; then
-                        rsync -avzP "$TRIPWIRE_LOG" -e ssh "$REMOTE_SSH:$REMOTE_LOGGING"/"$HOSTNAME"/
-                fi
-
                 DETECTION=1
         else
                 # No detections
@@ -398,7 +393,7 @@ function mimescan {
 		DETECTION_MIME=0
 	fi
 
-	if [[ "$DETECTION_MIME" == 1]]; then
+	if [[ "$DETECTION_MIME" == 1 ]]; then
 
 		echo "$LOGGING_DATE - MIME Scan - $DETECTION_COUNT suspcicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
 
@@ -450,7 +445,7 @@ function avscan {
 
 	fi
 
-	if [[ "$DETECTION_AV" == 1]]; then
+	if [[ "$DETECTION_AV" == 1 ]]; then
 
 		echo "$LOGGING_DATE - Malware Scan - $DETECTION_COUNT malicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
 
