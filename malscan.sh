@@ -23,7 +23,7 @@ CLAMSCAN_BINARY_LOCATION=$(which clamscan)
 MALSCAN_BINARY_LOCATION=$(which malscan)
 
 ## Setting up our logging information
-LOGGING_DATE=$(date +%F %H:%m)
+LOGGING_DATE=$(date "+%F %H:%m")
 TEMPLOG_DIRECTORY=$(mktemp -d)
 
 # -------------------------------------------------
