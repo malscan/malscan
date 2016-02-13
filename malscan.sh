@@ -1,9 +1,18 @@
 #!/bin/bash
-# Malscan - Enhanced ClamAV Scanning System
-# Written by Josh Grancell
+# -------------------------------------------------
+#
+# Package: Malscan
+# Author: Josh Grancell <josh@joshgrancell.com>
+# Description: Linux malware scanner for web servers
+# Copyright: 2015-2016 Josh Grancell
+# License: MIT License
+# 
+# -------------------------------------------------
 
 VERSION="1.7.0"
-DATE="January 28, 2016"
+DATE="February 13, 2016"
+
+# -------------------------------------------------
 
 ## Loading the configuration file from the Malscan directory
 source /etc/malscan/malscan.conf
@@ -17,9 +26,7 @@ MALSCAN_BINARY_LOCATION=$(which malscan)
 LOGGING_DATE=$(date +%F %H:%m)
 TEMPLOG_DIRECTORY=$(mktemp -d)
 
-####################
-## DOING THE WORK ##
-####################
+# -------------------------------------------------
 
 ## Getting the total number of arguments that have been passed
 
@@ -182,7 +189,7 @@ function updater {
 	echo ""
 
 	echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
-	"$FRESHCLAM_BINARY_LOCATION" --datadir="/var/lib/malscan" 2>&1 >> /dev/null
+	"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" 2>&1 >> /dev/null
 	echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
 	echo ""
 
@@ -545,6 +552,8 @@ function notification {
 #	exit 0
 #}
 
+# -------------------------------------------------
+
 echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $(tail -1 $LOGGING_DIRECTORY/update.log)\033[37m"
 echo ""
 
@@ -587,6 +596,8 @@ fi
 if [[ -n "$NOTIFICATION" ]]; then
 	notification
 fi
+
+# -------------------------------------------------
 
 # Cleaning up by chowning everything to the clam user
 chown -R "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY"
