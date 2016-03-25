@@ -10,7 +10,7 @@
 
 [malscan]
 name=Malscan repository - Enterprise Linux $releasever - $basearch
-baseurl=https://repo.malscan.org/el/$releasever/noarch/
+baseurl=https://repo.malscan.org/el/$releasever/
 enabled=1
 gpgcheck=0
 failovermethod=roundrobin
