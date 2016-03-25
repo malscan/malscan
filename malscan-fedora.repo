@@ -10,7 +10,7 @@
 
 [malscan]
 name=Malscan repository - Fedora $releasever - $basearch
-baseurl=https://repo.joshgrancell.com/malscan/fedora/$releasever/noarch/
+baseurl=https://repo.malscan.org/fedora/$releasever/noarch/
 enabled=1
 gpgcheck=0
 failovermethod=roundrobin
