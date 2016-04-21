@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev2
+Release: dev3
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -43,8 +43,17 @@ rm -rf ${RPM_BUILD_ROOT}
 %attr(644,root,root) /etc/malscan.conf
 %attr(755,root,root) /usr/local/bin/malscan
 %attr(644,root,root) /usr/local/share/malscan/malscan.license
+%dir /usr/local/share/malscan
+%dir /var/lib/malscan
+%dir /var/log/malscan
 
 %changelog
+* Thu Apr 21 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev3
+- Bugfix: RPM will now correctly build the /var/lib/malscan database directory
+- Bugfix: RPM will now correctly build the /var/log/malscan logging directory
+- Bugfix: Several clamscan entries removed from the man page
+- Bugfix: Misspelling fixed in the man page
+
 * Thu Apr 21 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev2
 - Bugfix: Corrected a redirect of stderr that was causing bash to fatal error
 - Update: Removed several unused variables

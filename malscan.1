@@ -35,24 +35,12 @@ Show version information.
 .TP 
 (1) Scan a directory and all subdirectories:
 
-\malscan \-s /var/www/html\fR
+\fBmalscan \-s /var/www/html\fR
 .TP 
 (2) Run malware, string, and mime-type scans on all files (and subdirectories) in /home:
 
 \fBmalscan \-lms /home\fR
 .TP 
-(3) Load database from a file:
-
-\fBclamscan \-d /tmp/newclamdb \-r /tmp\fR
-.TP 
-(4) Scan a data stream:
-
-\fBcat testfile | clamscan \-\fR
-.TP 
-(5) Scan a mail spool directory:
-
-\fBclamscan \-r /var/spool/mail\fR
-
 
 .SH "CREDITS"
 Please check the full documentation at https://www.malscan.org/credits/ for credits.
