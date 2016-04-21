@@ -10,7 +10,7 @@
 # -------------------------------------------------
 
 VERSION="1.7.0"
-DATE="February 13, 2016"
+DATE="April 21, 2016"
 
 # -------------------------------------------------
 
@@ -189,7 +189,7 @@ function updater {
 	echo ""
 
 	echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
-	"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> 2>&1 /dev/null
+	"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
 	echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
 	echo ""
 
