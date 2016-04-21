@@ -20,7 +20,6 @@ source /etc/malscan.conf
 ## Setting up some default binary locations
 FRESHCLAM_BINARY_LOCATION=$(which freshclam)
 CLAMSCAN_BINARY_LOCATION=$(which clamscan)
-MALSCAN_BINARY_LOCATION=$(which malscan)
 
 ## Setting up our logging information
 LOGGING_DATE=$(date "+%F %H:%m")
@@ -146,8 +145,6 @@ function helper {
 ## Defining the update function
 function updater {
 
-	STARTING_DIRECTORY=$(pwd)
-
 	cd "$TEMPLOG_DIRECTORY"
 
 	echo -e "\033[37mUpdate: Downloading the latest Malscan malware definitions."
@@ -177,12 +174,10 @@ function updater {
 		else
 			echo -e "\033[32mUpdate: No new Malscan signatures avaiable.\033[37m"
 		fi
-		UPDATE_SUCCESS=1
 
 	else
 
 		echo -e "\033[31mUpdate: Malscan signatures have failed to update correctly. Please try again later."
-		UPDATE_SUCCESS=0
 
 	fi
 

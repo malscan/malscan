@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev.5
+Release: dev2
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -45,19 +45,12 @@ rm -rf ${RPM_BUILD_ROOT}
 %attr(644,root,root) /usr/local/share/malscan/malscan.license
 
 %changelog
-* Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.5
-- Bugfix: Logging date was not double-quoted properly. It is now.
+* Thu Apr 21 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev2
+- Bugfix: Corrected a redirect of stderr that was causing bash to fatal error
+- Update: Removed several unused variables
 
-* Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.4
-- Bugfix: Corrected the configuration file loading path
+* Thu Apr 21 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev1
+- New: Initial rpm packaging
 
-* Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.3
-- Bugfix: Correcting a flaw in pre-build compiling
 
-* Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.2
-- Bug Fix: Corrected an invalid argument
-- Bug Fix: Removed several sections of unused code
-
-* Sat Feb 13 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev.1
-- Feature: Initial packaging test for malscan
 
