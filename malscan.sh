@@ -156,7 +156,12 @@ function updater {
 
 	for DATABASE in rfxn.hdb rfxn.ndb; do
 		NEWDB_COUNT=$(wc -l "$DATABASE" | awk '{print $1}')
-		OLDDB_COUNT=$(wc -l "$SIGNATURES_DIRECTORY/$DATABASE" | awk '{print $1}')
+
+		if [[ -f "$SIGNATURES_DIRECTORY/$DATABASE" ]]; then
+			OLDDB_COUNT=$(wc -l "$SIGNATURES_DIRECTORY/$DATABASE" | awk '{print $1}')
+		else
+			OLDDB_COUNT=0
+		fi
 
 		if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
 			DIFFERENCE=$(($NEWDB_COUNT - $OLDDB_COUNT))
