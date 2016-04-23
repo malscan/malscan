@@ -58,6 +58,11 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %attr (755,malscan,malscan) /var/lib/malscan
 
 %changelog
+* Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev9
+- New: Warning message when running updater as a non-root user that not everything will update without root.
+- Bugfix: Removed freshclam from the updater when a non-root user is identified.
+- Bugfix: Updated the rfxn database updates to correctly assign malscan:malscan ownership
+
 * Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev8
 - New: Added permissions checking. User must be root or a member of the malscan group now.
 
