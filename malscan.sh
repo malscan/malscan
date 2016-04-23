@@ -33,7 +33,11 @@ if [[ "$EUID" != 0 ]]; then
 	if ! whoami | id | grep -q "malscan"; then
 		echo -e "\033[31mMalscan must be run as root, or by a user that is part of the malscan group.\033[37m"
 		exit 1
+	else
+		RUNNING_USER="non-root"
 	fi
+else 
+	RUNNING_USER="root"
 fi
 
 
@@ -181,8 +185,10 @@ function updater {
 		fi
 	done
 
-	cat rfxn.hdb > "$SIGNATURES_DIRECTORY"/rfxn.hdb
-	cat rfxn.ndb > "$SIGNATURES_DIRECTORY"/rfxn.ndb
+	cat rfxn.hdb > "$SIGNATURES_DIRECTORY/rfxn.hdb"
+	cat rfxn.ndb > "$SIGNATURES_DIRECTORY/rfxn.ndb"
+	chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.hdb"
+	chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.ndb"	
 
 	if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
 
@@ -200,9 +206,14 @@ function updater {
 
 	echo ""
 
-	echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
-	"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
-	echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
+	if [[ $RUNNING_USER != "root" ]]; then
+		echo -e "\033[31mUpdate: The updater is not able to update all signature databases while running as a non-root user."
+		echo -e "\033[31mUpdate: Speak with your Systems Administrator to ensure updates are being run regularly by root.\033[37m"
+	else
+		echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
+		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
+		echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
+	fi
 	echo ""
 
 
