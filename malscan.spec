@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev8
+Release: dev9
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
