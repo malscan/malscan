@@ -21,9 +21,7 @@ Malscan is a linux malware scanner developed for web servers and desktops, to pr
 
 %pre
 getent group malscan >/dev/null || groupadd -r malscan
-getent passwd malscan >/dev/null || \
-    useradd -r -g malscan -d malscan -s /sbin/nologin \
-    -c "Useful comment about the purpose of this account" malscan
+getent passwd malscan >/dev/null || useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
 exit 0
 
 %install
@@ -54,12 +52,6 @@ rm -rf ${RPM_BUILD_ROOT}
 %dir /var/lib/malscan
 %dir /var/log/malscan
 %attr (775,malscan,malscan) /var/lib/malscan
-
-%post
-getent passwd clamupdate && \
-	usermod -a -G malscan clamupdate
-exit 0
-
 
 %changelog
 * Fri Apr 22 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev4
