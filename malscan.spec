@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev4
+Release: dev5
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -41,6 +41,10 @@ install LICENSE ${RPM_BUILD_ROOT}/usr/local/share/malscan/malscan.license
 %clean
 rm -rf ${RPM_BUILD_ROOT}
 
+%post
+sed -i 's/^Example.*$//g' /etc/freshclam.conf
+sed -i 's/^DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
+
 %files
 %defattr(-,root,root)
 %config(noreplace) /etc/malscan.conf
@@ -51,9 +55,14 @@ rm -rf ${RPM_BUILD_ROOT}
 %dir /usr/local/share/malscan
 %dir /var/lib/malscan
 %dir /var/log/malscan
-%attr (775,malscan,malscan) /var/lib/malscan
+%attr (755,malscan,malscan) /var/lib/malscan
 
 %changelog
+* Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev5
+- Bugfix: Updated /etc/freshclam.conf to use the new malscan user.
+- Bugfix: Updated /etc/freshclam.conf to remove the 'Example' text that stops updates.
+- Bugfix: Corrected an issue where the malscan user wasn't being created.
+
 * Fri Apr 22 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev4
 - New: Added malscan user/group to the installation process.
 - New: Added 775 malscan:malscan permission for /var/lib/malscan to allow freshclam to write to it.
