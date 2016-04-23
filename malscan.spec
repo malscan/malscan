@@ -46,6 +46,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %dir /usr/local/share/malscan
 %dir /var/lib/malscan
 %dir /var/log/malscan
+%attr (755,clamupdate,clamupdate) /var/lib/malscan
 
 %changelog
 * Thu Apr 21 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev3
