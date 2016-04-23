@@ -27,6 +27,18 @@ TEMPLOG_DIRECTORY=$(mktemp -d)
 
 # -------------------------------------------------
 
+## Checking to see if the user is running as root
+if [[ "$EUID" != 0 ]]; then
+
+	if ! whoami | id | grep -q "malscan"; then
+		echo -e "\033[31mMalscan must be run as root, or by a user that is part of the malscan group.\033[37m"
+		exit 1
+	fi
+fi
+
+
+# -------------------------------------------------
+
 ## Getting the total number of arguments that have been passed
 
 

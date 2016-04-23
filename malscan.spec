@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev7
+Release: dev8
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -58,6 +58,9 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %attr (755,malscan,malscan) /var/lib/malscan
 
 %changelog
+* Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev8
+- New: Added permissions checking. User must be root or a member of the malscan group now.
+
 * Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev7
 - Bugfix: Removed a chown that was no longer needed
 - Bugfix: Corrected a variable name that was preventing the AV scan from working
