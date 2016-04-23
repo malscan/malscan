@@ -415,7 +415,7 @@ function avscan {
 	#AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
 	# Creating the scan log file for this scan
-	DETECTION_TEMPLOG="$TEMPLOG_DIRECTORY/avscan.log"
+	AV_DETECTION_TEMPLOG="$TEMPLOG_DIRECTORY/avscan.log"
 
 	# Outputting the scanning information to stdout as well as the log file
 	echo -ne "\033[31m"
@@ -549,7 +549,14 @@ function notification {
 
 # -------------------------------------------------
 
-echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $(tail -1 $LOGGING_DIRECTORY/update.log)\033[37m"
+## Checking to see when the last update was
+if [[ -f "$LOGGING_DIRECTORY/update.log" ]]; then
+	LAST_UPDATE_TIME=$(tail -1 "$LOGGING_DIRECTORY"/update.log | awk '{print $1 " " $2}')
+else
+	LAST_UPDATE_TIME="Never"
+fi
+
+echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $LAST_UPDATE_TIME\033[37m"
 echo ""
 
 # Executing the Functions
@@ -594,9 +601,7 @@ fi
 
 # -------------------------------------------------
 
-# Cleaning up by chowning everything to the clam user
-chown -R "$MALSCAN_USER":"$MALSCAN_USER" "$MALSCAN_DIRECTORY"
-
+## Removing our temp logging directory
 rm -rf "$TEMPLOG_DIRECTORY"
 
 exit 0

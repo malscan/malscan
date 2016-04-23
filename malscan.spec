@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev6
+Release: dev7
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -58,6 +58,11 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %attr (755,malscan,malscan) /var/lib/malscan
 
 %changelog
+* Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev7
+- Bugfix: Removed a chown that was no longer needed
+- Bugfix: Corrected a variable name that was preventing the AV scan from working
+- Bugfix: Corrected an issue where the first update run wouldn't be able to get the date of previous non-existant updates. It shows "Never" now.
+
 * Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev6
 - Bugfix: Fixed how the rpm updates the /etc/freshclam.conf file's DatabaseOwner variable
 
