@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev3
+Release: dev4
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -18,6 +18,13 @@ Malscan is a linux malware scanner developed for web servers and desktops, to pr
 %setup
 
 %build
+
+%pre
+getent group malscan >/dev/null || groupadd -r malscan
+getent passwd malscan >/dev/null || \
+    useradd -r -g malscan -d malscan -s /sbin/nologin \
+    -c "Useful comment about the purpose of this account" malscan
+exit 0
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
@@ -46,9 +53,20 @@ rm -rf ${RPM_BUILD_ROOT}
 %dir /usr/local/share/malscan
 %dir /var/lib/malscan
 %dir /var/log/malscan
-%attr (755,clamupdate,clamupdate) /var/lib/malscan
+%attr (775,malscan,malscan) /var/lib/malscan
+
+%post
+getent passwd clamupdate && \
+	usermod -a -G malscan clamupdate
+exit 0
+
 
 %changelog
+* Fri Apr 22 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev4
+- New: Added malscan user/group to the installation process.
+- New: Added 775 malscan:malscan permission for /var/lib/malscan to allow freshclam to write to it.
+- New: Added clamupdate to the malscan group.
+
 * Thu Apr 21 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev3
 - Bugfix: RPM will now correctly build the /var/lib/malscan database directory
 - Bugfix: RPM will now correctly build the /var/log/malscan logging directory
