@@ -47,15 +47,13 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 
 %files
 %defattr(-,root,root)
-%config(noreplace) /etc/malscan.conf
-%doc /usr/local/share/man/man1/malscan.1
-%attr(644,root,root) /etc/malscan.conf
+%config(noreplace) %attr(644,root,root) /etc/malscan.conf
 %attr(755,root,root) /usr/local/bin/malscan
+%dir %attr(755,malscan,malscan) /usr/local/share/malscan
+%dir %attr(755,malscan,malscan) /var/lib/malscan
+%dir %attr(755,malscan,malscan) /var/log/malscan
 %attr(644,root,root) /usr/local/share/malscan/malscan.license
-%dir /usr/local/share/malscan
-%dir /var/lib/malscan
-%dir /var/log/malscan
-%attr (755,malscan,malscan) /var/lib/malscan
+%doc /usr/local/share/man/man1/malscan.1
 
 %changelog
 * Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev9
