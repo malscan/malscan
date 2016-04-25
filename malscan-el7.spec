@@ -52,10 +52,15 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %dir %attr(755,malscan,malscan) /usr/local/share/malscan
 %dir %attr(755,malscan,malscan) /var/lib/malscan
 %dir %attr(755,malscan,malscan) /var/log/malscan
-%attr(644,root,root) /usr/local/share/malscan/malscan.license
+%attr(644,malscan,malscan) /usr/local/share/malscan/malscan.license
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Mon Apr 25 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev10
+- New: Fedora packaging testing
+- Bugfix: Corrected an issue in the build process with duplicate files.
+- Update: All directories and files should now be properly owned by the malscan user.
+
 * Sat Apr 23 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev9
 - New: Warning message when running updater as a non-root user that not everything will update without root.
 - Bugfix: Removed freshclam from the updater when a non-root user is identified.
