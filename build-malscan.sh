@@ -43,6 +43,9 @@ cp "/home/makerpm/rpmbuild/malscan/malscan-el7.spec" "/home/makerpm/rpmbuild/SPE
 # cp "/home/makerpm/rpmbuild/malscan/malscan.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el6.spec"
 cp "/home/makerpm/rpmbuild/malscan/malscan-fedora23.spec" "/home/makerpm/rpmbuild/SPECS/malscan-fedora23.spec"
 
+## Moving back into our pwd
+cd /home/makerpm/rpmbuild
+
 ## Deleting the temp directory and all of its staging contents
 rm -rf "$TEMP"
 
