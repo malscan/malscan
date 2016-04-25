@@ -39,9 +39,9 @@ tar -czvf "$TEMP/malscan-$VERSION.tar.gz" "malscan-$VERSION"
 mv "$TEMP/malscan-$VERSION.tar.gz" "/home/makerpm/rpmbuild/SOURCES/"
 
 ## Copying the latest SPEC files from our git repo into SPECS
-cp "/home/makerpm/rpmbuild/malscan/malscan.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el7.spec"
-cp "/home/makerpm/rpmbuild/malscan/malscan.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el6.spec"
-cp "/home/makerpm/rpmbuild/malscan/malscan.spec" "/home/makerpm/rpmbuild/SPECS/malscan-fedora23.spec"
+cp "/home/makerpm/rpmbuild/malscan/malscan-el7.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el7.spec"
+# cp "/home/makerpm/rpmbuild/malscan/malscan.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el6.spec"
+cp "/home/makerpm/rpmbuild/malscan/malscan-fedora23.spec" "/home/makerpm/rpmbuild/SPECS/malscan-fedora23.spec"
 
 ## Deleting the temp directory and all of its staging contents
 rm -rf "$TEMP"
@@ -51,12 +51,12 @@ echo "Staging of all malscan files completed. Beginning build process."
 
 ## Creating the RPM
 rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-el7.spec
-rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-el6.spec
+# rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-el6.spec
 rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-fedora23.spec
 
 ## Doing the RPM signing
 rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el7.noarch.rpm"
-rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el6.noarch.rpm"
+# rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el6.noarch.rpm"
 rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.fedora.noarch.rpm"
 
 cp "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el7.noarch.rpm" "/var/www/repo.malscan.org/current/el/7/"
