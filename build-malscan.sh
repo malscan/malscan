@@ -60,8 +60,4 @@ rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-fedora23.spec
 ## Doing the RPM signing
 rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el7.noarch.rpm"
 # rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el6.noarch.rpm"
-rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.fedora.noarch.rpm"
-
-cp "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el7.noarch.rpm" "/var/www/repo.malscan.org/current/el/7/"
-cp "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.el6.noarch.rpm" "/var/www/repo.malscan.org/current/el/6/"
-cp "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.fedora23.noarch.rpm" "/var/www/repo.malscan.org/current/fedora/23/"
+rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$1-$2.fedora23.noarch.rpm"
