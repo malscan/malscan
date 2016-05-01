@@ -10,7 +10,7 @@
 # -------------------------------------------------
 
 VERSION="1.7.0"
-DATE="April 21, 2016"
+DATE="April 30, 2016"
 
 # -------------------------------------------------
 
@@ -140,19 +140,19 @@ function helper {
 	## Help functionality
 	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	echo "       -c -- shows all configuration options and values"
-	echo "       -c [option] -- displays a current configuration option value"
-	echo "       -c [option] [value] -- dupdates the value of a configuration option to a new value"
+	#echo "       -c -- shows all configuration options and values"
+	#echo "       -c [option] -- displays a current configuration option value"
+	#echo "       -c [option] [value] -- dupdates the value of a configuration option to a new value"
 	echo "       -h  -- display this help text"
 	echo "       -l  -- line scan mode"
 	echo "       -m  -- MIME scan mode"
 	echo "       -n  -- send email notification on detection"
 	echo "       -q  -- quarantine any malicious files"
 	echo "       -s  -- basic malware scan"
-	echo "       -t  -- tripwire scan mode"
+	#echo "       -t  -- tripwire scan mode"
 	echo "       -u  -- force-update of all signatures"
 	echo "       -v  -- display core application and signature database version information"
-	echo "       -w  -- adds specified file tree to whitelist."
+	#echo "       -w  -- adds specified file tree to whitelist."
 	echo "Use the command man malscan to view the malpage for more information."
 	exit 0	
 
@@ -161,68 +161,70 @@ function helper {
 ## Defining the update function
 function updater {
 
-	cd "$TEMPLOG_DIRECTORY"
-
-	echo -e "\033[37mUpdate: Downloading the latest Malscan malware definitions."
-
-	wget -q https://www.rfxn.com/downloads/rfxn.hdb
-	wget -q https://www.rfxn.com/downloads/rfxn.ndb
-
-	SIGNATURE_CHANGE=0
-
-	for DATABASE in rfxn.hdb rfxn.ndb; do
-		NEWDB_COUNT=$(wc -l "$DATABASE" | awk '{print $1}')
-
-		if [[ -f "$SIGNATURES_DIRECTORY/$DATABASE" ]]; then
-			OLDDB_COUNT=$(wc -l "$SIGNATURES_DIRECTORY/$DATABASE" | awk '{print $1}')
-		else
-			OLDDB_COUNT=0
-		fi
-
-		if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
-			DIFFERENCE=$(($NEWDB_COUNT - $OLDDB_COUNT))
-			SIGNATURE_CHANGE=$(($SIGNATURE_CHANGE + $DIFFERENCE))
-		fi
-	done
-
-	cat rfxn.hdb > "$SIGNATURES_DIRECTORY/rfxn.hdb"
-	cat rfxn.ndb > "$SIGNATURES_DIRECTORY/rfxn.ndb"
-	chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.hdb"
-	chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.ndb"	
-
-	if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
-
-		if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
-			echo -e "\033[32mUpdate: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
-		else
-			echo -e "\033[32mUpdate: No new Malscan signatures avaiable.\033[37m"
-		fi
-
-	else
-
-		echo -e "\033[31mUpdate: Malscan signatures have failed to update correctly. Please try again later."
-
-	fi
-
-	echo ""
-
 	if [[ $RUNNING_USER != "root" ]]; then
 		echo -e "\033[31mUpdate: The updater is not able to update all signature databases while running as a non-root user."
 		echo -e "\033[31mUpdate: Speak with your Systems Administrator to ensure updates are being run regularly by root.\033[37m"
 	else
+
+		cd "$TEMPLOG_DIRECTORY"
+	
+		echo -e "\033[37mUpdate: Downloading the latest Malscan malware definitions."
+	
+		wget -q https://www.rfxn.com/downloads/rfxn.hdb
+		wget -q https://www.rfxn.com/downloads/rfxn.ndb
+	
+		SIGNATURE_CHANGE=0
+	
+		for DATABASE in rfxn.hdb rfxn.ndb; do
+			NEWDB_COUNT=$(wc -l "$DATABASE" | awk '{print $1}')
+	
+			if [[ -f "$SIGNATURES_DIRECTORY/$DATABASE" ]]; then
+				OLDDB_COUNT=$(wc -l "$SIGNATURES_DIRECTORY/$DATABASE" | awk '{print $1}')
+			else
+				OLDDB_COUNT=0
+			fi
+	
+			if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
+				DIFFERENCE=$(($NEWDB_COUNT - $OLDDB_COUNT))
+				SIGNATURE_CHANGE=$(($SIGNATURE_CHANGE + $DIFFERENCE))
+			fi
+		done
+	
+		cat rfxn.hdb > "$SIGNATURES_DIRECTORY/rfxn.hdb"
+		cat rfxn.ndb > "$SIGNATURES_DIRECTORY/rfxn.ndb"
+		chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.hdb"
+		chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.ndb"	
+	
+		if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
+	
+			if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
+				echo -e "\033[32mUpdate: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
+			else
+				echo -e "\033[32mUpdate: No new Malscan signatures avaiable.\033[37m"
+			fi
+	
+		else
+	
+			echo -e "\033[31mUpdate: Malscan signatures have failed to update correctly. Please try again later."
+	
+		fi
+	
+		echo ""
+	
 		echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
 		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
 		echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
+		echo ""
+	
+	
+		echo "$LOGGING_DATE - Update completed. $SIGNATURE_CHANGE malscan signatures added. ClamAV databases updated." >> "$LOGGING_DIRECTORY/update.log"
+	
+		rm -f "$TEMPLOG_DIRECTORY/rfxn*"
+	
+	
+		echo -e "\033[32mUpdate: Malscan signatures updated.\033[37m"
+
 	fi
-	echo ""
-
-
-	echo "$LOGGING_DATE - Update completed. $SIGNATURE_CHANGE malscan signatures added. ClamAV databases updated." >> "$LOGGING_DIRECTORY/update.log"
-
-	rm -f "$TEMPLOG_DIRECTORY/rfxn*"
-
-
-	echo -e "\033[32mUpdate: Malscan signatures updated.\033[37m"
 
 	exit 0
 }
