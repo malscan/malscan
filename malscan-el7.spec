@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev10.el7
+Release: dev11.el7
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -56,6 +56,10 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Sat Apr 30 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev11
+- Bugfix: Updater will now correctly check for sudo before attempting to update.
+- Bugfix: Removed some currently unused arguments from the --help command output.
+
 * Mon Apr 25 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev10
 - New: Fedora packaging testing
 - Bugfix: Corrected an issue in the build process with duplicate files.
