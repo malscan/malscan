@@ -49,7 +49,7 @@ fi
 
 
 ## Parsing through the arguments
-while getopts chlmn:qs::tuvw OPT; do
+while getopts chlmn:qs::tuw OPT; do
 	case "$OPT" in
   		c) CONFIG=1;;
 		h) HELP=1;;
@@ -67,7 +67,6 @@ while getopts chlmn:qs::tuvw OPT; do
 			;;
 		t) TRIPWIRE=1;;
 		u) UPDATER=1;;
-		v) VERSION=1;;
 		w) WHITELIST=1;;
     	*) # getopts produces error
 			helper
@@ -123,13 +122,15 @@ function helper {
 function updater {
 
 	if [[ $RUNNING_USER != "root" ]]; then
-		echo -e "\033[31mUpdate: The updater is not able to update all signature databases while running as a non-root user."
-		echo -e "\033[31mUpdate: Speak with your Systems Administrator to ensure updates are being run regularly by root.\033[37m"
+		echo ""
+		echo -e "\033[31m  * Update: The updater is not able to update all signature databases while running as a non-root user."
+		echo -e "\033[31m  * Update: Speak with your Systems Administrator to ensure updates are being run regularly by root.\033[37m"
 	else
 
 		cd "$TEMPLOG_DIRECTORY"
 	
-		echo -e "\033[37mUpdate: Downloading the latest Malscan malware definitions."
+		echo ""
+		echo -e "\033[37m  * Update: Downloading the latest Malscan malware definitions."
 	
 		wget -q https://www.rfxn.com/downloads/rfxn.hdb
 		wget -q https://www.rfxn.com/downloads/rfxn.ndb
@@ -159,23 +160,20 @@ function updater {
 		if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
 	
 			if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
-				echo -e "\033[32mUpdate: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
+				echo -e "\033[32m  - Update: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
 			else
-				echo -e "\033[32mUpdate: No new Malscan signatures avaiable.\033[37m"
+				echo -e "\033[32m  - Update: No new Malscan signatures avaiable.\033[37m"
 			fi
 	
 		else
 	
-			echo -e "\033[31mUpdate: Malscan signatures have failed to update correctly. Please try again later."
+			echo -e "\033[31m  - Update: Malscan signatures have failed to update correctly. Please try again later."
 	
 		fi
 	
-		echo ""
-	
-		echo -e "\033[37mUpdate: Updating ClamAV definitions. This can take a long time."
+		echo -e "\033[37m  - Update: Updating ClamAV definitions. This can take a long time."
 		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
-		echo -e "\033[32mUpdate: ClamAV malware definitions have been updated.\033[37m"
-		echo ""
+		echo -e "\033[32m  - Update: ClamAV malware definitions have been updated.\033[37m"
 	
 	
 		echo "$LOGGING_DATE - Update completed. $SIGNATURE_CHANGE malscan signatures added. ClamAV databases updated." >> "$LOGGING_DIRECTORY/update.log"
@@ -183,7 +181,7 @@ function updater {
 		rm -f "$TEMPLOG_DIRECTORY/rfxn*"
 	
 	
-		echo -e "\033[32mUpdate: Malscan signatures updated.\033[37m"
+		echo -e "\033[32m  * Update: Malscan signatures updated.\033[37m"
 
 	fi
 
@@ -196,6 +194,7 @@ function lengthscan {
 	# Building the whitelist - temporarily disabled
 	## LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
 
+	echo ""
 	echo -e "  * \033[33mString Length Scan: Beginning scan.\033[37m"
 	echo -e "  - \033[37mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
 
@@ -244,6 +243,7 @@ function lengthscan {
 ## Defining the whitelist function
 function whitelist {
 	# Identifying the whitelist.db
+	echo ""
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
 	TEMPLOG=$(mktemp)	
 	echo -e "\033[33mWhitelist: Beginning whitelist process.\033[37m"
@@ -286,6 +286,7 @@ function tripwire {
 	TEMPLOG=$(mktemp)
 	TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
 
+	echo ""
 	echo -e "  * \033[33mTripwire: Beginning scan.\033[37m"
 	echo "  - Tripwire: Compiling a full file list for $TARGET."
 	find "$TARGET" -type f >> "$TEMPLOG"
@@ -343,6 +344,7 @@ function mimescan {
     #        MIME_IGNORE_LIST="$MIME_IGNORE_LIST -not -name $IGNORE"
     #done
 
+    echo ""
     echo -e "  * \033[33mMIME Scan: Beginning scan.\033[37m"
     echo -e "  - MIME Scan: Compiling a full file list for $TARGET.\033[37m "
     # find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
@@ -394,6 +396,7 @@ function mimescan {
 ## Defining the scanning function
 function avscan {
 
+	echo ""
 	echo -e "  \033[33m* Malware Scan: Beginning scan of $TARGET...\033[37m "
 
 	# Setting up the whitelist
@@ -542,8 +545,6 @@ else
 fi
 
 echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $LAST_UPDATE_TIME\033[37m"
-echo ""
-
 
 #if [[ -n "$REPORT" ]]; then
 #	report
