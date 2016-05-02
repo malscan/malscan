@@ -57,9 +57,9 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 
 %changelog
 * Sun May 01 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev12
-* New: Initial parsing for the -c configuration and -s set options have been completed.
-* Bugfix: Sudo checking will now correctly identify when it's being run by the malscan user directly.
-* Updated: Rewrote the argument parser. Removed about 30% of the code while using proper bash builtins.
+- New: Initial parsing for the -c configuration and -s set options have been completed.
+- Bugfix: Sudo checking will now correctly identify when it's being run by the malscan user directly.
+- Updated: Rewrote the argument parser. Removed about 30% of the code while using proper bash builtins.
 
 * Sat Apr 30 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev11
 - Bugfix: Updater will now correctly check for sudo before attempting to update.
