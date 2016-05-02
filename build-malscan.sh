@@ -61,3 +61,7 @@ rpmbuild -ba /home/jgrancell/rpmbuild/SPECS/malscan-fedora23.spec
 rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/jgrancell/rpmbuild/RPMS/noarch/malscan-$1-$2.el7.noarch.rpm"
 # rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/jgrancell/rpmbuild/RPMS/noarch/malscan-$1-$2.el6.noarch.rpm"
 rpm --define="%_gpg_name Josh Grancell <josh@joshgrancell.com>" --resign "/home/jgrancell/rpmbuild/RPMS/noarch/malscan-$1-$2.fedora23.noarch.rpm"
+
+## Pushing the new .rpms to the repository
+package_cloud push jgrancell/malscan/el/7 RPMS/noarch/malscan-$1-$2.el7.noarch.rpm
+package_cloud push jgrancell/malscan/fedora/23 RPMS/noarch/malscan-$1-$2.fedora23.noarch.rpm
