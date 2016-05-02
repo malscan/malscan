@@ -33,7 +33,7 @@ if [[ "$EUID" != 0 ]]; then
 	if ! whoami | id | grep -q "malscan"; then
 		echo -e "\033[31mMalscan must be run as root, or by a user that is part of the malscan group.\033[37m"
 		exit 1
-	elif [[ whoami == "malscan" ]]; then
+	elif [[ $(whoami) == "malscan" ]]; then
 		RUNNING_USER="malscan"
 	else
 		RUNNING_USER="non-root"
@@ -87,6 +87,11 @@ TARGET="$1"
 
 if [[ -f "$TARGET" || -d "$TARGET" ]]; then
 	AVSCAN=1
+fi
+
+if [[ -n "$HELP" ]]; then
+	helper
+	exit 0
 fi
 
 
@@ -318,7 +323,6 @@ function tripwire {
                 echo "  * Tripwire: Completed. No suspicious files detected." | tee -a "$TRIPWIRE_LOG"
                 echo ""
                 echo -ne "\033[37m"
-                DETECTION=0
         fi
 
 
@@ -460,7 +464,7 @@ function quarantine {
 		# Setting the files to 000 permissions so they cannot be accessed
 		chmod 600 "$QUARANTINE_PATH""$ABSPATH"
 		echo -e "  - \033[36m$FILE quarantined and locked down in $QUARANTINE_DIRECTORY/$LOGGING_DATE.\033[37m" | tee -a "$LOGGING_DIRECTORY/quarantine-$LOGGING_DATE"
-	done < <(cat "$AV_DETECTION_TEMPLOG" | cut -d: -f1)
+	done < <("$AV_DETECTION_TEMPLOG" | cut -d: -f1)
 
 	echo "$LOGGING_DATE - Quarantine - $QUARANTINE_COUNT malicious files quarantined. See $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE.log for Quarantine information, and $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for malware detection information." >> "$LOGGING_DIRECTORY/scan.log"
 }
@@ -474,7 +478,7 @@ function notification {
 		echo "From:$MALSCAN_SENDER_ADDRESS"
 		echo "Subject: Malware Detection: $HOSTNAME - $(date)" 
 		echo "MIME-Version: 1.0"
-		echo "Content-Type: text/html; charset="us-ascii" "
+		echo "Content-Type: text/html; charset=us-ascii"
 		echo "Content-Disposition: inline"
 		echo "<!DOCTYPE html>"
 		echo "<html> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"	
@@ -540,10 +544,6 @@ fi
 echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $LAST_UPDATE_TIME\033[37m"
 echo ""
 
-# Executing the Functions
-if [[ -n "$SHOW_HELP" ]]; then
-	helper
-fi
 
 #if [[ -n "$REPORT" ]]; then
 #	report
@@ -576,7 +576,7 @@ if [[ -n "$UPDATER" ]]; then
 	updater
 fi
 
-if [[ -n "$NOTIFICATION" ]]; then
+if [[ -n "$NOTIFICATION" && -n "$DETECTION" ]]; then
 	notification
 fi
 
