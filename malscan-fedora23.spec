@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev14.fedora23
+Release: dev15.fedora23
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -56,6 +56,12 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Mon May 02 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev15
+- New: Finished the display for config information via the -c switch.
+- Bugfix: Fixed a missplelling in the malscan.conf file with the STRING_LENGTH_MINIMUM variable.
+- Bugfix: Fixed a bug where the helper function wasn't correctly executing because of location.
+- Updated: Malscan will now exit properly when either -v or -c are called, rather than attempting to run a scan afterwards.
+
 * Mon May 02 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev14
 - Bugfix: The correct version number will be shown for the main program now.
 - Updated: Updated how the Update function will output status updates. Less empty lines, more consise code.

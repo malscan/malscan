@@ -25,6 +25,30 @@ CLAMSCAN_BINARY_LOCATION=$(which clamscan)
 LOGGING_DATE=$(date "+%F %H:%m")
 TEMPLOG_DIRECTORY=$(mktemp -d)
 
+## Getting the basic help information
+function helper {
+
+	## Help functionality
+	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
+	echo "Usage: malscan [options] /path/to/scanned/directory"
+	#echo "       -c -- shows all configuration options and values"
+	#echo "       -c [option] -- displays a current configuration option value"
+	#echo "       -c [option] [value] -- dupdates the value of a configuration option to a new value"
+	echo "       -h  -- display this help text"
+	echo "       -l  -- line scan mode"
+	echo "       -m  -- MIME scan mode"
+	echo "       -n  -- send email notification on detection"
+	echo "       -q  -- quarantine any malicious files"
+	echo "       -s  -- basic malware scan"
+	#echo "       -t  -- tripwire scan mode"
+	echo "       -u  -- force-update of all signatures"
+	echo "       -v  -- display core application and signature database version information"
+	#echo "       -w  -- adds specified file tree to whitelist."
+	echo "Use the command man malscan to view the malpage for more information."
+	exit 0	
+
+}
+
 # -------------------------------------------------
 
 ## Checking to see if the user is running as root
@@ -49,7 +73,7 @@ fi
 
 
 ## Parsing through the arguments
-while getopts chlmn:qs::tuw OPT; do
+while getopts chlmn:qs::tuvw OPT; do
 	case "$OPT" in
   		c) CONFIG=1;;
 		h) HELP=1;;
@@ -67,16 +91,12 @@ while getopts chlmn:qs::tuw OPT; do
 			;;
 		t) TRIPWIRE=1;;
 		u) UPDATER=1;;
+		v) VERSION_SHOW=1;;
 		w) WHITELIST=1;;
     	*) # getopts produces error
 			helper
   	esac
 done
-if ((CONFIG && OPTIND>$#)); then
-	CONFIG_ALL=1
-	echo You must provide text or use -d >>/dev/stderr
-  	exit 1
-fi
 
 # The easiest way to get rid of the processed options:
 shift $((OPTIND-1))
@@ -92,31 +112,6 @@ if [[ -n "$HELP" ]]; then
 	helper
 	exit 0
 fi
-
-
-## Getting the basic help information
-function helper {
-
-	## Help functionality
-	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
-	echo "Usage: malscan [options] /path/to/scanned/directory"
-	#echo "       -c -- shows all configuration options and values"
-	#echo "       -c [option] -- displays a current configuration option value"
-	#echo "       -c [option] [value] -- dupdates the value of a configuration option to a new value"
-	echo "       -h  -- display this help text"
-	echo "       -l  -- line scan mode"
-	echo "       -m  -- MIME scan mode"
-	echo "       -n  -- send email notification on detection"
-	echo "       -q  -- quarantine any malicious files"
-	echo "       -s  -- basic malware scan"
-	#echo "       -t  -- tripwire scan mode"
-	echo "       -u  -- force-update of all signatures"
-	echo "       -v  -- display core application and signature database version information"
-	#echo "       -w  -- adds specified file tree to whitelist."
-	echo "Use the command man malscan to view the malpage for more information."
-	exit 0	
-
-}
 
 ## Defining the update function
 function updater {
@@ -170,10 +165,12 @@ function updater {
 			echo -e "\033[31m  - Update: Malscan signatures have failed to update correctly. Please try again later."
 	
 		fi
-	
+
+		echo ""
 		echo -e "\033[37m  - Update: Updating ClamAV definitions. This can take a long time."
 		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
 		echo -e "\033[32m  - Update: ClamAV malware definitions have been updated.\033[37m"
+		echo ""
 	
 	
 		echo "$LOGGING_DATE - Update completed. $SIGNATURE_CHANGE malscan signatures added. ClamAV databases updated." >> "$LOGGING_DIRECTORY/update.log"
@@ -186,6 +183,28 @@ function updater {
 	fi
 
 	exit 0
+}
+
+## Defining the function that lets you view config options
+function config_view {
+
+	## Displaying all of our configuration options
+	echo ""
+	echo "Application Configuration Settings"
+	echo "Program Directory               - $APPLICATION_DIRECTORY"
+	echo "Configuration Directory         - $CONFIGURATION_FILE"
+	echo "Signatures Directory            - $SIGNATURES_DIRECTORY"
+	echo "Logging Directory               - $LOGGING_DIRECTORY"
+	echo "User's Quarantine Directory     - $QUARANTINE_DIRECTORY"
+	echo ""
+	echo "Notification Settings"
+	echo "Email Notifications    - $ENABLE_EMAIL_NOTIFICATIONS"
+	echo "Notification Addresses - $NOTIFICATION_ADDRESSES"
+	echo "Sending Email Address  - $MALSCAN_SENDER_ADDRESS"
+	echo ""
+	echo "Scanning Settings"
+	echo "String Length Scanning Threshold - $STRING_LENGTH_MINIMUM"
+
 }
 
 ## Defining the lengthscan function
@@ -546,6 +565,15 @@ fi
 
 echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $LAST_UPDATE_TIME\033[37m"
 
+if [[ -n "$VERSION_SHOW" ]]; then
+	exit 0
+fi
+
+if [[ -n "$CONFIG" ]]; then
+	config_view
+	exit 0
+fi
+
 #if [[ -n "$REPORT" ]]; then
 #	report
 #fi
@@ -585,5 +613,7 @@ fi
 
 ## Removing our temp logging directory
 rm -rf "$TEMPLOG_DIRECTORY"
+
+echo ""
 
 exit 0
