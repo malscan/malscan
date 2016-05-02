@@ -9,8 +9,8 @@
 # 
 # -------------------------------------------------
 
-VERSION="1.7.0-dev11"
-DATE="April 30, 2016"
+VERSION="1.7.0-dev12"
+DATE="May 01, 2016"
 
 # -------------------------------------------------
 
@@ -33,6 +33,8 @@ if [[ "$EUID" != 0 ]]; then
 	if ! whoami | id | grep -q "malscan"; then
 		echo -e "\033[31mMalscan must be run as root, or by a user that is part of the malscan group.\033[37m"
 		exit 1
+	elif [[ whoami == "malscan" ]]; then
+		RUNNING_USER="malscan"
 	else
 		RUNNING_USER="non-root"
 	fi
@@ -47,92 +49,46 @@ fi
 
 
 ## Parsing through the arguments
-
-## No arguments passed
-if [[ $# -eq 0 || $# == 1 && ( "$1" == "-h" || "$1" == "--help" || "$1" == "help" ) ]]; then
-
-	## Showing the help outupt
-	SHOW_HELP=1
-
-elif [[ $# == 1 ]]; then
-	if [[ "$1" == "-v" || "$1" == "--version" ]]; then
-
-		## Outputting the latest version information
-		echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
-		exit 0
-
-	elif [[ "$1" = "-u" ||  "$1" == "--update" ]]; then
-		
-		## Running the updater
-		UPDATER=1
-
-	elif [[ -f "$1" || -d "$1" ]]; then
-
-		## Running a regular scan of the path provided
-		AVSCAN=1
-		TARGET="$1"
-
-	else
-
-		## No target directory provided, exiting with a warning
-		echo -e "\033[32mYou must provide a target file or directory to scan.\033[37m"
-
-	fi
-elif [[ $# -eq 2 ]]; then
-
-	## Setting the scanning target
-	TARGET="$2"
-
-	## Enabling Update
-	if [[ "$1" =~ u ]]; then
-		UPDATER=1
-	fi
-
-	## Enabling Quarantine
-	if [[ "$1" =~ q ]]; then
-		QUARANTINE=1
-	fi
-
-	# Enabling mime-type scanning
-	if [[ "$1" =~ m ]]; then
-		MIMESCAN=1
-	fi
-
-	# Enabling line length scanning
-	if [[ "$1" =~ l ]]; then
-		LENGTHSCAN=1
-	fi
-
-	# Enabling signature reporting
-	if [[ "$1" =~ r ]]; then
-		REPORT=1
-	fi
-
-	# Enabling email notification
-	if [[ "$1" =~ n ]]; then
-		NOTIFICATION=1
-	fi
-
-	# Enabling full scan
-	if [[ "$1" =~ s ]]; then
-		AVSCAN=1
-	fi
-
-	# Enabling whitelisting
-	if [[ "$1" =~ w ]]; then
-		WHITELIST=1
-	fi
-
-	if [[ "$1" =~ t ]]; then
-		TRIPWIRE=1
-	fi
-
-else
-
-	## Help functionality
-	SHOW_HELP=1
-
+while getopts chlmn:qs::tuvw OPT; do
+	case "$OPT" in
+  		c) CONFIG=1;;
+		h) HELP=1;;
+		l) LENGTHSCAN=1;;
+		m) MIMESCAN=1;;
+		n) 
+			NOTIFICATION=1
+			NOTIFICATION_TARGET=$2
+			;;
+		q) QUARANTINE=1;;
+		s) 
+			SET_CONFIG=1
+			SET_TARGET=$OPTARG
+			SET_VALUE=$3
+			;;
+		t) TRIPWIRE=1;;
+		u) UPDATER=1;;
+		v) VERSION=1;;
+		w) WHITELIST=1;;
+    	*) # getopts produces error
+			helper
+  	esac
+done
+if ((CONFIG && OPTIND>$#)); then
+	CONFIG_ALL=1
+	echo You must provide text or use -d >>/dev/stderr
+  	exit 1
 fi
+
+# The easiest way to get rid of the processed options:
+shift $((OPTIND-1))
+
+# This will run all of the remaining arguments together with spaces between them:
+TARGET="$1"
+
+if [[ -f "$TARGET" || -d "$TARGET" ]]; then
+	AVSCAN=1
+fi
+
 
 ## Getting the basic help information
 function helper {
@@ -185,8 +141,8 @@ function updater {
 			fi
 	
 			if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
-				DIFFERENCE=$(($NEWDB_COUNT - $OLDDB_COUNT))
-				SIGNATURE_CHANGE=$(($SIGNATURE_CHANGE + $DIFFERENCE))
+				DIFFERENCE=$((NEWDB_COUNT - OLDDB_COUNT))
+				SIGNATURE_CHANGE=$((SIGNATURE_CHANGE + DIFFERENCE))
 			fi
 		done
 	
