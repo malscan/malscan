@@ -9,7 +9,7 @@
 # 
 # -------------------------------------------------
 
-VERSION="1.7.0-dev14"
+VERSION="1.7.0-dev16"
 DATE="May 02, 2016"
 
 # -------------------------------------------------
@@ -31,15 +31,15 @@ function helper {
 	## Help functionality
 	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
-	#echo "       -c -- shows all configuration options and values"
+	echo "       -c -- shows all configuration options and values"
 	#echo "       -c [option] -- displays a current configuration option value"
-	#echo "       -c [option] [value] -- dupdates the value of a configuration option to a new value"
+	echo "       -s [option] [value] -- dupdates the value of a configuration option to a new value"
 	echo "       -h  -- display this help text"
 	echo "       -l  -- line scan mode"
 	echo "       -m  -- MIME scan mode"
 	echo "       -n  -- send email notification on detection"
 	echo "       -q  -- quarantine any malicious files"
-	echo "       -s  -- basic malware scan"
+	#echo "       -s  -- basic malware scan"
 	#echo "       -t  -- tripwire scan mode"
 	echo "       -u  -- force-update of all signatures"
 	echo "       -v  -- display core application and signature database version information"
@@ -191,19 +191,36 @@ function config_view {
 	## Displaying all of our configuration options
 	echo ""
 	echo "Application Configuration Settings"
-	echo "Program Directory               - $APPLICATION_DIRECTORY"
-	echo "Configuration Directory         - $CONFIGURATION_FILE"
-	echo "Signatures Directory            - $SIGNATURES_DIRECTORY"
-	echo "Logging Directory               - $LOGGING_DIRECTORY"
-	echo "User's Quarantine Directory     - $QUARANTINE_DIRECTORY"
+	echo "APPLICATION_DIRECTORY - $APPLICATION_DIRECTORY"
+	echo "CONFIGURATION_FILE    - $CONFIGURATION_FILE"
+	echo "SIGNATURES_DIRECTORY  - $SIGNATURES_DIRECTORY"
+	echo "LOGGING_DIRECTORY     - $LOGGING_DIRECTORY"
+	echo "QUARANTINE_DIRECTORY  - $QUARANTINE_DIRECTORY"
 	echo ""
 	echo "Notification Settings"
-	echo "Email Notifications    - $ENABLE_EMAIL_NOTIFICATIONS"
-	echo "Notification Addresses - $NOTIFICATION_ADDRESSES"
-	echo "Sending Email Address  - $MALSCAN_SENDER_ADDRESS"
+	echo "EMAIL_NOTIFICATIONS    - $EMAIL_NOTIFICATIONS"
+	echo "NOTIFICATION_ADDRESSES - $NOTIFICATION_ADDRESSES"
+	echo "MALSCAN_SENDER_ADDRESS - $MALSCAN_SENDER_ADDRESS"
 	echo ""
 	echo "Scanning Settings"
-	echo "String Length Scanning Threshold - $STRING_LENGTH_MINIMUM"
+	echo "STRING_LENGTH_MINIMUM - $STRING_LENGTH_MINIMUM"
+
+}
+
+function config_set {
+
+	if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" ]]; then
+
+		sed -i "s/^$SET_TARGET.*$/$SET_TARGET\=\"$SET_VALUE\"/" "$CONFIGURATION_FILE"
+		echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
+
+	else
+
+		echo ""
+		echo "  * Configuration: When setting a new configuration value, you must specify the config and the value."
+		echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.org,admin@malscan.org,jgrancell@joshgrancell.com"
+
+	fi
 
 }
 
@@ -571,6 +588,11 @@ fi
 
 if [[ -n "$CONFIG" ]]; then
 	config_view
+	exit 0
+fi
+
+if [[ -n "$SET_CONFIG" ]]; then
+	config_set
 	exit 0
 fi
 
