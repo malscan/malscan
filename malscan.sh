@@ -9,8 +9,8 @@
 # 
 # -------------------------------------------------
 
-VERSION="1.7.0-dev16"
-DATE="May 02, 2016"
+VERSION="1.7.0-dev17"
+DATE="June 08, 2016"
 
 # -------------------------------------------------
 
@@ -211,7 +211,8 @@ function config_set {
 
 	if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" ]]; then
 
-		sed -i "s/^$SET_TARGET.*$/$SET_TARGET\=\"$SET_VALUE\"/" "$CONFIGURATION_FILE"
+		sed -i "s|^$SET_TARGET.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_FILE"
+
 		echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
 
 	else
