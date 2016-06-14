@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev16.el7
+Release: dev18.el7
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -56,6 +56,9 @@ sed -i 's/^#DatabaseOwner.*$/DatabaseOwner malscan/g' /etc/freshclam.conf
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Thu Jun 09 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev18
+- Bugfix: Corrected a typo in output
+
 * Wed Jun 08 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-dev17
 - New: Config information can now be changed using the -s switch.
 

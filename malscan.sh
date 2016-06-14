@@ -9,7 +9,7 @@
 # 
 # -------------------------------------------------
 
-VERSION="1.7.0-dev17"
+VERSION="1.7.0-dev18"
 DATE="June 08, 2016"
 
 # -------------------------------------------------
@@ -32,7 +32,6 @@ function helper {
 	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
 	echo "       -c -- shows all configuration options and values"
-	#echo "       -c [option] -- displays a current configuration option value"
 	echo "       -s [option] [value] -- dupdates the value of a configuration option to a new value"
 	echo "       -h  -- display this help text"
 	echo "       -l  -- line scan mode"
@@ -44,7 +43,7 @@ function helper {
 	echo "       -u  -- force-update of all signatures"
 	echo "       -v  -- display core application and signature database version information"
 	#echo "       -w  -- adds specified file tree to whitelist."
-	echo "Use the command man malscan to view the malpage for more information."
+	echo "Use the command man malscan to view the manpage for more information."
 	exit 0	
 
 }
