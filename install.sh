@@ -33,43 +33,48 @@ if [[ -f "/etc/redhat-release" ]]; then
     if [[ "$DISTRO" == "RHEL" || "$DISTRO" == "CentOS" ]]; then
 
         if [[ -f /etc/os-release ]]; then
-            VERSION=$( grep "VERSION_ID" /etc/os-release | cut -d= -f2 | cut -d. -f1)
+
+            if grep -qs "release 7" /etc/redhat-release; then
+                VERSION="7"
+            elif grep -qs "release 6" /etc/redhat-release; then
+                VERSION=6
+            fi
         else
             echo "What version of CentOS/RHEL are you running? (6/7)"
             read VERSION
         fi
 
-        if rpm -q epel-release; then
+        if rpm -q epel-release > /dev/null; then
             EPEL_PACKAGE=1
         fi
     elif [[ "$DISTRO" == "cPanel" || "$DISTRO" == "Fedora" ]]; then
         EPEL_PACKAGE=1
     fi
 
-    if rpm -q clamav; then
+    if rpm -q clamav > /dev/null; then
         CLAMAV_PACKAGE=1
     elif [[ "$DISTRO" == "cPanel" && -d /usr/local/cpanel/3rdparty/share/clamav ]]; then
         CLAMAV_PACKAGE=1
         CLAMUPDATE_PACKAGE=1
     fi
 
-    if rpm -q clamav-update; then
+    if rpm -q clamav-update > /dev/null; then
         CLAMUPDATE_PACKAGE=1
-    elif rpm -q clamav-db; then
+    elif rpm -q clamav-db > /dev/null; then
         CLAMUPDATE_PACKAGE=1
     fi
 
     ## Checking to see if file is installed
-    if rpm -q file; then
+    if rpm -q file > /dev/null; then
         FILE_PACKAGE=1
     fi
 
     ## Checking to see if ClamAV is installed
-    if rpm -q clamav  && [[ "$DISTRO" != "cPanel" ]]; then
+    if rpm -q clamav > /dev/null && [[ "$DISTRO" != "cPanel" ]]; then
         CLAMAV_PACKAGE=1
-        if [[ "$VERSION" == "7" ]] && rpm -q clamav-update; then
+        if [[ "$VERSION" == "7" ]] && rpm -q clamav-update > /dev/null; then
             CLAMUPDATE_PACKAGE=1
-        elif [[ "$VERSION" == "6" ]] && rpm -q clamav-db; then
+        elif [[ "$VERSION" == "6" ]] && rpm -q clamav-db > /dev/null; then
             CLAMUPDATE_PACKAGE=1
         fi
     elif [[ -d /usr/local/cpanel/3rdparty/share/clamav && "$DISTRO" == "cPanel" ]]; then
@@ -88,26 +93,25 @@ if [[ -f "/etc/redhat-release" ]]; then
         INSTALL_PAYLOAD=''
 
         if [[ -z "$FILE_PACKAGE" ]]; then
-            echo "    file"
             INSTALL_PAYLOAD="$INSTALL_PAYLOAD file"
         fi
 
         if [[ -z "$EPEL_PACKAGE" && "$DISTRO" != "cPanel" && "$DISTRO" != "Fedora" ]]; then
-            echo "    epel-release"
+            INSTALL_PAYLOAD="$INSTALL_PAYLOAD epel-release"
             EPEL_FIRST=1
         fi
 
         if [[ -z "$CLAMAV_PACKAGE" ]]; then
-            echo "    clamav"
+
             INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav"
             if [[ "$VERSION" == "7" && -z "$CLAMUPDATE_PACKAGE" ]]; then
-                echo "    clamav-update"
                 INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav-update"
             elif [[ "$VERSION" == "6" && -z "$CLAMUPDATE_PACKAGE" ]]; then
-                echo "    clamav-db"
                 INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav-db"
             fi
         fi
+
+        echo "    $INSTALL_PAYLOAD"
 
         if [[ -z $CLAMAV_PACKAGE && "$DISTRO" == "cPanel" ]]; then
             echo "Because this is a cPanel system, ClamAV must be manually installed through WHM."
@@ -189,16 +193,13 @@ elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" || "$DISTRO" == "Fedora" ]]
     ## Checking to see if we have a Package installation queued for CentOS.
     if [[ "$INSTALL_REQUIRED" == "1" && "$INSTALL_OPTION" == "1" ]]; then
         echo -e "\033[33mInstalling required packages now...\033[37m"
-        ## Installing Epel for ClamAV unless it's already installed.
-        if [[ -z "$EPEL_FIRST" ]]; then
-            yum -y install epel-release
-        fi
 
-        ## Installing all needed packages
-        yum -y install "$INSTALL_PAYLOAD"
+        for PACKAGE in $INSTALL_PAYLOAD; do
+            yum -y install $PACKAGE
+        done
 
         ## Confirming that all packages installed properly
-        if rpm -q "$INSTALL_PAYLOAD"; then
+        if rpm -q $INSTALL_PAYLOAD > /dev/null; then
             echo -e "\033[32mInstallation of all required packages has been completed!\033[37m"
             CONFIGURATION_REQUIRED=1
         else
@@ -278,6 +279,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     ## Setting up the malscan binary
     mkdir -p "$MALSCAN_BINARY_PATH"
     wget -P "$MALSCAN_BINARY_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/malscan" --quiet
+    chmod +x "$MALSCAN_BINARY_PATH/malscan"
 
     ## Creating the misc file directory
     mkdir -p "$MALSCAN_MISC_PATH"
@@ -296,7 +298,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
         echo -e "\033[33mAt what email addresses would you like to receive notifications (Comma-separated list): \033[37m"
         read EMAIL_ADDRESSES
 
-        echo -e "\033[33mWhat email address would you like Malscan to send email from? \033[37m"
+        echo -e "\033[33mWhat email address would you like malscan to send email from? \033[37m"
         read SENDER_ADDRESS
 
         "$MALSCAN_BINARY_PATH/malscan" -s EMAIL_NOTIFICATIONS TRUE
