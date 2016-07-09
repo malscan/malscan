@@ -1,13 +1,13 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: dev18.el7
+Release: dev18.el6
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
 BuildRoot: %{_tmppath}/%{name}-root
 Requires: bash epel-release
-Requires: clamav clamav-update
+Requires: clamav clamav-db
 Source0: malscan-%{version}.tar.gz
 BuildArch: noarch
 
@@ -27,20 +27,15 @@ exit 0
 %install
 rm -rf ${RPM_BUILD_ROOT}
 mkdir -p ${RPM_BUILD_ROOT}/etc
-mkdir -p ${RPM_BUILD_ROOT}/etc/malscan
 mkdir -p ${RPM_BUILD_ROOT}/usr/local/share/malscan
 mkdir -p ${RPM_BUILD_ROOT}/usr/local/bin
 mkdir -p ${RPM_BUILD_ROOT}/var/lib/malscan
 mkdir -p ${RPM_BUILD_ROOT}/var/log/malscan
 mkdir -p ${RPM_BUILD_ROOT}/usr/local/share/man/man1
 
-install malscan.conf ${RPM_BUILD_ROOT}/etc/malscan/malscan.conf
-install freshclam.conf ${RPM_BUILD_ROOT}/etc/malscan/freshclam.conf
-
+install malscan.conf ${RPM_BUILD_ROOT}/etc/malscan.conf
 install malscan.sh ${RPM_BUILD_ROOT}/usr/local/bin/malscan
-
 install malscan.1 ${RPM_BUILD_ROOT}/usr/local/share/man/man1/malscan.1
-
 install LICENSE ${RPM_BUILD_ROOT}/usr/local/share/malscan/malscan.license
 
 %clean
