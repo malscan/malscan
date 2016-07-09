@@ -11,8 +11,6 @@
 
 CURRENT_INSTALLER_BRACH="1.7.0-dev"
 
-clear
-
 if [[ "$EUID" != 0 ]]; then
     echo -e "\033[31m The installer must be run as the root user, or using sudo.\033[37m"
     exit 1
@@ -39,6 +37,7 @@ if [[ -f "/etc/redhat-release" ]]; then
         else
             echo "What version of CentOS/RHEL are you running? (6/7)"
             read VERSION
+        fi
 
         if rpm -q epel-release; then
             EPEL_PACKAGE=1
@@ -70,14 +69,16 @@ if [[ -f "/etc/redhat-release" ]]; then
         CLAMAV_PACKAGE=1
         if [[ "$VERSION" == "7" ]] && rpm -q clamav-update; then
             CLAMUPDATE_PACKAGE=1
-        elif [[ ""]]
+        elif [[ "$VERSION" == "6" ]] && rpm -q clamav-db; then
+            CLAMUPDATE_PACKAGE=1
+        fi
     elif [[ -d /usr/local/cpanel/3rdparty/share/clamav && "$DISTRO" == "cPanel" ]]; then
         CLAMAV_PACKAGE=1
-        CLAMUPDATE_PACKAGE = 1
+        CLAMUPDATE_PACKAGE=1
     fi
 
     ## Checking to see if we have missing packages
-    if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$CLAMUPDATE_PACKAGe" || -z "$EPEL_PACKAGE" ]]; then
+    if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$CLAMUPDATE_PACKAGE" || -z "$EPEL_PACKAGE" ]]; then
         INSTALL_REQUIRED=1
 
         ## Providing install options
@@ -105,6 +106,7 @@ if [[ -f "/etc/redhat-release" ]]; then
             elif [[ "$VERSION" == "6" && -z "$CLAMUPDATE_PACKAGE" ]]; then
                 echo "    clamav-db"
                 INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav-db"
+            fi
         fi
 
         if [[ -z $CLAMAV_PACKAGE && "$DISTRO" == "cPanel" ]]; then
@@ -148,10 +150,6 @@ elif grep -qs Ubuntu /etc/lsb-release; then
         ## Providing install options
         echo -e "\033[31mMalscan has detected that one or more required packages are not currently installed."
         echo "For Malscan to install properly, the following packages must be installed: "
-
-        if [[ -z "$GIT_PACKAGE" ]]; then
-            echo "    git"
-        fi
 
         if [[ -z "$FILE_PACKAGE" ]]; then
             echo "    file"
@@ -288,10 +286,6 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/version.txt" --quiet
     chown -R malscan:malscan "$MALSCAN_MISC_PATH"
 
-    ## Now we're getting the binary locations for Freshclam and Clamscan, which will likely be /usr/local/bin or /usr/bin
-    CLAMSCAN=$(find / -name "clamscan" -executable -path "*bin*" | head -n 1)
-    FRESHCLAM=$(find / -name "freshclam" -executable -path "*bin*" | head -n 1)
-
     ## Getting the user's input on email notifications
     echo -e "\033[33mBeginning the malscan configuration process..."
     echo -ne "Would you like to enable email notifications? [y/N] [default: N] \033[37m"
@@ -314,6 +308,12 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     ## No remote quarantine, so we're now requesting the local quarantine directory
     echo -e "\033[33mWhat directory would you like to quarantine files in? [default=/usr/local/share/malscan/quarantine] \033[37m"
     read QUARANTINE_DIRECTORY
+
+    if [[ "$QUARANTINE_DIRECTORY" = "" || "$QUARANTINE_DIRECTORY" = " " ]]; then
+        QUARANTINE_PATH="/root/.malscan/quarantine"
+    else
+        QUARANTINE_PATH="$QUARANTINE_DIRECTORY"
+    fi
 
     ## Creating the quarantine path if it doesn't exist
     if [[ -d "$QUARANTINE_PATH" ]]; then
