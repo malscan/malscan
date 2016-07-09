@@ -9,13 +9,13 @@
 # 
 # -------------------------------------------------
 
-VERSION="1.7.0-dev18"
-DATE="June 08, 2016"
+VERSION=$(cat )
 
 # -------------------------------------------------
 
 ## Loading the configuration file from the Malscan directory
 source /etc/malscan.conf
+VERSION=$(cat "$APPLICATION_DIRECTORY/version.txt" || echo "unknown")
 
 ## Setting up some default binary locations
 FRESHCLAM_BINARY_LOCATION=$(which freshclam)
@@ -167,7 +167,7 @@ function updater {
 
 		echo ""
 		echo -e "\033[37m  - Update: Updating ClamAV definitions. This can take a long time."
-		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" >> /dev/null 2>&1
+		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" --config-file="$CONFIGURATION_DIRECTORY/freshclam.conf" >> /dev/null 2>&1
 		echo -e "\033[32m  - Update: ClamAV malware definitions have been updated.\033[37m"
 		echo ""
 	
@@ -190,19 +190,19 @@ function config_view {
 	## Displaying all of our configuration options
 	echo ""
 	echo "Application Configuration Settings"
-	echo "APPLICATION_DIRECTORY - $APPLICATION_DIRECTORY"
-	echo "CONFIGURATION_FILE    - $CONFIGURATION_FILE"
-	echo "SIGNATURES_DIRECTORY  - $SIGNATURES_DIRECTORY"
-	echo "LOGGING_DIRECTORY     - $LOGGING_DIRECTORY"
-	echo "QUARANTINE_DIRECTORY  - $QUARANTINE_DIRECTORY"
+	echo "APPLICATION_DIRECTORY      - $APPLICATION_DIRECTORY"
+	echo "CONFIGURATION_DIRECTORY    - $CONFIGURATION_DIRECTORY"
+	echo "SIGNATURES_DIRECTORY       - $SIGNATURES_DIRECTORY"
+	echo "LOGGING_DIRECTORY          - $LOGGING_DIRECTORY"
+	echo "QUARANTINE_DIRECTORY       - $QUARANTINE_DIRECTORY"
 	echo ""
 	echo "Notification Settings"
-	echo "EMAIL_NOTIFICATIONS    - $EMAIL_NOTIFICATIONS"
-	echo "NOTIFICATION_ADDRESSES - $NOTIFICATION_ADDRESSES"
-	echo "MALSCAN_SENDER_ADDRESS - $MALSCAN_SENDER_ADDRESS"
+	echo "EMAIL_NOTIFICATIONS        - $EMAIL_NOTIFICATIONS"
+	echo "NOTIFICATION_ADDRESSES     - $NOTIFICATION_ADDRESSES"
+	echo "MALSCAN_SENDER_ADDRESS     - $MALSCAN_SENDER_ADDRESS"
 	echo ""
 	echo "Scanning Settings"
-	echo "STRING_LENGTH_MINIMUM - $STRING_LENGTH_MINIMUM"
+	echo "STRING_LENGTH_MINIMUM      - $STRING_LENGTH_MINIMUM"
 
 }
 
@@ -210,7 +210,7 @@ function config_set {
 
 	if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" ]]; then
 
-		sed -i "s|^$SET_TARGET.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_FILE"
+		sed -i "s|^$SET_TARGET.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_DIRECTORY/malscan.conf"
 
 		echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
 
