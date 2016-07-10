@@ -9,12 +9,8 @@
 # 
 # -------------------------------------------------
 
-VERSION=$(cat )
-
-# -------------------------------------------------
-
 ## Loading the configuration file from the Malscan directory
-source /etc/malscan.conf
+source /etc/malscan/malscan.conf
 VERSION=$(cat "$APPLICATION_DIRECTORY/version.txt" || echo "unknown")
 
 ## Setting up some default binary locations
@@ -29,7 +25,7 @@ TEMPLOG_DIRECTORY=$(mktemp -d)
 function helper {
 
 	## Help functionality
-	echo -e "\033[34mMalscan version $VERSION released on $DATE\033[37m"
+	echo -e "\033[34mMalscan version $VERSION033[37m"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
 	echo "       -c -- shows all configuration options and values"
 	echo "       -s [option] [value] -- dupdates the value of a configuration option to a new value"
