@@ -67,8 +67,9 @@ fi
 
 
 ## Parsing through the arguments
-while getopts chlmn:qs::tuvw OPT; do
+while getopts achlmn:qs::tuvw OPT; do
 	case "$OPT" in
+        a) AVSCAN=1;;
   		c) CONFIG=1;;
 		h) HELP=1;;
 		l) LENGTHSCAN=1;;
@@ -97,10 +98,6 @@ shift $((OPTIND-1))
 
 # This will run all of the remaining arguments together with spaces between them:
 TARGET="$1"
-
-if [[ -f "$TARGET" || -d "$TARGET" ]]; then
-	AVSCAN=1
-fi
 
 if [[ -n "$HELP" ]]; then
 	helper
