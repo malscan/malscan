@@ -145,25 +145,25 @@ elif [[ -f /etc/lsb-release ]]; then
     INSTALL_PAYLOAD=''
 
     ## Checking to see if clamav is installed
-    if dpkg -l clamav > /dev/null; then
+    if ! dpkg -l clamav > /dev/null 2>&1; then
         CLAMAV_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav"
     fi
 
     ## Checking to see if clamav is installed
-    if dpkg -l clamav-freshclam > /dev/null; then
+    if ! dpkg -l clamav-freshclam > /dev/null 2>&1; then
         CLAMUPDATE_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav-freshclam"
     fi
 
     ## Checking to see if file is installed
-    if dpkg -l file > /dev/null; then
+    if ! dpkg -l file > /dev/null 2>&1; then
         FILE_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD file"
     fi
 
     ## Checking to see if wget is installed
-    if dpkg -l wget > /dev/null; then
+    if ! dpkg -l wget > /dev/null 2>&1; then
         WGET_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD wget"
     fi
@@ -332,6 +332,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/main.cvd" --quiet
     wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/bytecode.cvd" --quiet
     wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/daily.cvd" --quiet
+    chmod -R malscan:malscan "$MALSCAN_SIGNATURE_PATH"
 
     echo -e "Updating to the latest malscan signature versions. You can always do this using the command 'malscan -u'"
 
