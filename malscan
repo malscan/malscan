@@ -118,8 +118,8 @@ function updater {
 
 		cd "$TEMPLOG_DIRECTORY"
 
-        if [[ -f "/etc/redhat-release" ]]; 
-            if [[ rpm -q malscan > /dev/null ]]; then
+        if [[ -f "/etc/redhat-release" ]]; then
+            if rpm -q malscan > /dev/null; then
                 RPM_UPDATER_ONLY=1
             fi
         fi
@@ -133,7 +133,7 @@ function updater {
             NEW_VERSION=$(sha256sum version.txt | awk '{print $1}' || echo "unknown")
 
             if [[ "$NEW_VERSION" != "unknown" ]]; then
-                OLD_VERSION=$(sha256sum $APPLICATION_DIRECTORY/version.txt | awk '{print $1}' || echo 'unknown')
+                OLD_VERSION=$(sha256sum "$APPLICATION_DIRECTORY/version.txt" | awk '{print $1}' || echo 'unknown')
                 if [[ "$OLD_VERSION" != 'unknown' ]]; then
                     if [[ "$OLD_VERSION" == "$NEW_VERSION" ]]; then
                         echo -e "\033[32m  - Update: No malscan application updates available.\033[37m"
