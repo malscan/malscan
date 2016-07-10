@@ -66,6 +66,10 @@ if [[ -f "/etc/redhat-release" ]]; then
         FILE_PACKAGE=1
     fi
 
+    if rpm -q wget > /dev/null; then
+        WGET_PACKAGE=1
+    fi
+
     ## Checking to see if ClamAV is installed
     if rpm -q clamav > /dev/null && [[ "$DISTRO" != "cPanel" ]]; then
         CLAMAV_PACKAGE=1
@@ -80,7 +84,7 @@ if [[ -f "/etc/redhat-release" ]]; then
     fi
 
     ## Checking to see if we have missing packages
-    if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$CLAMUPDATE_PACKAGE" || -z "$EPEL_PACKAGE" ]]; then
+    if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$CLAMUPDATE_PACKAGE" || -z "$EPEL_PACKAGE" || -z "$WGET_PACKAGE" ]]; then
         INSTALL_REQUIRED=1
 
         ## Providing install options
@@ -91,6 +95,10 @@ if [[ -f "/etc/redhat-release" ]]; then
 
         if [[ -z "$FILE_PACKAGE" ]]; then
             INSTALL_PAYLOAD="$INSTALL_PAYLOAD file"
+        fi
+
+        if [[ -z "$WGET_PACKAGE" ]]; then
+            INSTALL_PAYLOAD="$INSTALL_PAYLOAD wget"
         fi
 
         if [[ -z "$EPEL_PACKAGE" && "$DISTRO" != "cPanel" && "$DISTRO" != "Fedora" ]]; then
@@ -129,36 +137,46 @@ if [[ -f "/etc/redhat-release" ]]; then
     else
         INSTALL_REQUIRED=0
     fi
-## Checking to see if we're on Ubuntu
-elif grep -qs Ubuntu /etc/lsb-release; then
-    DISTRO="Ubuntu"
-    VERSION="Placeholder"
+## Checking to see if we're on a Debian derivative
+elif [[ -f /etc/lsb-release ]]; then
+    DISTRO=$(grep "DISTRIB_ID" /etc/lsb-release | cut -d= -f2)
+    VERSION=$(grep "DISTRIB_RELEASE" /etc/lsb-release | cut -d= -f2)
+
+    INSTALL_PAYLOAD=''
 
     ## Checking to see if clamav is installed
-    if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw clamav; then
+    if dpkg -l clamav; then
         CLAMAV_PACKAGE=1
+        INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav"
+    fi
+
+    ## Checking to see if clamav is installed
+    if dpkg -l clamav-freshclam; then
+        CLAMUPDATE_PACKAGE=1
+        INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav-freshclam"
     fi
 
     ## Checking to see if file is installed
-    if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw file; then
+    if dpkg -l file; then
         FILE_PACKAGE=1
+        INSTALL_PAYLOAD="$INSTALL_PAYLOAD file"
+    fi
+
+    ## Checking to see if wget is installed
+    if dpkg -l wget; then
+        WGET_PACKAGE=1
+        INSTALL_PAYLOAD="$INSTALL_PAYLOAD wget"
     fi
 
     ## Checking to see if we have missing packages
-    if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$GIT_PACKAGE" ]]; then
+    if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$CLAMUPDATE_PACKAGE" || -z "$WGET_PACKAGE" ]]; then
         INSTALL_REQUIRED=1
 
         ## Providing install options
         echo -e "\033[31mMalscan has detected that one or more required packages are not currently installed."
         echo "For Malscan to install properly, the following packages must be installed: "
-
-        if [[ -z "$FILE_PACKAGE" ]]; then
-            echo "    file"
-        fi
-
-        if [[ -z "$CLAMAV_PACKAGE" ]]; then
-            echo "    clamav"
-        fi
+        echo "    $INSTALL_PAYLOAD"
+        
 
         echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
         echo "  1. Automatically install all missing packages."
@@ -176,6 +194,10 @@ else
     DISTRO="Unsupported"
 fi
 
+if [[ "$VERSION" != "7" && "$VERSION" != "6" && "$VERSION" != "14.04" && "$VERSION" != "22" && "$VERSION" != "23" && "$VERSION" != "24" ]]; then
+    VERSION="Unsupported"
+fi
+
 ## Checking Distro compatibility
 if [[ "$DISTRO" == "Unsupported" || "$VERSION" == "Unsupported" ]]; then
     ## Incompatible distro, exiting
@@ -184,19 +206,31 @@ if [[ "$DISTRO" == "Unsupported" || "$VERSION" == "Unsupported" ]]; then
     echo "    CentOS 6.x / RHEL 6.x"
     echo "    CentOS 7.x / RHEL 7.x"
     echo "    Fedora 22 / 23 / 24"
+    echo "    Ubuntu 14.04"
     echo -e "Feature requests for new Operating System support can be submitted to malscan.org/features\033[37m"
     exit 0
-elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" || "$DISTRO" == "Fedora" ]]; then
+else
+
+    if [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" ]]; then
+        PACKAGE_MANAGER="yum"
+        PACKAGE_CHECKER="rpm -q"
+    elif [[ "$DISRO" == "Fedora" ]]; then
+        PACKAGE_MANAGER="dnf"
+        PACKAGE_CHECKER="rpm -q"
+    else
+        PACKAGE_MANAGER="apt-get"
+        PACKAGE_CHECKER="dpkg -l"
+    fi
     ## Checking to see if we have a Package installation queued for CentOS.
     if [[ "$INSTALL_REQUIRED" == "1" && "$INSTALL_OPTION" == "1" ]]; then
         echo -e "\033[33mInstalling required packages now...\033[37m"
 
         for PACKAGE in $INSTALL_PAYLOAD; do
-            yum -y install $PACKAGE
+            $PACKAGE_MANAGER -y install $PACKAGE
         done
 
         ## Confirming that all packages installed properly
-        if rpm -q $INSTALL_PAYLOAD > /dev/null; then
+        if $PACKAGE_CHECKER $INSTALL_PAYLOAD > /dev/null; then
             echo -e "\033[32mInstallation of all required packages has been completed!\033[37m"
             CONFIGURATION_REQUIRED=1
         else
@@ -204,40 +238,6 @@ elif [[ "$DISTRO" == "CentOS" || "$DISTRO" == "RHEL" || "$DISTRO" == "Fedora" ]]
             echo "    $INSTALL_PAYLOAD\033[37m"
             exit 1
         fi
-    else
-        ## No installation required, just configuration
-        CONFIGURATION_REQUIRED=1
-    fi
-elif [[ "$DISTRO" == "Ubuntu" ]]; then
-    ## Checking to see if we have a Package installation queued for Ubuntu
-    if [[ "$INSTALL_REQUIRED" == "1" && "$INSTALL_OPTION" == "1" ]]; then
-        apt-get update
-        apt-get -y install file clamav
-
-        ## Confirming installation
-        if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw clamav; then
-            CLAMAV_PACKAGE=1
-        else
-            CLAMAV_PACKAGE=0
-        fi
-
-        ## Checking to see if file is installed
-        if dpkg -l | grep -E '^ii' | awk '{print $2}' | grep -qw file; then
-            FILE_PACKAGE=1
-        else
-            FILE_PACKAGE=0
-        fi
-
-
-        if [[ "$FILE_PACKAGE" == "1" && "$CLAMAV_PACKAGE" == "1" ]]; then
-            echo -e "\033[32mInstallation of all required packages has been completed!\033[37m"
-            CONFIGURATION_REQUIRED=1
-        else
-            echo -e "\033[31mInstallation of required packages has failed. Please manually install the following packages, and then restart the installer: "
-            echo "    file"
-            echo -e"    clamav\033[37m"
-            exit 1
-        fi  
     else
         ## No installation required, just configuration
         CONFIGURATION_REQUIRED=1
