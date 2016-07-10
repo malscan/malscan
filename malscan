@@ -117,6 +117,41 @@ function updater {
 	else
 
 		cd "$TEMPLOG_DIRECTORY"
+
+        if [[ -f "/etc/redhat-release" ]]; 
+            if [[ rpm -q malscan > /dev/null ]]; then
+                RPM_UPDATER_ONLY=1
+            fi
+        fi
+
+        if [[ -z "$RPM_UPDATER_ONLY" ]]; then
+
+            echo ""
+            echo -e "\033[37m  * Update: Checking for malscan application updates."
+
+            wget -q https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/version.txt
+            NEW_VERSION=$(sha256sum version.txt | awk '{print $1}' || echo "unknown")
+
+            if [[ "$NEW_VERSION" != "unknown" ]]; then
+                OLD_VERSION=$(sha256sum $APPLICATION_DIRECTORY/version.txt | awk '{print $1}' || echo 'unknown')
+                if [[ "$OLD_VERSION" != 'unknown' ]]; then
+                    if [[ "$OLD_VERSION" == "$NEW_VERSION" ]]; then
+                        echo -e "\033[32m  - Update: No malscan application updates available.\033[37m"
+                    else
+                        mv "version.txt" "$APPLICATION_DIRECTORY/version.txt"
+                        wget -q https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan
+                        mv "malscan" "/usr/local/bin/malscan"
+                    fi
+
+                else
+                    echo -e "\033[32m  - Update: Your malscan installation requires a full re-installation.\033[37m"
+                    echo -e "\033[32m  - Update: Please see https://www.malscan.org/re-install.\033[37m"
+                fi
+
+            fi
+
+        fi
+
 	
 		echo ""
 		echo -e "\033[37m  * Update: Downloading the latest Malscan malware definitions."
@@ -151,7 +186,7 @@ function updater {
 			if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
 				echo -e "\033[32m  - Update: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
 			else
-				echo -e "\033[32m  - Update: No new Malscan signatures avaiable.\033[37m"
+				echo -e "\033[32m  - Update: No new Malscan signatures available.\033[37m"
 			fi
 	
 		else
