@@ -222,9 +222,6 @@ function config_set {
 ## Defining the lengthscan function
 function lengthscan {	
 
-	# Building the whitelist - temporarily disabled
-	## LENGTH_IGNORE=${LENGTH_WHITELIST//,/ -not -name }
-
 	echo ""
 	echo -e "  * \033[33mString Length Scan: Beginning scan.\033[37m"
 	echo -e "  - \033[37mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
@@ -363,17 +360,6 @@ function tripwire {
 
 ## Defining the mimescan function
 function mimescan {
-	# Creating the logging directories
-
-  	#WHITELIST_FILE=(mktemp)
-    #echo "$MIME_WHITELIST" > "$WHITELIST_FILE"
-    #sed -i 's/,/ /g' "$WHITELIST_FILE"
-
-    #MIME_IGNORE_LIST=""
-
-    #for IGNORE in $(cat "$WHITELIST_FILE" ); do
-    #        MIME_IGNORE_LIST="$MIME_IGNORE_LIST -not -name $IGNORE"
-    #done
 
     echo ""
     echo -e "  * \033[33mMIME Scan: Beginning scan.\033[37m"
@@ -429,9 +415,6 @@ function avscan {
 
 	echo ""
 	echo -e "  \033[33m* Malware Scan: Beginning scan of $TARGET...\033[37m "
-
-	# Setting up the whitelist
-	#AVSCAN_IGNORE=${AVSCAN_WHITELIST//,/ --exclude=}
 
 	# Creating the scan log file for this scan
 	AV_DETECTION_TEMPLOG="$TEMPLOG_DIRECTORY/avscan.log"
@@ -603,19 +586,27 @@ fi
 #	tripwire
 #fi
 
-if [[ -n "$MIMESCAN" ]]; then
-	mimescan
-fi
+if [[ -f "$TARGET" || -d "$TARGET" ]]; then
 
-if [[ -n "$LENGTHSCAN" ]]; then
-	lengthscan
-fi
+    if [[ -n "$MIMESCAN" ]]; then
+        mimescan
+    fi
 
-if [[ -n "$AVSCAN" ]]; then
-	avscan
-	if [[ -n "$QUARANTINE" ]]; then
-		quarantine
-	fi
+    if [[ -n "$LENGTHSCAN" ]]; then
+        lengthscan
+    fi
+
+    if [[ -n "$AVSCAN" ]]; then
+        avscan
+        if [[ -n "$QUARANTINE" ]]; then
+            quarantine
+        fi
+    fi
+
+else
+
+    echo "$TARGET is not a valid file or directory to be scanned."
+
 fi
 
 if [[ -n "$UPDATER" ]]; then
