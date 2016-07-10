@@ -301,9 +301,9 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
         echo -e "\033[33mWhat email address would you like malscan to send email from? \033[37m"
         read SENDER_ADDRESS
 
-        "$MALSCAN_BINARY_PATH/malscan" -s EMAIL_NOTIFICATIONS TRUE
-        "$MALSCAN_BINARY_PATH/malscan" -s NOTIFICATION_ADDRESS "$EMAIL_ADDRESSES"
-        "$MALSCAN_BINARY_PATH/malscan" -s MALSCAN_SENDER_ADDRESS "$SENDER_ADDRESS"
+        "$MALSCAN_BINARY_PATH/malscan" -s EMAIL_NOTIFICATIONS TRUE > /dev/null
+        "$MALSCAN_BINARY_PATH/malscan" -s NOTIFICATION_ADDRESS "$EMAIL_ADDRESSES" > /dev/null
+        "$MALSCAN_BINARY_PATH/malscan" -s MALSCAN_SENDER_ADDRESS "$SENDER_ADDRESS" > /dev/null
 
     fi
 
@@ -320,11 +320,11 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     ## Creating the quarantine path if it doesn't exist
     if [[ -d "$QUARANTINE_PATH" ]]; then
         echo -e "\033[32mYour quarantine path has been successfully set!\033[37m"
-        "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH"
+        "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH" > /dev/null
     else 
         mkdir -p "$QUARANTINE_PATH"
         echo -e "\033[32mThe directory $QUARANTINE_PATH has been created, and set as the Quarantine location.\033[37m"
-        "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH"
+        "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH" > /dev/null
     fi
     
     echo -e "\033[032mMalscan has been successfully configured! Beginning initial update...\033[37m"
