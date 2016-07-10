@@ -32,13 +32,10 @@ if [[ -f "/etc/redhat-release" ]]; then
 
     if [[ "$DISTRO" == "RHEL" || "$DISTRO" == "CentOS" ]]; then
 
-        if [[ -f /etc/os-release ]]; then
-
-            if grep -qs "release 7" /etc/redhat-release; then
-                VERSION="7"
-            elif grep -qs "release 6" /etc/redhat-release; then
-                VERSION=6
-            fi
+        if grep -qs "release 7" /etc/redhat-release; then
+            VERSION="7"
+        elif grep -qs "release 6" /etc/redhat-release; then
+            VERSION=6
         else
             echo "What version of CentOS/RHEL are you running? (6/7)"
             read VERSION
@@ -348,7 +345,5 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     echo ""
 
 fi
-
-"$MALSCAN_BINARY_PATH/malscan" -h
 
 exit 0
