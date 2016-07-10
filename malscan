@@ -140,14 +140,15 @@ function updater {
                         mv "malscan" "/usr/local/bin/malscan"
                         chmod 755 "/usr/local/bin/malscan"
 
-                        echo -e "\033[32m  - Update: The malscan application has been updated to $(cat version.txt || echo "an unknown version").\033[37m"
+                        echo -e "\033[32m  - Update: The malscan application has been updated to $(cat "$APPLICATION_DIRECTORY/version.txt" || echo "an unknown version").\033[37m"
                     fi
 
                 else
                     echo -e "\033[32m  - Update: Your malscan installation requires a full re-installation.\033[37m"
                     echo -e "\033[32m  - Update: Please see https://www.malscan.org/re-install.\033[37m"
                 fi
-
+            else
+                echo "Shit's broken."
             fi
 
         fi
