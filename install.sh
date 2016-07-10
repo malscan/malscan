@@ -308,7 +308,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     fi
 
     ## No remote quarantine, so we're now requesting the local quarantine directory
-    echo -e "\033[33mWhat directory would you like to quarantine files in? [default=/usr/local/share/malscan/quarantine] \033[37m"
+    echo -e "\033[33mWhat directory would you like to quarantine files in? [default=/root/.malscan/quarantine] \033[37m"
     read QUARANTINE_DIRECTORY
 
     if [[ "$QUARANTINE_DIRECTORY" = "" || "$QUARANTINE_DIRECTORY" = " " ]]; then
