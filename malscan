@@ -25,7 +25,7 @@ TEMPLOG_DIRECTORY=$(mktemp -d)
 function helper {
 
 	## Help functionality
-	echo -e "\033[34mMalscan version $VERSION033[37m"
+	echo -e "\033[34mMalscan version $VERSION\033[37m"
 	echo "Usage: malscan [options] /path/to/scanned/directory"
 	echo "       -c -- shows all configuration options and values"
 	echo "       -s [option] [value] -- dupdates the value of a configuration option to a new value"
@@ -638,7 +638,7 @@ if [[ -f "$TARGET" || -d "$TARGET" ]]; then
         fi
     fi
 
-else
+elif [[ -n "$MIMESCAN" || -n "$LENGTHSCAN" || -n "$AVSCAN" ]]; then
 
     echo "$TARGET is not a valid file or directory to be scanned."
 
