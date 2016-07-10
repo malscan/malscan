@@ -259,13 +259,13 @@ function lengthscan {
 
 	echo ""
 	echo -e "  * \033[33mString Length Scan: Beginning scan.\033[37m"
-	echo -e "  - \033[37mString Length Scan: Searching for strings longer than $LENGTH_MINIMUM characters.\033[37m"
+	echo -e "  - \033[37mString Length Scan: Searching for strings longer than $STRING_LENGTH_MINIMUM characters.\033[37m"
 
 	while IFS= read -r FILE
 	do
 		SIZE=$(wc -L "$FILE" | awk '{$1}')
 		DETECTION_COUNT=0
-		if [[ "$SIZE" -ge "$LENGTH_MIMIMUM" ]]; then
+		if [[ "$SIZE" -ge "$STRING_LENGTH_MINIMUM" ]]; then
 			LENGTHSCAN_DETECTION=1
             echo -ne "\033[35m"
             echo "  - DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LOGGING_DIRECTORY/detect-$LOGGING_DATE.log"
