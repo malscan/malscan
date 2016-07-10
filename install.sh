@@ -290,6 +290,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
 
     ## Getting the user's input on email notifications
     echo -e "\033[33mBeginning the malscan configuration process..."
+    echo ""
     echo -ne "Would you like to enable email notifications? [y/N] [default: N] \033[37m"
     read EMAIL_NOTIFICATIONS
 
@@ -308,6 +309,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     fi
 
     ## No remote quarantine, so we're now requesting the local quarantine directory
+    echo ""
     echo -e "\033[33mWhat directory would you like to quarantine files in? [default=/root/.malscan/quarantine] \033[37m"
     read QUARANTINE_DIRECTORY
 
@@ -328,6 +330,14 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     fi
     
     echo -e "\033[032mMalscan has been successfully configured! Beginning initial update...\033[37m"
+
+    echo -e "Pre-seeding the malscan signature databases with bundled signatures. This may take some time to complete."
+    wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/main.cvd" --quiet
+    wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/bytecode.cvd" --quiet
+    wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/daily.cvd" --quiet
+
+    echo -e "Updating to the latest malscan signature versions. You can always do this using the command 'malscan -u'"
+
     "$MALSCAN_BINARY_PATH/malscan" -u
 
 
