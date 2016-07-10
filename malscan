@@ -138,6 +138,9 @@ function updater {
                         mv "version.txt" "$APPLICATION_DIRECTORY/version.txt"
                         wget -q https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan
                         mv "malscan" "/usr/local/bin/malscan"
+                        chmod 755 "/usr/local/bin/malscan"
+
+                        echo -e "\033[32m  - Update: The malscan application has been updated to $(cat version.txt || echo "an unknown version").\033[37m"
                     fi
 
                 else
