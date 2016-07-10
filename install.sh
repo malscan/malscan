@@ -145,25 +145,25 @@ elif [[ -f /etc/lsb-release ]]; then
     INSTALL_PAYLOAD=''
 
     ## Checking to see if clamav is installed
-    if dpkg -l clamav; then
+    if dpkg -l clamav > /dev/null; then
         CLAMAV_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav"
     fi
 
     ## Checking to see if clamav is installed
-    if dpkg -l clamav-freshclam; then
+    if dpkg -l clamav-freshclam > /dev/null; then
         CLAMUPDATE_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD clamav-freshclam"
     fi
 
     ## Checking to see if file is installed
-    if dpkg -l file; then
+    if dpkg -l file > /dev/null; then
         FILE_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD file"
     fi
 
     ## Checking to see if wget is installed
-    if dpkg -l wget; then
+    if dpkg -l wget > /dev/null; then
         WGET_PACKAGE=1
         INSTALL_PAYLOAD="$INSTALL_PAYLOAD wget"
     fi
