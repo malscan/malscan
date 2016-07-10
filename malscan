@@ -34,7 +34,6 @@ function helper {
 	echo "       -m  -- MIME scan mode"
 	echo "       -n  -- send email notification on detection"
 	echo "       -q  -- quarantine any malicious files"
-	#echo "       -s  -- basic malware scan"
 	#echo "       -t  -- tripwire scan mode"
 	echo "       -u  -- force-update of all signatures"
 	echo "       -v  -- display core application and signature database version information"
