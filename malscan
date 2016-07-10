@@ -32,7 +32,6 @@ function helper {
 	echo "       -h  -- display this help text"
 	echo "       -l  -- line scan mode"
 	echo "       -m  -- MIME scan mode"
-	echo "       -n  -- send email notification on detection"
 	echo "       -q  -- quarantine any malicious files"
 	#echo "       -t  -- tripwire scan mode"
 	echo "       -u  -- force-update of all signatures"
