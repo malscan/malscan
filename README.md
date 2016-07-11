@@ -87,16 +87,16 @@ See `malscan -h` for more detailed program usage.
 
 #### Version 1.7.0-rc1
 *Release: July 10, 2016*
-* Feature: Configuration options can now be viewed using the `malscan -c` command.
-* Feature: Configuration options can now be set using the `malscan -s OPTION value` command.
+* Feature: Configuration options can now be viewed using the malscan -c command. (fixes #10)
+* Feature: Configuration options can now be set using the malscan -s OPTION value command.
 * Fixed: malscan will now correctly check for sudo
 * Fixed: malscan will now check to see if the user is in the malscan group, in lieu of being run as sudo
-* Updated: malscan will no use its own freshclam.conf file and /var/lib/malscan signatures directory, to prevent conflicts with ClamAV
-* Updated: The malscan file structure has been updated to conform with the FHS.
+* Updated: malscan will now use its own freshclam.conf file and /var/lib/malscan signatures directory, to prevent conflicts with ClamAV
+* Updated: The malscan file structure has been updated to conform with the FHS. (fixes #7)
 * Updated: Removed whitelisting and tripwire scanning until it can be re-worked in a later release
 * Updated: Removed reporting until it can be re-developed in a later release.
 * Updated: Rewrote the install.sh script to support Fedora, Debian, and CentOS/RHEL 7
-* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 22/23/24
+* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 22/23/24 (fixes #8)
 
 #### Version 1.5.3
 *Release: September 4, 2015*
