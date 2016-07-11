@@ -43,6 +43,8 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 
 #### CentOS 6, CentOS 7, Ubuntu 14.04
 
+Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 22, 23, and 24. Installation instructions for these repositories can be found at https://www.malscan.org/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
+
 * Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
   * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh --no-check-certificate && bash install.sh` instead.
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
@@ -51,35 +53,50 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 
 Generally, the installer steps should work on other versions of Ubuntu, Debian, and other RHEL derivatives. If you run into specific installer issues with any non-supported Operating Systems or versions, please submit an issue and I would be happy to add support for it.
 
-To manually install Malscan
-
-* Step 1: Install ClamAV, Git, and File on your server
-  * For Redhat/CentOS:
-    * Install the EPEL Repository using `yum install epel-release`
-    * Install all other packages using `yum install clamav git file`
-    * The EPEL Repository is required, as RHEL/CentOS do not package clamav in their base or extra repositories.
-    * Some variants of CentOS may not include freshclam in the clamav package. If your CentOS does not include this, you also need use `yum install clamav-update`
-  * For Debian/Ubuntu, install directly from the repositories using `apt-get install clamav git file`
-* Step 2: Create a Malscan directory, and navigate into it:
-  * `mkdir /usr/local/share/malscan && cd /usr/local/share/malscan`
-* Step 3: Clone this git repository with `git clone https://github.com/jgrancell/malscan.git`
-* Step 4: Move the repository into the /usr/local/share/malscan directory directly with `rsync -avzP /usr/local/share/malscan/malscan /usr/local/share/malscan && rm -rf /usr/local/share/malscan/malscan`
-* Step 5: Copy the `conf.malscan-blank` file to `conf-malscan` and replace all of the example information with your own custom information.
-* Step 6: Create the Malscan executable with the command `ln -s /usr/local/share/malscan/malscan.sh /usr/local/bin/malscan`
-* Step 5: Update the Malscan signatures with `malscan -u`
-* Step 6: Set the update.sh to run at least daily through `crontab -e` setting the cronjob to run daily
-  * To Update Daily: `0 2 * * * /usr/local/bin/malscan -u`
-  * To Update Twice Daily: `0 */2 * * * /usr/local/bin/malscan -u`
-  * NOTE: If running daily, ensure that the update is run BEFORE any scheduled scans.
-* Step 7: Run the scanner as needed
-  * Manually: `malscan -[options] /path/to/target/directory/or/file`
-  * Via Cronjob: `30 3 * * * /usr/local/bin/malscan -[options] /path/to/target/directory/or/file`
+Malscan can be manually installed on any operating system that successfully meets the System Requirements listed above. This can be done by following the steps outlined below.
+*Install all software dependencies with your OS's package manager (or from source):
+  * clamav
+  * clamav-update (your package manager may name it clamav-update or clamav-db)
+  * bash
+  * file
+  * wget
+  * sendmail
+* Create the required malscan directories.
+  * mkdir /usr/local/share/malscan
+  * mkdir /etc/malscan
+  * mkdir /var/lib/malscan
+  * mkdir /var/log/malscan
+  * mkdir /root/.malscan/quarantine
+* Place the following files in the listed locations:
+  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/master/malscan.conf"
+  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/master/freshclam.conf"
+  * wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/jgrancell/malscan/master/malscan.1"
+  * wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/jgrancell/malscan/master/malscan"
+  * wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/master/version.txt"
+* Create a malscan user and group, and assign any users that you would like to use malscan to the malscan group
+  * groupadd -r malscan
+  * useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
+  * usermod -a -G malscan your_user
+* Make the binary executable with chmod +x /usr/local/bin/malscan
  
 ## Usage
 
 See `malscan -h` for more detailed program usage.
 
 ## Changelog
+
+#### Version 1.7.0-rc1
+*Release: July 10, 2016*
+* Feature: Configuration options can now be viewed using the `malscan -c` command.
+* Feature: Configuration options can now be set using the `malscan -s OPTION value` command.
+* Fixed: malscan will now correctly check for sudo
+* Fixed: malscan will now check to see if the user is in the malscan group, in lieu of being run as sudo
+* Updated: malscan will no use its own freshclam.conf file and /var/lib/malscan signatures directory, to prevent conflicts with ClamAV
+* Updated: The malscan file structure has been updated to conform with the FHS.
+* Updated: Removed whitelisting and tripwire scanning until it can be re-worked in a later release
+* Updated: Removed reporting until it can be re-developed in a later release.
+* Updated: Rewrote the install.sh script to support Fedora, Debian, and CentOS/RHEL 7
+* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 22/23/24
 
 #### Version 1.5.3
 *Release: September 4, 2015*
