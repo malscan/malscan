@@ -11,10 +11,6 @@
 
 CURRENT_INSTALLER_BRACH="1.7.0-dev"
 
-if [[ "$1" == "--unattended" ]]; then
-    UNATTENDED=1
-fi
-
 if [[ "$EUID" != 0 ]]; then
     echo -e "\033[31m The installer must be run as the root user, or using sudo.\033[37m"
     exit 1
@@ -128,20 +124,14 @@ if [[ -f "/etc/redhat-release" ]]; then
             echo -e "Once that has completed, you will need to install any additional missing packages manually.\033[37m"
             exit 1
         else
+            echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
+            echo "  1. Automatically install all missing packages."
+            echo "  2. Exit installer and manually install missing packages."
+            read INSTALL_OPTION
 
-            if [[ -z "$UNATTENDED" ]]; then
-                INSTALL_OPTION=1
-            else
-
-                echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
-                echo "  1. Automatically install all missing packages."
-                echo "  2. Exit installer and manually install missing packages."
-                read INSTALL_OPTION
-
-                if [[ "$INSTALL_OPTION" == "2" ]]; then
-                    echo -e "\033[31mYou have selected to manually install the missing packages. Please run this installer again once the missing packages have been installed.\033[37m"
-                    exit 0
-                fi
+            if [[ "$INSTALL_OPTION" == "2" ]]; then
+                echo -e "\033[31mYou have selected to manually install the missing packages. Please run this installer again once the missing packages have been installed.\033[37m"
+                exit 0
             fi
         fi
     else
@@ -182,25 +172,20 @@ elif [[ -f /etc/lsb-release ]]; then
     if [[ -z "$CLAMAV_PACKAGE" || -z "$FILE_PACKAGE" || -z "$CLAMUPDATE_PACKAGE" || -z "$WGET_PACKAGE" ]]; then
         INSTALL_REQUIRED=1
 
-        if [[ -z "$UNATTENDED" ]]; then
-            INSTALL_OPTION=1
-        else
+        ## Providing install options
+        echo -e "\033[31mMalscan has detected that one or more required packages are not currently installed."
+        echo "For Malscan to install properly, the following packages must be installed: "
+        echo "    $INSTALL_PAYLOAD"
+        
 
-            ## Providing install options
-            echo -e "\033[31mMalscan has detected that one or more required packages are not currently installed."
-            echo "For Malscan to install properly, the following packages must be installed: "
-            echo "    $INSTALL_PAYLOAD"
-            
+        echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
+        echo "  1. Automatically install all missing packages."
+        echo "  2. Exit installer and manually install missing packages."
+        read INSTALL_OPTION
 
-            echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
-            echo "  1. Automatically install all missing packages."
-            echo "  2. Exit installer and manually install missing packages."
-            read INSTALL_OPTION
-
-            if [[ "$INSTALL_OPTION" == "2" ]]; then
-                echo -e "\033[31mYou have selected to manually install the missing packages. Please run this installer again once the missing packages have been installed.\033[37m"
-                exit 0
-            fi
+        if [[ "$INSTALL_OPTION" == "2" ]]; then
+            echo -e "\033[31mYou have selected to manually install the missing packages. Please run this installer again once the missing packages have been installed.\033[37m"
+            exit 0
         fi
     else
         INSTALL_REQUIRED=0
@@ -347,7 +332,7 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/main.cvd" --quiet
     wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/bytecode.cvd" --quiet
     wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/daily.cvd" --quiet
-    chmod -R malscan:malscan "$MALSCAN_SIGNATURE_PATH"
+    chown -R malscan:malscan "$MALSCAN_SIGNATURE_PATH"
 
     echo -e "Updating to the latest malscan signature versions. You can always do this using the command 'malscan -u'"
 
