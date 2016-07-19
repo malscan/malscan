@@ -329,9 +329,9 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     echo -e "\033[032mMalscan has been successfully configured! Beginning initial update...\033[37m"
 
     echo -e "Pre-seeding the malscan signature databases with bundled signatures. This may take some time to complete."
-    wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/main.cvd" --quiet
-    wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/bytecode.cvd" --quiet
-    wget -P "$MALSCAN_SIGNATURE_PATH/" "http://database.clamav.net/daily.cvd" --quiet
+    wget -P "$MALSCAN_SIGNATURE_PATH/" "https://repo.malscan.org/signatures/main.cvd" --quiet
+    wget -P "$MALSCAN_SIGNATURE_PATH/" "https://repo.malscan.org/signatures/bytecode.cvd" --quiet
+    wget -P "$MALSCAN_SIGNATURE_PATH/" "https://repo.malscan.org/signatures/daily.cvd" --quiet
     chown -R malscan:malscan "$MALSCAN_SIGNATURE_PATH"
 
     echo -e "Updating to the latest malscan signature versions. You can always do this using the command 'malscan -u'"
