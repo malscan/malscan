@@ -9,7 +9,7 @@
 #
 # -------------------------------------------------
 
-CURRENT_INSTALLER_BRANCH="1.7.0"
+CURRENT_INSTALLER_BRANCH="1.7.0-dev"
 
 if [[ "$EUID" != 0 ]]; then
     echo -e "\033[31m The installer must be run as the root user, or using sudo.\033[37m"

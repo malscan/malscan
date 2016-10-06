@@ -18,7 +18,7 @@ FRESHCLAM_BINARY_LOCATION=$(which freshclam)
 CLAMSCAN_BINARY_LOCATION=$(which clamscan)
 
 ## Setting up our logging information
-LOGGING_DATE=$(date "+%F %H:%m")
+LOGGING_DATE=$(date "+%F %H:%M")
 TEMPLOG_DIRECTORY=$(mktemp -d)
 
 if [ -f "$APPLICATION_DIRECTORY/malscan.lock" ]; then
