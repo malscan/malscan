@@ -3,7 +3,7 @@ Malscan
 
 Robust ClamAV-based malware scanner for web servers.
 
-[![GitHub version](https://img.shields.io/badge/version-1.5.3-green.svg)](https://github.com/jgrancell/malscan)
+[![GitHub version](https://img.shields.io/badge/version-1.7.0-green.svg)](https://github.com/jgrancell/malscan)
 
 #Table of Contents
 * [Features](#features)
@@ -78,15 +78,15 @@ Malscan can be manually installed on any operating system that successfully meet
   * useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
   * usermod -a -G malscan your_user
 * Make the binary executable with chmod +x /usr/local/bin/malscan
- 
+
 ## Usage
 
 See `malscan -h` for more detailed program usage.
 
 ## Changelog
 
-#### Version 1.7.0-rc1
-*Release: July 10, 2016*
+#### Version 1.7.0
+*Release: Sept 08, 2016*
 * Feature: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 * Feature: Configuration options can now be set using the malscan -s OPTION value command.
 * Fixed: malscan will now correctly check for sudo
@@ -136,7 +136,7 @@ See `malscan -h` for more detailed program usage.
 *Released: May 6, 2015*
 * Bugfix: Corrected an issue with notifications not being sent because there was no way to specify receiving email addresses. Fixed in conf.malscan-blank.
 * Bugfix: Corrected an issue with whitelisting not working properly. It should now function correctly, and is working in test RHEL 6 and CentOS 7 testing environments.
-* Special Note: The changes to conf.malscan-blank will need to be manually added to any active conf.malscan files. 
+* Special Note: The changes to conf.malscan-blank will need to be manually added to any active conf.malscan files.
 
 #### Version 1.4.3
 *Released: May 5, 2015*

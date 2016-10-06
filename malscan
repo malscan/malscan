@@ -6,7 +6,7 @@
 # Description: Linux malware scanner for web servers
 # Copyright: 2015-2016 Josh Grancell
 # License: MIT License
-# 
+#
 # -------------------------------------------------
 
 ## Loading the configuration file from the Malscan directory
@@ -38,7 +38,7 @@ function helper {
 	echo "       -v  -- display core application and signature database version information"
 	#echo "       -w  -- adds specified file tree to whitelist."
 	echo "Use the command man malscan to view the manpage for more information."
-	exit 0	
+	exit 0
 
 }
 
@@ -55,7 +55,7 @@ if [[ "$EUID" != 0 ]]; then
 	else
 		RUNNING_USER="non-root"
 	fi
-else 
+else
 	RUNNING_USER="root"
 fi
 
@@ -73,12 +73,12 @@ while getopts achlmn:qs::tuvw OPT; do
 		h) HELP=1;;
 		l) LENGTHSCAN=1;;
 		m) MIMESCAN=1;;
-		n) 
+		n)
 			NOTIFICATION=1
 			NOTIFICATION_TARGET=$2
 			;;
 		q) QUARANTINE=1;;
-		s) 
+		s)
 			SET_CONFIG=1
 			SET_TARGET=$OPTARG
 			SET_VALUE=$3
@@ -152,47 +152,47 @@ function updater {
 
         fi
 
-	
+
 		echo ""
 		echo -e "\033[37m  * Update: Downloading the latest Malscan malware definitions."
-	
+
 		wget -q https://www.rfxn.com/downloads/rfxn.hdb
 		wget -q https://www.rfxn.com/downloads/rfxn.ndb
-	
+
 		SIGNATURE_CHANGE=0
-	
+
 		for DATABASE in rfxn.hdb rfxn.ndb; do
 			NEWDB_COUNT=$(wc -l "$DATABASE" | awk '{print $1}')
-	
+
 			if [[ -f "$SIGNATURES_DIRECTORY/$DATABASE" ]]; then
 				OLDDB_COUNT=$(wc -l "$SIGNATURES_DIRECTORY/$DATABASE" | awk '{print $1}')
 			else
 				OLDDB_COUNT=0
 			fi
-	
+
 			if [[ "$NEWDB_COUNT" != "$OLDDB" ]]; then
 				DIFFERENCE=$((NEWDB_COUNT - OLDDB_COUNT))
 				SIGNATURE_CHANGE=$((SIGNATURE_CHANGE + DIFFERENCE))
 			fi
 		done
-	
+
 		cat rfxn.hdb > "$SIGNATURES_DIRECTORY/rfxn.hdb"
 		cat rfxn.ndb > "$SIGNATURES_DIRECTORY/rfxn.ndb"
 		chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.hdb"
-		chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.ndb"	
-	
+		chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.ndb"
+
 		if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
-	
+
 			if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
 				echo -e "\033[32m  - Update: Malscan signatures updated. $SIGNATURE_CHANGE new signatures added to database.\033[37m"
 			else
 				echo -e "\033[32m  - Update: No new Malscan signatures available.\033[37m"
 			fi
-	
+
 		else
-	
+
 			echo -e "\033[31m  - Update: Malscan signatures have failed to update correctly. Please try again later."
-	
+
 		fi
 
 		echo ""
@@ -200,13 +200,13 @@ function updater {
 		"$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" --config-file="$CONFIGURATION_DIRECTORY/freshclam.conf" >> /dev/null 2>&1
 		echo -e "\033[32m  - Update: ClamAV malware definitions have been updated.\033[37m"
 		echo ""
-	
-	
+
+
 		echo "$LOGGING_DATE - Update completed. $SIGNATURE_CHANGE malscan signatures added. ClamAV databases updated." >> "$LOGGING_DIRECTORY/update.log"
-	
+
 		rm -f "$TEMPLOG_DIRECTORY/rfxn*"
-	
-	
+
+
 		echo -e "\033[32m  * Update: Malscan signatures updated.\033[37m"
 
 	fi
@@ -255,7 +255,7 @@ function config_set {
 }
 
 ## Defining the lengthscan function
-function lengthscan {	
+function lengthscan {
 
 	echo ""
 	echo -e "  * \033[33mString Length Scan: Beginning scan.\033[37m"
@@ -273,8 +273,8 @@ function lengthscan {
 
             DETECTION_COUNT="$DETECTION_COUNT"+1
         fi
-    ##done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)		
-	done < <(find "$TARGET" -type f -print0)		
+    ##done < <(find "$TARGET" -type f -not -name "$LENGTH_IGNORE" -print0)
+	done < <(find "$TARGET" -type f -print0)
 
 	# Checking to see if we have hits.
 	if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
@@ -296,7 +296,7 @@ function lengthscan {
 
 		echo "$LOGGING_DATE - String Scan - $DETECTION_COUNT suspcicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
 
-	else 
+	else
 
 		echo "$LOGGING_DATE - String Scan - No suspcious files detected." >> "$LOGGING_DIRECTORY/scan.log"
 
@@ -308,7 +308,7 @@ function whitelist {
 	# Identifying the whitelist.db
 	echo ""
 	WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
-	TEMPLOG=$(mktemp)	
+	TEMPLOG=$(mktemp)
 	echo -e "\033[33mWhitelist: Beginning whitelist process.\033[37m"
 	echo "Whitelist: Generating file list."
 	find "$TARGET" -type f >> "$TEMPLOG"
@@ -333,12 +333,12 @@ function whitelist {
 				fi
 			fi
 
-		else		
+		else
 			echo "$FILE:$SHA256" >> "$WHITELIST_DB"
 		fi
-			
+
 	done 3<&0 <"$TEMPLOG"
-	
+
 	rm "$TEMPLOG"
 
 	echo -e "\033[32mWhitelist: Complete.\033[37m"
@@ -370,7 +370,7 @@ function tripwire {
 			TRIPWIRE_DETECTION=1
 			echo -ne "\033[35m"
 			echo -n "  - DETECTION: $FILE is not found in the whitelist, and may be newly created." | tee -a "$TRIPWIRE_LOG"
-			echo -e "\033[37m"	
+			echo -e "\033[37m"
 		fi
 	done 3<&0 <"$TEMPLOG"
 
@@ -401,7 +401,7 @@ function mimescan {
     echo -e "  - MIME Scan: Compiling a full file list for $TARGET.\033[37m "
     # find "$TARGET" $MIME_IGNORE_LIST -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG"
     find "$TARGET" -regextype posix-extended -regex '.*.(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml)' >>"$TEMPLOG_DIRECTORY/mime.log"
-    echo -e "  - MIME Scan: Searching file list for MIME mismatches.\033[37m "    
+    echo -e "  - MIME Scan: Searching file list for MIME mismatches.\033[37m "
 
     DETECTION_COUNT=0
 
@@ -501,12 +501,12 @@ function quarantine {
 	QUARANTINE_COUNT=0
 	while read -r; do
 		ABSPATH=$(readlink -f "$REPLY")
-		
+
 		## Setting the detection variable to 1, which allows us to parse the correct notification
 		if [[ -f "$ABSPATH" ]]; then
 			QUARANTINE_COUNT="$QUARANTINE_COUNT"+1
 		fi
-		
+
 		# Building the file structure for quarantine
 		DIR=$(dirname "$ABSPATH")
 		FILE=$(basename "$ABSPATH")
@@ -528,12 +528,12 @@ function notification {
 		{
 		echo "To:$NOTIFICATION_ADDRESSES"
 		echo "From:$MALSCAN_SENDER_ADDRESS"
-		echo "Subject: Malware Detection: $HOSTNAME - $(date)" 
+		echo "Subject: Malware Detection: $HOSTNAME - $(date)"
 		echo "MIME-Version: 1.0"
 		echo "Content-Type: text/html; charset=us-ascii"
 		echo "Content-Disposition: inline"
 		echo "<!DOCTYPE html>"
-		echo "<html> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"	
+		echo "<html> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
 		echo "<body>"
 
 		if [[ -n "$QUARANTINE" && -n "$AVSCAN" ]]; then

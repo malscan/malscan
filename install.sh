@@ -6,10 +6,10 @@
 # Description: Linux malware scanner for web servers
 # Copyright: 2015-2016 Josh Grancell
 # License: MIT License
-# 
+#
 # -------------------------------------------------
 
-CURRENT_INSTALLER_BRACH="1.7.0-dev"
+CURRENT_INSTALLER_BRANCH="1.7.0"
 
 if [[ "$EUID" != 0 ]]; then
     echo -e "\033[31m The installer must be run as the root user, or using sudo.\033[37m"
@@ -176,7 +176,7 @@ elif [[ -f /etc/lsb-release ]]; then
         echo -e "\033[31mMalscan has detected that one or more required packages are not currently installed."
         echo "For Malscan to install properly, the following packages must be installed: "
         echo "    $INSTALL_PAYLOAD"
-        
+
 
         echo -e "\033[32mMalscan can attempt to automatically install these packages. Please select an option below: \033[37m"
         echo "  1. Automatically install all missing packages."
@@ -259,8 +259,8 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
 
     ## Setting up our configuration files
     mkdir -p "$MALSCAN_SYSCONFIG_PATH"
-    wget -P "$MALSCAN_SYSCONFIG_PATH/" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/malscan.conf" --quiet
-    wget -P "$MALSCAN_SYSCONFIG_PATH/" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/freshclam.conf" --quiet
+    wget -P "$MALSCAN_SYSCONFIG_PATH/" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/malscan.conf" --quiet
+    wget -P "$MALSCAN_SYSCONFIG_PATH/" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/freshclam.conf" --quiet
     chown -R malscan:malscan "$MALSCAN_SYSCONFIG_PATH"
 
     ## Setting up our Signatures and Logging directories
@@ -271,18 +271,18 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
 
     ## Setting up our man page
     mkdir -p "$MALSCAN_MAN_PATH"
-    wget -P "$MALSCAN_MAN_PATH/" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/malscan.1" --quiet
+    wget -P "$MALSCAN_MAN_PATH/" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/malscan.1" --quiet
 
     ## Setting up the malscan binary
     mkdir -p "$MALSCAN_BINARY_PATH"
-    wget -P "$MALSCAN_BINARY_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/malscan" --quiet
+    wget -P "$MALSCAN_BINARY_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/malscan" --quiet
     chmod +x "$MALSCAN_BINARY_PATH/malscan"
 
     ## Creating the misc file directory
     mkdir -p "$MALSCAN_MISC_PATH"
-    wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/LICENSE" --quiet 
-    wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/README.md" --quiet
-    wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRACH/version.txt" --quiet
+    wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/LICENSE" --quiet
+    wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/README.md" --quiet
+    wget -P "$MALSCAN_MISC_PATH" "https://raw.githubusercontent.com/jgrancell/malscan/$CURRENT_INSTALLER_BRANCH/version.txt" --quiet
     chown -R malscan:malscan "$MALSCAN_MISC_PATH"
 
     ## Getting the user's input on email notifications
@@ -320,12 +320,12 @@ if [[ "$CONFIGURATION_REQUIRED" == "1" ]]; then
     if [[ -d "$QUARANTINE_PATH" ]]; then
         echo -e "\033[32mYour quarantine path has been successfully set!\033[37m"
         "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH" > /dev/null
-    else 
+    else
         mkdir -p "$QUARANTINE_PATH"
         echo -e "\033[32mThe directory $QUARANTINE_PATH has been created, and set as the Quarantine location.\033[37m"
         "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH" > /dev/null
     fi
-    
+
     echo -e "\033[032mMalscan has been successfully configured! Beginning initial update...\033[37m"
 
     echo -e "Pre-seeding the malscan signature databases with bundled signatures. This may take some time to complete."
