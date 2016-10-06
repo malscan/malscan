@@ -266,6 +266,7 @@ function config_set {
 	else
 		echo "Configuration changes can only be made by the root user. Exiting."
 		exit 1
+	fi
 
 }
 
