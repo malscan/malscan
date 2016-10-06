@@ -21,6 +21,15 @@ CLAMSCAN_BINARY_LOCATION=$(which clamscan)
 LOGGING_DATE=$(date "+%F %H:%m")
 TEMPLOG_DIRECTORY=$(mktemp -d)
 
+if [ -f "$APPLICATION_DIRECTORY/malscan.lock" ]; then
+	MALSCAN_PID=$(cat "$APPLICATION_DIRECTORY/malscan.lock")
+  echo "Malscan is currently running in process $MALSCAN_PID. Exiting."
+	exit 1
+else
+	MALSCAN_PID=$$
+	echo "$MALSCAN_PID" > "$APPLICATION_DIRECTORY/malscan.lock"
+fi
+
 ## Getting the basic help information
 function helper {
 
@@ -238,19 +247,25 @@ function config_view {
 
 function config_set {
 
-	if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" ]]; then
+	if [[ "$EUID" == 0 ]]; then
 
-		sed -i "s|^$SET_TARGET.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_DIRECTORY/malscan.conf"
+		if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" ]]; then
 
-		echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
+			sed -i "s|^$SET_TARGET=.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_DIRECTORY/malscan.conf"
+
+			echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
+
+		else
+
+			echo ""
+			echo "  * Configuration: When setting a new configuration value, you must specify the config and the value."
+			echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.org,admin@malscan.org,jgrancell@joshgrancell.com"
+
+		fi
 
 	else
-
-		echo ""
-		echo "  * Configuration: When setting a new configuration value, you must specify the config and the value."
-		echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.org,admin@malscan.org,jgrancell@joshgrancell.com"
-
-	fi
+		echo "Configuration changes can only be made by the root user. Exiting."
+		exit 1
 
 }
 
@@ -656,6 +671,9 @@ fi
 
 ## Removing our temp logging directory
 rm -rf "$TEMPLOG_DIRECTORY"
+
+## Removing the Malscan lock file
+rm -rf "$APPLICATION_DIRECTORY/malscan.lock"
 
 echo ""
 
