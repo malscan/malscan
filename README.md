@@ -86,7 +86,8 @@ See `malscan -h` for more detailed program usage.
 ## Changelog
 
 #### Version 1.7.0
-*Release: Sept 08, 2016*
+*Release: October 09, 2016*
+* Feature: Lock files are used to ensure multiple runs of malscan don't stack.
 * Feature: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 * Feature: Configuration options can now be set using the malscan -s OPTION value command.
 * Fixed: malscan will now correctly check for sudo

@@ -30,6 +30,10 @@ else
 	echo "$MALSCAN_PID" > "$APPLICATION_DIRECTORY/malscan.lock"
 fi
 
+function freelock {
+	rm -rf "$APPLICATION_DIRECTORY/malscan.lock"
+}
+
 ## Getting the basic help information
 function helper {
 
@@ -47,6 +51,7 @@ function helper {
 	echo "       -v  -- display core application and signature database version information"
 	#echo "       -w  -- adds specified file tree to whitelist."
 	echo "Use the command man malscan to view the manpage for more information."
+	freelock
 	exit 0
 
 }
@@ -58,6 +63,7 @@ if [[ "$EUID" != 0 ]]; then
 
 	if ! whoami | id | grep -q "malscan"; then
 		echo -e "\033[31mMalscan must be run as root, or by a user that is part of the malscan group.\033[37m"
+		freelock
 		exit 1
 	elif [[ $(whoami) == "malscan" ]]; then
 		RUNNING_USER="malscan"
@@ -109,6 +115,7 @@ TARGET="$1"
 
 if [[ -n "$HELP" ]]; then
 	helper
+	freelock
 	exit 0
 fi
 
@@ -220,6 +227,7 @@ function updater {
 
 	fi
 
+  freelock
 	exit 0
 }
 
@@ -265,6 +273,7 @@ function config_set {
 
 	else
 		echo "Configuration changes can only be made by the root user. Exiting."
+		freelock
 		exit 1
 	fi
 
@@ -597,6 +606,7 @@ function notification {
 #	fi
 
 #	echo -e "\033[36mFile signatured generated and reported to the Malscan central repository for inclusion in the Malscan signature database.\033[37m"
+# freelock
 #	exit 0
 #}
 
@@ -612,16 +622,19 @@ fi
 echo -e "\033[34mMalscan Version: $VERSION | Signatures last updated: $LAST_UPDATE_TIME\033[37m"
 
 if [[ -n "$VERSION_SHOW" ]]; then
+	freelock
 	exit 0
 fi
 
 if [[ -n "$CONFIG" ]]; then
 	config_view
+	freelock
 	exit 0
 fi
 
 if [[ -n "$SET_CONFIG" ]]; then
 	config_set
+	freelock
 	exit 0
 fi
 
@@ -674,7 +687,7 @@ fi
 rm -rf "$TEMPLOG_DIRECTORY"
 
 ## Removing the Malscan lock file
-rm -rf "$APPLICATION_DIRECTORY/malscan.lock"
+freelock
 
 echo ""
 
