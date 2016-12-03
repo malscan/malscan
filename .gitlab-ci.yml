@@ -19,20 +19,29 @@ stages:
   - test
   - detection
   - package
+
 help function:
   stage: build
   script:
     - malscan -h
+
 update function:
   stage: test
   when: on_success
   script:
-    - malscan --update
+    - malscan -u
 scan function:
   stage: test
   when: on_success
   script:
+    - malscan -a /root
+scan function on missing directory:
+  stage: test
+  when: on_success
+  script:
     - malscan -a /home
+    - if [[ $? == 1 ]]; then exit 0; else exit 1
+
 eicar detection test:
   stage: detection
   when: on_success
@@ -48,6 +57,7 @@ eicar quarantine test:
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -qa /tmp/eicar
     - if [[ -f /root/.malscan/quarantine/eicar.com.txt ]]; then exit 0; else exit 1; fi
+    
 rpm packaging:
   stage: package
   when: on_success
