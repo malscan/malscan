@@ -40,7 +40,7 @@ scan function on missing directory:
   when: on_success
   script:
     - malscan -a /home
-    - if [[ $? == 1 ]]; then exit 0; else exit 1
+    - if [[ $? == 1 ]]; then exit 0; else exit 1; fi
 
 eicar detection test:
   stage: detection
@@ -57,7 +57,7 @@ eicar quarantine test:
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -qa /tmp/eicar
     - if [[ -f /root/.malscan/quarantine/eicar.com.txt ]]; then exit 0; else exit 1; fi
-    
+
 rpm packaging:
   stage: package
   when: on_success
