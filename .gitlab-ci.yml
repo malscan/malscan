@@ -53,3 +53,4 @@ rpm packaging:
   when: on_success
   script:
     - yum -y install rpmbuild
+    - echo "This is where we would do the packaging."
