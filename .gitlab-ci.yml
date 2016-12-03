@@ -1,5 +1,6 @@
 image: jgrancell/puppetbuild:latest
 before_script:
+  - yum -y install clamav clamav-update
   - groupadd -r malscan
   - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
   - mkdir -p /usr/local/share/malscan && chown -R malscan:malscan /usr/local/share/malscan
