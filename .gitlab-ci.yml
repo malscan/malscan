@@ -1,6 +1,5 @@
 image: jgrancell/puppetbuild:latest
 before_script:
-  - yum -y install wget
   - groupadd -r malscan
   - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
   - mkdir -p /usr/local/share/malscan && chown -R malscan:malscan /usr/local/share/malscan
@@ -14,6 +13,7 @@ before_script:
   - wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan.1"
   - wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan"
   - wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/version.txt"
+  - chmod +x /usr/loca/bin/malscan
 stages:
   - build
   - test
