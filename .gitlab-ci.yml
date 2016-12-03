@@ -1,0 +1,55 @@
+image: jgrancell/puppetbuild:latest
+before_script:
+  - mkdir -p /usr/local/share/malscan && chown -R malscan:malscan /usr/local/share/malscan
+  - mkdir -p /var/lib/malscan && chown -R malscan:malscan /var/lib/malscan
+  - mkdir -p /var/log/malscan && chown -R malscan:malscan /var/log/malscan
+  - mkdir -p /root/.malscan/quarantine
+  - mkdir -p /etc/malscan
+  - mkdir -p /usr/local/share/man/man1
+  - groupadd -r malscan
+  - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
+  - chown -R malscan:malscan
+  - wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan.conf"
+  - wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/freshclam.conf"
+  - wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan.1"
+  - wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan"
+  - wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/version.txt"
+stages:
+  - build
+  - test
+  - detection
+  - package
+help function:
+  stage: build
+  script:
+    - malscan -h
+update function:
+  stage: test
+  when: on_success
+  script:
+    - malscan --update
+scan function:
+  stage: test
+  when: on_success
+  script:
+    - malscan -a /home
+eicar detection test:
+  stage: detection
+  when: on_success
+  script:
+    - mkdir -p /tmp/eicar
+    - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
+    - malscan -a /tmp/eicar
+eicar quarantine test:
+  stage: detection
+  when: on_success
+  script:
+    - mkdir -p /tmp/eicar
+    - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
+    - malscan -qa /tmp/eicar
+    - [[ -f /root/.malscan/quarantine/eicar.com.txt ]] && exit 0 || exit 1
+rpm packaging:
+  stage: package
+  when: on_success
+  script:
+    - yum -y install rpmbuild
