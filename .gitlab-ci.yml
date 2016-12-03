@@ -2,7 +2,6 @@ image: jgrancell/puppetbuild:latest
 before_script:
   - groupadd -r malscan
   - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
-  - chown -R malscan:malscan
   - mkdir -p /usr/local/share/malscan && chown -R malscan:malscan /usr/local/share/malscan
   - mkdir -p /var/lib/malscan && chown -R malscan:malscan /var/lib/malscan
   - mkdir -p /var/log/malscan && chown -R malscan:malscan /var/log/malscan
