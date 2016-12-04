@@ -41,11 +41,10 @@ scan function:
 scan function on missing directory:
   stage: scan testing
   when: on_success
+  allow_failure: true
   script:
-    - pwd
     - malscan -u
     - malscan -a /home/non-existant-directory
-    - echo "Malscan exit code $?"
 
 eicar detection test:
   stage: detection testing
