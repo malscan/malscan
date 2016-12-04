@@ -17,7 +17,7 @@ before_script:
 stages:
   - build
   - updater
-  - test
+  - scan testing
   - detection
   - package
 
@@ -33,17 +33,17 @@ update function:
     - malscan -u
 
 scan function:
-  stage: test
+  stage: scan testing
   when: on_success
   script:
     - malscan -u
     - malscan -a /root
 scan function on missing directory:
-  stage: test
+  stage: scan testing
   when: on_success
   script:
     - malscan -u
-    - malscan -a /home
+    - malscan -a /home/non-existant-directory
     - if [[ $? == 1 ]]; then exit 0; else exit 1; fi
 
 eicar detection test:
