@@ -1,6 +1,5 @@
 image: jgrancell/puppetbuild:latest
 before_script:
-  - yum -y install clamav clamav-update
   - groupadd -r malscan
   - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
   - mkdir -p /usr/local/share/malscan && chown -R malscan:malscan /usr/local/share/malscan
@@ -17,6 +16,7 @@ before_script:
   - chmod +x /usr/local/bin/malscan
 stages:
   - build
+  - updater
   - test
   - detection
   - package
@@ -27,19 +27,22 @@ help function:
     - malscan -h
 
 update function:
-  stage: test
+  stage: updater
   when: on_success
   script:
     - malscan -u
+
 scan function:
   stage: test
   when: on_success
   script:
+    - malscan -u
     - malscan -a /root
 scan function on missing directory:
   stage: test
   when: on_success
   script:
+    - malscan -u
     - malscan -a /home
     - if [[ $? == 1 ]]; then exit 0; else exit 1; fi
 
@@ -47,6 +50,7 @@ eicar detection test:
   stage: detection
   when: on_success
   script:
+    - malscan -u
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
@@ -54,6 +58,7 @@ eicar quarantine test:
   stage: detection
   when: on_success
   script:
+    - malscan -u
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -qa /tmp/eicar
