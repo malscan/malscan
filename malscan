@@ -537,12 +537,12 @@ function quarantine {
             # Building the file structure for quarantine
             DIR=$(dirname "$ABSPATH")
             FILE=$(basename "$ABSPATH")
-            mkdir -p "$QUARANTINE_DIRECTORY/$LOGGING_DATE/$DIR"
-            mv "$ABSPATH" "$QUARANTINE_DIRECTORY/$LOGGING_DATE/$ABSPATH"
+            mkdir -p "$QUARANTINE_DIRECTORY/$LOGGING_DATE_FILE_NAME/$DIR"
+            mv "$ABSPATH" "$QUARANTINE_DIRECTORY/$LOGGING_DATE_FILE_NAME/$ABSPATH"
 
             # Setting the files to 000 permissions so they cannot be accessed
-            chmod 600 "$QUARANTINE_PATH""$ABSPATH"
-            echo -e "  - \033[36m$FILE quarantined and locked down in $QUARANTINE_DIRECTORY/$LOGGING_DATE.\033[37m" | tee -a "$LOGGING_DIRECTORY/quarantine-$LOGGING_DATE"
+            chmod 600 "$QUARANTINE_DIRECTORY/$LOGGING_DATE_FILE_NAME/$ABSPATH"
+            echo -e "  - \033[36m$FILE quarantined and locked down in $QUARANTINE_DIRECTORY/$LOGGING_DATE_FILE_NAME.\033[37m" | tee -a "$LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME"
         done < <(cat "$AV_DETECTION_TEMPLOG" | cut -d: -f1)
 
         echo "$LOGGING_DATE - Quarantine - $QUARANTINE_COUNT malicious files quarantined. See $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME.log for Quarantine information, and $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for malware detection information." >> "$LOGGING_DIRECTORY/scan.log"
