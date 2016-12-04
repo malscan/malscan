@@ -19,6 +19,7 @@ CLAMSCAN_BINARY_LOCATION=$(which clamscan)
 
 ## Setting up our logging information
 LOGGING_DATE=$(date "+%F %H:%M")
+LOGGING_DATE_FILE_NAME=$(date "+%F_%H%M")
 TEMPLOG_DIRECTORY=$(mktemp -d)
 
 if [ -f "$APPLICATION_DIRECTORY/malscan.lock" ]; then
@@ -293,7 +294,7 @@ function lengthscan {
         if [[ "$SIZE" -ge "$STRING_LENGTH_MINIMUM" ]]; then
             LENGTHSCAN_DETECTION=1
             echo -ne "\033[35m"
-            echo "  - DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LOGGING_DIRECTORY/detect-$LOGGING_DATE.log"
+            echo "  - DETECTION: $FILE has been detected with a line length of $SIZE." | tee -a "$LOGGING_DIRECTORY/detect-$LOGGING_DATE_FILE_NAME.log"
             echo -ne "\033[37m"
 
             DETECTION_COUNT="$DETECTION_COUNT"+1
@@ -304,7 +305,7 @@ function lengthscan {
     # Checking to see if we have hits.
     if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
         # Notifying of detections
-        echo -e "  * \033[31mString Length Scan: Completed. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for a full list of detected files.\033[37m"
+        echo -e "  * \033[31mString Length Scan: Completed. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for a full list of detected files.\033[37m"
         echo ""
 
         DETECTION_STRING=1
@@ -319,7 +320,7 @@ function lengthscan {
 
     if [[ "$DETECTION_STRING" == 1 ]]; then
 
-        echo "$LOGGING_DATE - String Scan - $DETECTION_COUNT suspcicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
+        echo "$LOGGING_DATE - String Scan - $DETECTION_COUNT suspcicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
 
     else
 
@@ -372,7 +373,7 @@ function whitelist {
 function tripwire {
     WHITELIST_DB="$MALSCAN_DIRECTORY/whitelist.db"
     TEMPLOG=$(mktemp)
-    TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE"
+    TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE_FILE_NAME"
 
     echo ""
     echo -e "  * \033[33mTripwire: Beginning scan.\033[37m"
@@ -435,7 +436,7 @@ function mimescan {
         if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
             MIME_DETECTION=1
             echo -ne "\033[35m"
-            echo "  - DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$LOGGING_DIRECTORY/detection-$LOGGING_DATE.log"
+            echo "  - DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log"
             echo -ne "\033[37m"
             DETECTION_COUNT=$DETECTION_COUNT+1
         fi
@@ -459,7 +460,7 @@ function mimescan {
 
     if [[ "$DETECTION_MIME" == 1 ]]; then
 
-        echo "$LOGGING_DATE - MIME Scan - $DETECTION_COUNT suspcicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
+        echo "$LOGGING_DATE - MIME Scan - $DETECTION_COUNT suspcicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
 
     else
 
@@ -494,22 +495,22 @@ function avscan {
         echo -ne "\033[37m"
         DETECTION_AV=0
     else
-        cat "$AV_DETECTION_TEMPLOG" >> "$LOGGING_DIRECTORY/detection-$LOGGING_DATE.log"
+        cat "$AV_DETECTION_TEMPLOG" >> "$LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log"
 
         while IFS= read -r FILE; do
             echo -ne "\033[31m"
             echo "  - DETECTION: $FILE "
         done < <(cat "$AV_DETECTION_TEMPLOG")
         DETECTION_AV=1
-        DETECTION_COUNT="$DETECTION_COUNT"+1
+        DETECTION_COUNT=$((DETECTION_COUNT+1))
 
-        echo -e "  * \033[31mMalware Scan: $DETECTION_COUNT malicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for a full list of detected files.\033[37m"
+        echo -e "  * \033[31mMalware Scan: $DETECTION_COUNT malicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for a full list of detected files.\033[37m"
 
     fi
 
     if [[ "$DETECTION_AV" == 1 ]]; then
 
-        echo "$LOGGING_DATE - Malware Scan - $DETECTION_COUNT malicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
+        echo "$LOGGING_DATE - Malware Scan - $DETECTION_COUNT malicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for more information." >> "$LOGGING_DIRECTORY/scan.log"
 
     else
 
@@ -544,7 +545,7 @@ function quarantine {
             echo -e "  - \033[36m$FILE quarantined and locked down in $QUARANTINE_DIRECTORY/$LOGGING_DATE.\033[37m" | tee -a "$LOGGING_DIRECTORY/quarantine-$LOGGING_DATE"
         done < <("$AV_DETECTION_TEMPLOG" | cut -d: -f1)
 
-        echo "$LOGGING_DATE - Quarantine - $QUARANTINE_COUNT malicious files quarantined. See $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE.log for Quarantine information, and $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for malware detection information." >> "$LOGGING_DIRECTORY/scan.log"
+        echo "$LOGGING_DATE - Quarantine - $QUARANTINE_COUNT malicious files quarantined. See $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME.log for Quarantine information, and $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for malware detection information." >> "$LOGGING_DIRECTORY/scan.log"
     fi
 }
 
@@ -564,7 +565,7 @@ function notification {
         echo "<body>"
 
         if [[ -n "$QUARANTINE" && -n "$AVSCAN" ]]; then
-            echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE.log and $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for further information.<br />"
+            echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME.log and $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for further information.<br />"
         elif [[ -n "$AVSCAN" ]]; then
             echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
             echo "<br />"
@@ -575,15 +576,15 @@ function notification {
             done < "$AV_DETECTION_TEMPLOG"
 
             echo "<br />"
-            echo "Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for any additional details.<br />"
+            echo "Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for any additional details.<br />"
         fi
 
         if [[ -n "$MIMECHECK" ]]; then
-            echo "Files have been detected on $HOSTNAME that are using suspicious file extension types. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
+            echo "Files have been detected on $HOSTNAME that are using suspicious file extension types. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
         fi
 
         if [[ -n "$LENGTHSCAN" ]]; then
-            echo "Files have been detected that exceed the line length threshold, and may be suspicious. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
+            echo "Files have been detected that exceed the line length threshold, and may be suspicious. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
         fi
         } >> "$EMAIL_TMP"
 
