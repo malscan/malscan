@@ -16,10 +16,10 @@ before_script:
   - chmod +x /usr/local/bin/malscan
 stages:
   - build
-  - updater
+  - updater testing
   - scan testing
-  - detection
-  - package
+  - detection testing
+  - packaging
 
 help function:
   stage: build
@@ -27,7 +27,7 @@ help function:
     - malscan -h
 
 update function:
-  stage: updater
+  stage: updater testing
   when: on_success
   script:
     - malscan -u
@@ -44,11 +44,11 @@ scan function on missing directory:
   script:
     - malscan -u
     - malscan -a /home/non-existant-directory
-    - echo "Malscan exit code: $?"
+    - echo "Malscan exit code\: $?"
     - if [[ $? == 20 ]]; then exit 0; else exit 1; fi
 
 eicar detection test:
-  stage: detection
+  stage: detection testing
   when: on_success
   script:
     - malscan -u
@@ -56,7 +56,7 @@ eicar detection test:
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
 eicar quarantine test:
-  stage: detection
+  stage: detection testing
   when: on_success
   script:
     - malscan -u
@@ -66,7 +66,7 @@ eicar quarantine test:
     - if [[ -f /root/.malscan/quarantine/eicar.com.txt ]]; then exit 0; else exit 1; fi
 
 rpm packaging:
-  stage: package
+  stage: packaging
   when: on_success
   script:
     - yum -y install rpmbuild
