@@ -62,7 +62,7 @@ eicar quarantine test:
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -qa /tmp/eicar
-    - if [[ -f /root/.malscan/quarantine/eicar.com.txt ]]; then exit 0; else exit 1; fi
+    - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
 rpm packaging:
   stage: packaging
