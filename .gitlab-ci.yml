@@ -42,6 +42,7 @@ scan function on missing directory:
   stage: scan testing
   when: on_success
   script:
+    - pwd
     - malscan -u
     - malscan -a /home/non-existant-directory
     - echo "Malscan exit code $?"
