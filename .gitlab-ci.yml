@@ -8,11 +8,11 @@ before_script:
   - mkdir -p /root/.malscan/quarantine
   - mkdir -p /etc/malscan
   - mkdir -p /usr/local/share/man/man1
-  - wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan.conf"
-  - wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/freshclam.conf"
-  - wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan.1"
-  - wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/malscan"
-  - wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/1.7.0-dev/version.txt"
+  - cp /builds/jgrancell/malscan/malscan.conf /etc/malscan/
+  - cp /builds/jgrancell/malscan/freshclam.conf /etc/malscan/
+  - cp /builds/jgrancell/malscan/malscan.1 /usr/local/share/man/man1/
+  - cp /builds/jgrancell/malscan/malscan /usr/local/bin/
+  - cp /builds/jgrancell/malscan/version.txt /usr/local/share/malscan/
   - chmod +x /usr/local/bin/malscan
 stages:
   - build
