@@ -476,12 +476,6 @@ function avscan {
     echo ""
     echo -e "  \033[33m* Malware Scan: Beginning scan of $TARGET...\033[37m "
 
-    if [[ ! -f "$TARGET" && ! -d "$TARGET" ]]; then
-        echo -ne "\033[31m  * $TARGET is not a valid file or directory.\033[37m"
-        freelock
-        exit 1
-    fi
-
     # Creating the scan log file for this scan
     AV_DETECTION_TEMPLOG="$TEMPLOG_DIRECTORY/avscan.log"
 
@@ -677,7 +671,10 @@ if [[ -f "$TARGET" || -d "$TARGET" ]]; then
 
 elif [[ -n "$MIMESCAN" || -n "$LENGTHSCAN" || -n "$AVSCAN" ]]; then
 
-    echo "$TARGET is not a valid file or directory to be scanned."
+    echo ""
+    echo -e "  \033[33m* Malware Scan: Beginning scan of $TARGET...\033[37m "
+    echo -e "  \033[31m* $TARGET is not a valid file or directory to be scanned.\033[37m"
+    exit 1
 
 fi
 
