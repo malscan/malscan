@@ -676,7 +676,8 @@ elif [[ -n "$MIMESCAN" || -n "$LENGTHSCAN" || -n "$AVSCAN" ]]; then
     echo -e "  \033[33m* Malware Scan: Beginning scan of $TARGET...\033[37m "
     echo -e "  \033[31m* Malware Scan: $TARGET is not a valid file or directory to be scanned.\033[37m"
     echo ""
-    exit 1
+    export MALSCAN_EXIT_STATUS=20
+    exit 0
 
 fi
 

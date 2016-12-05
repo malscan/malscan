@@ -45,6 +45,7 @@ scan function on missing directory:
   script:
     - malscan -u
     - malscan -a /home/non-existant-directory
+    - if [[ "$MALSCAN_EXIT_STATUS" == 20 ]]; then exit 0; else exit 1; fi
 
 eicar detection test:
   stage: detection testing
