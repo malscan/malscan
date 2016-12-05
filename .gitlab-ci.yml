@@ -45,6 +45,7 @@ scan function on missing directory:
   script:
     - malscan -u
     - malscan -a /home/non-existant-directory
+    - echo "Malscan exit status is $MALSCAN_EXIT_STATUS"
     - if [[ "$MALSCAN_EXIT_STATUS" == 20 ]]; then exit 0; else exit 1; fi
 
 eicar detection test:
@@ -69,5 +70,8 @@ rpm packaging:
   stage: packaging
   when: on_success
   script:
-    - yum -y install rpmbuild
+    - yum -y install rpm-build
+    - useradd makerpm
+    - mkdir -p /home/makerpm/rpmbuild
+    - chown -R makerpm:makerpm /home/makerpm/rpmbuild
     - echo "This is where we would do the packaging."
