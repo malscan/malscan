@@ -1,4 +1,3 @@
-image: jgrancell/puppetbuild:latest
 before_script:
   - groupadd -r malscan
   - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
@@ -18,27 +17,36 @@ stages:
   - build
   - updater testing
   - scan testing
+  - mimescan testing
   - detection testing
   - packaging
 
-help function:
+####
+## RHEL 7 CI Pipeline
+##
+
+help function (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: build
   script:
     - malscan -h
 
-update function:
+update function (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: updater testing
   when: on_success
   script:
     - malscan -u
 
-scan function:
+scan function (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
     - malscan -u
     - malscan -a /root
-scan function on missing directory:
+scan function on missing directory (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   allow_failure: true
@@ -48,7 +56,24 @@ scan function on missing directory:
     - echo "Malscan exit status is $MALSCAN_EXIT_STATUS"
     - if [[ "$MALSCAN_EXIT_STATUS" == 20 ]]; then exit 0; else exit 1; fi
 
-eicar detection test:
+mime scan test (RHEL7 ):
+  image: jgrancell/malscanbuild:7
+  stage: mimescan testing
+  when: on_success
+  script:
+    - malscan -u
+    - malscan -m /home
+mime scan detection test (RHEL7 ):
+  image: jgrancell/malscanbuild:7
+  stage: mimescan testing
+  when: on_success
+  script:
+    - malscan -u
+    - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
+    - malscan -m /tmp/mime-detection.jpg
+
+eicar detection test (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: detection testing
   when: on_success
   script:
@@ -56,7 +81,8 @@ eicar detection test:
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
-eicar quarantine test:
+eicar quarantine test (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: detection testing
   when: on_success
   script:
@@ -66,7 +92,90 @@ eicar quarantine test:
     - malscan -qa /tmp/eicar
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
-rpm packaging:
+rpm packaging (RHEL7 ):
+  image: jgrancell/malscanbuild:7
+  stage: packaging
+  when: on_success
+  script:
+    - yum -y install rpm-build
+    - useradd makerpm
+    - mkdir -p /home/makerpm/rpmbuild
+    - chown -R makerpm:makerpm /home/makerpm/rpmbuild
+    - echo "This is where we would do the packaging."
+
+####
+## RHEL 6 CI Pipeline
+##
+
+help function (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: build
+  script:
+    - malscan -h
+
+update function (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: updater testing
+  when: on_success
+  script:
+    - malscan -u
+
+scan function (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: scan testing
+  when: on_success
+  script:
+    - malscan -u
+    - malscan -a /root
+scan function on missing directory (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: scan testing
+  when: on_success
+  allow_failure: true
+  script:
+    - malscan -u
+    - malscan -a /home/non-existant-directory
+    - echo "Malscan exit status is $MALSCAN_EXIT_STATUS"
+    - if [[ "$MALSCAN_EXIT_STATUS" == 20 ]]; then exit 0; else exit 1; fi
+
+mime scan test (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: mimescan testing
+  when: on_success
+  script:
+    - malscan -u
+    - malscan -m /home
+mime scan detection test (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: mimescan testing
+  when: on_success
+  script:
+    - malscan -u
+    - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
+    - malscan -m /tmp/mime-detection.jpg
+
+eicar detection test (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: detection testing
+  when: on_success
+  script:
+    - malscan -u
+    - mkdir -p /tmp/eicar
+    - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
+    - malscan -a /tmp/eicar
+eicar quarantine test (RHEL 6):
+  image: jgrancell/malscanbuild:6
+  stage: detection testing
+  when: on_success
+  script:
+    - malscan -u
+    - mkdir -p /tmp/eicar
+    - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
+    - malscan -qa /tmp/eicar
+    - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
+
+rpm packaging (RHEL 6):
+  image: jgrancell/malscanbuild:6
   stage: packaging
   when: on_success
   script:
