@@ -52,8 +52,7 @@ scan function on missing directory (RHEL7 ):
   allow_failure: true
   script:
     - malscan -u
-    - malscan -a /home/non-existant-directory
-    - echo "Malscan exit status is $MALSCAN_EXIT_STATUS"
+    - eval $(malscan -a /home/non-existant-directory)
     - if [[ "$MALSCAN_EXIT_STATUS" == 20 ]]; then exit 0; else exit 1; fi
 
 mime scan test (RHEL7 ):
