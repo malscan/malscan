@@ -39,10 +39,6 @@ if [[ -f "/etc/redhat-release" ]]; then
     ## EPEL is required for installation
     EPEL_REQUIRED=1
   fi
-
-elif [[ -f /etc/lsb-release ]]; then
-  DISTRO=$(grep "DISTRIB_ID" /etc/lsb-release | cut -d= -f2)
-  VERSION=$(grep "DISTRIB_RELEASE" /etc/lsb-release | cut -d= -f2)
 else
   DISTRO="Unsupported"
 fi
@@ -70,18 +66,13 @@ elif [[ "$DISTRO" == "RHEL" || "$DISTRO" == "CentOS" ]]; then
   fi
 elif [[ "$DISTRO" == "Fedora" ]]; then
   ## Installing for Fedora
-  dnf -y install clamav-clamav-update file weget
-elif [[ "$DISTRO" == "Ubuntu" ]]; then
-  ## Installing for Ubuntu
-  apt-get update
-  apt-get -y install clamav clamav-freshclam file wget
+  dnf -y install clamav clamav-update file wget
 else
   ## Incompatible distro, exiting
   echo -e "\033[31mMalscan has detected that this server is not running a supported operating system."
   echo "Malscan is currently only available for installation on the following Operating Systems: "
   echo "    CentOS/RHEL 6.x / 7.x"
   echo "    Fedora 24 / 25 / 26"
-  echo "    Ubuntu 14.04 / 16.04"
   echo -e "Feature requests for new Operating System support can be submitted to malscan.org/features\033[37m"
   exit 0
 fi

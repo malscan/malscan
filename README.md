@@ -42,17 +42,16 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 
 ## Installation
 
-#### CentOS 6, CentOS 7, Ubuntu 14.04
+#### CentOS 6, CentOS 7
 
-Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 22, 23, and 24. Installation instructions for these repositories can be found at https://www.malscan.org/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
+Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 24, 25, and 26. Installation instructions for these repositories can be found at https://www.malscan.org/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
 
 * Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
-  * If installing on ubuntu, you may need to run the command `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh --no-check-certificate && bash install.sh` instead.
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
 
 #### Other Operating Systems
 
-Generally, the installer steps should work on other versions of Ubuntu, Debian, and other RHEL derivatives. If you run into specific installer issues with any non-supported Operating Systems or versions, please submit an issue and I would be happy to add support for it.
+Generally, the installer steps should work on all other RHEL derivatives. If you run into specific installer issues with any non-supported Operating Systems or versions, please submit an issue and or pull request to add support for it.
 
 Malscan can be manually installed on any operating system that successfully meets the System Requirements listed above. This can be done by following the steps outlined below.
 *Install all software dependencies with your OS's package manager (or from source):
@@ -69,11 +68,11 @@ Malscan can be manually installed on any operating system that successfully meet
   * mkdir /var/log/malscan
   * mkdir /root/.malscan/quarantine
 * Place the following files in the listed locations:
-  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/master/malscan.conf"
-  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/master/freshclam.conf"
-  * wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/jgrancell/malscan/master/malscan.1"
-  * wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/jgrancell/malscan/master/malscan"
-  * wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/jgrancell/malscan/master/version.txt"
+  * wget -P "/etc/malscan/" "https://gitlab.com/malscan/malscan/raw/master/malscan.conf"
+  * wget -P "/etc/malscan/" "https://gitlab.com/malscan/malscan/raw/master/freshclam.conf"
+  * wget -P "/usr/local/share/man/man1/" "https://gitlab.com/malscan/malscan/raw/master/malscan.1"
+  * wget -P "/usr/local/bin/" "https://gitlab.com/malscan/malscan/raw/master/malscan"
+  * wget -P "/usr/local/share/malscan/" "https://gitlab.com/malscan/malscan/raw/master/version.txt"
 * Create a malscan user and group, and assign any users that you would like to use malscan to the malscan group
   * groupadd -r malscan
   * useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
@@ -87,7 +86,7 @@ See `malscan -h` for more detailed program usage.
 ## Changelog
 
 #### Version 1.7.0
-*Release: October 09, 2016*
+*Release: October 03, 2017*
 * Feature: Lock files are used to ensure multiple runs of malscan don't stack.
 * Feature: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 * Feature: Configuration options can now be set using the malscan -s OPTION value command.
@@ -99,6 +98,7 @@ See `malscan -h` for more detailed program usage.
 * Updated: Removed reporting until it can be re-developed in a later release.
 * Updated: Rewrote the install.sh script to support Fedora, Debian, and CentOS/RHEL 7
 * Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 22/23/24 (fixes #8)
+* Removed: Removed Ubuntu/Debian support while working on packaging.
 
 #### Version 1.5.3
 *Release: September 4, 2015*
