@@ -137,6 +137,7 @@ scan function on missing directory (RHEL 6):
     - malscan -u
     - set +e
     - malscan -a /home/non-existant-directory
+    - echo $?
     - if [[ $? == 20 ]]; then true; else exit 1; fi
     - set -e
 

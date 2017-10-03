@@ -4,10 +4,16 @@
 # Package: Malscan
 # Author: Josh Grancell <josh@joshgrancell.com>
 # Description: Linux malware scanner for web servers
-# Copyright: 2015-2016 Josh Grancell
+# Copyright: 2015-2018 Josh Grancell
 # License: MIT License
 #
 # -------------------------------------------------
+
+if [[ $? == 1 ]]; then
+  CURRENT_INSTALLER_BRANCH="$?"
+else
+  CURRENT_INSTALLER_BRANCH="master"
+fi
 
 CURRENT_INSTALLER_BRANCH="1.7.0-dev"
 
