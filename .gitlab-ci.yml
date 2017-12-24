@@ -171,6 +171,7 @@ rpm packaging (RHEL7 ):
     - yum -y install rpm-build
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
+    - mkdir -p /home/makerpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
     - chown -R makerpm:makerpm /home/makerpm/rpmbuild
     - ln -s $CI_PROJECT_DIR /home/makerpm/rpmbuild/malscan
     - bash /home/makerpm/rpmbuild/malscan/build/build.sh cli el7
