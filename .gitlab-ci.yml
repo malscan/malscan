@@ -7,11 +7,11 @@ before_script:
   - mkdir -p /root/.malscan/quarantine
   - mkdir -p /etc/malscan
   - mkdir -p /usr/local/share/man/man1
-  - cp "$CI_PROJECT_DIR/malscan.conf" /etc/malscan/
-  - cp "$CI_PROJECT_DIR/freshclam.conf" /etc/malscan/
-  - cp "$CI_PROJECT_DIR/malscan.1" /usr/local/share/man/man1/
-  - cp "$CI_PROJECT_DIR/malscan" /usr/local/bin/
-  - cp "$CI_PROJECT_DIR/version.txt" /usr/local/share/malscan/
+  - cp "$CI_PROJECT_DIR/src/malscan.conf" /etc/malscan/
+  - cp "$CI_PROJECT_DIR/src/freshclam.conf" /etc/malscan/
+  - cp "$CI_PROJECT_DIR/doc/malscan.1" /usr/local/share/man/man1/
+  - cp "$CI_PROJECT_DIR/src/malscan" /usr/local/bin/
+  - cp "$CI_PROJECT_DIR/doc/version.txt" /usr/local/share/malscan/
   - chmod +x /usr/local/bin/malscan
 stages:
   - build
@@ -90,17 +90,6 @@ eicar quarantine test (RHEL7 ):
     - malscan -qa /tmp/eicar
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
-rpm packaging (RHEL7 ):
-  image: jgrancell/malscanbuild:7
-  stage: packaging
-  when: on_success
-  script:
-    - yum -y install rpm-build
-    - useradd makerpm
-    - mkdir -p /home/makerpm/rpmbuild
-    - chown -R makerpm:makerpm /home/makerpm/rpmbuild
-    - echo "This is where we would do the packaging."
-
 ####
 ## RHEL 6 CI Pipeline
 ##
@@ -170,8 +159,12 @@ eicar quarantine test (RHEL 6):
     - malscan -qa /tmp/eicar
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
-rpm packaging (RHEL 6):
-  image: jgrancell/malscanbuild:6
+####
+## Packaging
+####
+
+rpm packaging (RHEL7 ):
+  image: jgrancell/malscanbuild:7
   stage: packaging
   when: on_success
   script:
@@ -179,4 +172,5 @@ rpm packaging (RHEL 6):
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
     - chown -R makerpm:makerpm /home/makerpm/rpmbuild
-    - echo "This is where we would do the packaging."
+    - ln -s $CI_PROJECT_PATH /home/makerpm/rpmbuild/malscan
+    - bash /home/makerpm/rpmbuild/malscan/build/build.sh

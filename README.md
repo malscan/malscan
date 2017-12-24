@@ -6,7 +6,7 @@ Robust ClamAV-based malware scanner for web servers.
 [![GitHub version](https://img.shields.io/badge/version-1.7.0-green.svg)](https://github.com/jgrancell/malscan)
 [![Build status](https://gitlab.com/malscan/malscan/badges/1.7.0-dev/pipeline.svg)](https://gitlab.com/malscan/malscan/commits/1.7.0-dev)
 
-#Table of Contents
+# Table of Contents
 * [Features](#features)
 * [Requirements](#requirements)
 * [Installation](#installation)
@@ -26,7 +26,6 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
   * Standard HEX or MD5 based detections, with a database of over 20,000 signatures and growing.
   * String length detections - smart detection of long injected strings, such as base64
   * MimeType mismatch detections - detects PHP files attempting to masquerade as other file types
-  * Tripwire Scanning - detects files that have been changed from the reference base
 * Easy File Quarantining
 * Built-in new file signature generation
 * Customizable email notifications
@@ -44,7 +43,7 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 
 #### CentOS 6, CentOS 7
 
-Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 24, 25, and 26. Installation instructions for these repositories can be found at https://www.malscan.org/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
+Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://www.malscan.org/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
 
 * Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
@@ -54,7 +53,7 @@ Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 24, 25
 Generally, the installer steps should work on all other RHEL derivatives. If you run into specific installer issues with any non-supported Operating Systems or versions, please submit an issue and or pull request to add support for it.
 
 Malscan can be manually installed on any operating system that successfully meets the System Requirements listed above. This can be done by following the steps outlined below.
-*Install all software dependencies with your OS's package manager (or from source):
+* Install all software dependencies with your OS's package manager (or from source):
   * clamav
   * clamav-update (your package manager may name it clamav-update or clamav-db)
   * bash
@@ -86,7 +85,7 @@ See `malscan -h` for more detailed program usage.
 ## Changelog
 
 #### Version 1.7.0
-*Release: October 03, 2017*
+*Release: December 24, 2017*
 * Feature: Lock files are used to ensure multiple runs of malscan don't stack.
 * Feature: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 * Feature: Configuration options can now be set using the malscan -s OPTION value command.
@@ -97,7 +96,7 @@ See `malscan -h` for more detailed program usage.
 * Updated: Removed whitelisting and tripwire scanning until it can be re-worked in a later release
 * Updated: Removed reporting until it can be re-developed in a later release.
 * Updated: Rewrote the install.sh script to support Fedora, Debian, and CentOS/RHEL 7
-* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 22/23/24 (fixes #8)
+* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 26/27 (fixes #8)
 * Removed: Removed Ubuntu/Debian support while working on packaging.
 
 #### Version 1.5.3
