@@ -52,10 +52,7 @@ scan function on missing directory (RHEL7 ):
   allow_failure: true
   script:
     - malscan -u
-    - set +e
     - malscan -a /home/non-existant-directory
-    - if [[ $? == 20 ]]; then true; else exit 1; fi
-    - set -e
 
 mime scan test (RHEL7 ):
   image: jgrancell/malscanbuild:7
@@ -135,11 +132,7 @@ scan function on missing directory (RHEL 6):
   allow_failure: true
   script:
     - malscan -u
-    - set +e
     - malscan -a /home/non-existant-directory
-    - echo $?
-    - if [[ $? == 20 ]]; then true; else exit 1; fi
-    - set -e
 
 mime scan test (RHEL 6):
   image: jgrancell/malscanbuild:6
