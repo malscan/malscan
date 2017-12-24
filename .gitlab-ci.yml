@@ -172,6 +172,6 @@ rpm packaging:
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
     - mkdir -p /home/makerpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
-    - chown -R makerpm:makerpm /home/makerpm/rpmbuild
     - rsync -avzP $CI_PROJECT_DIR/ /home/makerpm/rpmbuild/malscan/
+    - chown -R makerpm:makerpm /home/makerpm/rpmbuild
     - su makerpm -c "/home/makerpm/rpmbuild/malscan/build/build.sh ci el7"
