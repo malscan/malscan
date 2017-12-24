@@ -32,7 +32,7 @@ mkdir -p "$TEMP/malscan-$PACKAGE_VERSION"
 cd /home/makerpm/rpmbuild
 
 ## Creating the file structure for the SOURCE tarball
-rsync -avzP --exclude ".git" --exclude ".gitignore" --exclude ".codeclimate.yml" --exclude "build" /home/makerpm/rpmbuild/malscan/src/ "$TEMP/malscan-$PACKAGE_VERSION/"
+rsync -avzP --exclude ".git" --exclude ".gitignore" --exclude ".codeclimate.yml" --exclude "build" /home/makerpm/rpmbuild/malscan/ "$TEMP/malscan-$PACKAGE_VERSION/"
 
 ## Packaging the files
 cd "$TEMP"
