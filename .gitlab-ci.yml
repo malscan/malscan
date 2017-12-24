@@ -163,12 +163,12 @@ eicar quarantine test (RHEL 6):
 ## Packaging
 ####
 
-rpm packaging (RHEL7 ):
+rpm packaging:
   image: jgrancell/malscanbuild:7
   stage: packaging
   when: on_success
   script:
-    - yum -y install rpm-build
+    - yum -y install rpm-build rsync
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
     - mkdir -p /home/makerpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
