@@ -13,7 +13,8 @@ VERSION="$1"
 DISTRO="$2"
 
 if [[ "$VERSION" == "ci" ]]; then
-  PACKAGE_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt | cut -d- -f1)
+  PACKAGE_VERSION=$(zcat /home/makerpm/rpmbuild/malscan/version.txt | cut -d- -f1)
+  RPM_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt)
 else
   PACKAGE_VERSION=$VERSION
 fi
@@ -57,3 +58,6 @@ echo "Staging of all malscan files completed. Beginning build process."
 rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec
 
 echo "Builds complete for Malscan $PACKAGE_VERSION"
+
+echo "Uploading RPMs to Package Cloud."
+package_cloud push jgrancell/malscan/$DISTRO/$RPM_VERSION /home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.$DISTRO.noarch.rpm
