@@ -32,7 +32,7 @@ mkdir -p "$TEMP/malscan-$PACKAGE_VERSION"
 cd /home/makerpm/rpmbuild
 
 ## Creating the file structure for the SOURCE tarball
-rsync -avzP --exclude ".git" --exclude ".gitignore" --exclude ".codeclimate.yml" --exclude "build" /home/makerpm/rpmbuild/malscan/ "$TEMP/malscan-$PACKAGE_VERSION/"
+rsync -avzP --exclude ".git" --exclude ".gitlab-ci.yml" --exclude ".gitignore" --exclude ".codeclimate.yml" --exclude "build" /home/makerpm/rpmbuild/malscan/ "$TEMP/malscan-$PACKAGE_VERSION/"
 
 ## Packaging the files
 cd "$TEMP"
@@ -52,6 +52,10 @@ rm -rf "$TEMP"
 
 ## Finishing up the source build
 echo "Staging of all malscan files completed. Beginning build process."
+
+## Switching to makerpm user
+chown -R makerpm:makerpm /home/makerpm/rpmbuild
+su makerpm
 
 ## Creating the RPM
 rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec
