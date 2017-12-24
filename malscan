@@ -98,7 +98,10 @@ while getopts achlmn:qs::tuvw OPT; do
       SET_VALUE=$3
       ;;
     t) TRIPWIRE=1;;
-    u) UPDATER=1;;
+    u)
+      UPDATER=1
+      SLIM_UPDATE=$OPTARG
+      ;;
     v) VERSION_SHOW=1;;
     w) WHITELIST=1;;
     *) # getopts produces error
@@ -209,10 +212,12 @@ function updater {
     fi
 
     echo ""
-    echo -e "\033[37m  - Update: Updating ClamAV definitions. This can take a long time."
-    "$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" --config-file="$CONFIGURATION_DIRECTORY/freshclam.conf" >> /dev/null 2>&1
-    echo -e "\033[32m  - Update: ClamAV malware definitions have been updated.\033[37m"
-    echo ""
+    if [[ -n "$SLIM_UPDATE" && "$SLIM_UPDATE" != "--fast" && "$SLIM_UPDATE" != "fast" ]]; then
+      echo -e "\033[37m  - Update: Updating ClamAV definitions. This can take a long time."
+      "$FRESHCLAM_BINARY_LOCATION" --datadir="$SIGNATURES_DIRECTORY" --config-file="$CONFIGURATION_DIRECTORY/freshclam.conf" >> /dev/null 2>&1
+      echo -e "\033[32m  - Update: ClamAV malware definitions have been updated.\033[37m"
+      echo ""
+    fi
 
     echo "$LOGGING_DATE - Update completed. $SIGNATURE_CHANGE malscan signatures added. ClamAV databases updated." >> "$LOGGING_DIRECTORY/update.log"
 
