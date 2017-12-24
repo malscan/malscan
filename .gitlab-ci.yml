@@ -7,11 +7,11 @@ before_script:
   - mkdir -p /root/.malscan/quarantine
   - mkdir -p /etc/malscan
   - mkdir -p /usr/local/share/man/man1
-  - cp "$CI_PROJECT_DIR/src/malscan.conf" /etc/malscan/
-  - cp "$CI_PROJECT_DIR/src/freshclam.conf" /etc/malscan/
-  - cp "$CI_PROJECT_DIR/doc/malscan.1" /usr/local/share/man/man1/
-  - cp "$CI_PROJECT_DIR/src/malscan" /usr/local/bin/
-  - cp "$CI_PROJECT_DIR/doc/version.txt" /usr/local/share/malscan/
+  - cp "$CI_PROJECT_DIR/malscan.conf" /etc/malscan/
+  - cp "$CI_PROJECT_DIR/freshclam.conf" /etc/malscan/
+  - cp "$CI_PROJECT_DIR/malscan.1" /usr/local/share/man/man1/
+  - cp "$CI_PROJECT_DIR/malscan" /usr/local/bin/
+  - cp "$CI_PROJECT_DIR/version.txt" /usr/local/share/malscan/
   - chmod +x /usr/local/bin/malscan
 stages:
   - build
