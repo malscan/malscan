@@ -52,7 +52,7 @@ scan function on missing directory (RHEL7 ):
   allow_failure: true
   script:
     - malscan -u fast
-    - malscan -a /home/non-existant-directory
+    - malscan -a /home/non-existant-directory && exit 0 || exit 1
 
 mime scan test (RHEL7 ):
   image: jgrancell/malscanbuild:7
@@ -121,7 +121,7 @@ scan function on missing directory (RHEL 6):
   allow_failure: true
   script:
     - malscan -u fast
-    - malscan -a /home/non-existant-directory
+    - malscan -a /home/non-existant-directory && exit 1 || exit 0
 
 mime scan test (RHEL 6):
   image: jgrancell/malscanbuild:6
