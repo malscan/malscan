@@ -10,8 +10,7 @@
 # -------------------------------------------------
 
 VERSION="$1"
-RELEASE="$2"
-DISTRO="$3"
+DISTRO="$2"
 
 if [[ "$VERSION" == "ci" ]]; then
   PACKAGE_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt)
@@ -43,9 +42,7 @@ tar -czvf "$TEMP/malscan-$PACKAGE_VERSION.tar.gz" "malscan-$PACKAGE_VERSION"
 mv "$TEMP/malscan-$PACKAGE_VERSION.tar.gz" "/home/makerpm/rpmbuild/SOURCES/"
 
 ## Copying the latest SPEC files from our git repo into SPECS
-cp "/home/makerpm/rpmbuild/malscan/build/malscan-el7.spec" "/home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec"
-cp "/home/makerpm/rpmbuild/malscan/build/malscan-el6.spec" "/home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec"
-cp "/home/makerpm/rpmbuild/malscan/build/malscan-fedora.spec" "/home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec"
+cp "/home/makerpm/rpmbuild/malscan/build/malscan-$DISTRO.spec" "/home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec"
 
 ## Moving back into our pwd
 cd /home/makerpm/rpmbuild
@@ -57,8 +54,6 @@ rm -rf "$TEMP"
 echo "Staging of all malscan files completed. Beginning build process."
 
 ## Creating the RPM
-rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec
-rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec
 rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec
 
 echo "Builds complete for Malscan $PACKAGE_VERSION"

@@ -43,7 +43,7 @@ scan function (RHEL7 ):
   stage: scan testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - malscan -a /root
 scan function on missing directory (RHEL7 ):
   image: jgrancell/malscanbuild:7
@@ -51,7 +51,7 @@ scan function on missing directory (RHEL7 ):
   when: on_success
   allow_failure: true
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - malscan -a /home/non-existant-directory
 
 mime scan test (RHEL7 ):
@@ -59,14 +59,14 @@ mime scan test (RHEL7 ):
   stage: mimescan testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - malscan -m /home
 mime scan detection test (RHEL7 ):
   image: jgrancell/malscanbuild:7
   stage: mimescan testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
     - malscan -m /tmp/mime-detection.jpg
 
@@ -75,7 +75,7 @@ eicar detection test (RHEL7 ):
   stage: detection testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
@@ -84,7 +84,7 @@ eicar quarantine test (RHEL7 ):
   stage: detection testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -qa /tmp/eicar
@@ -112,7 +112,7 @@ scan function (RHEL 6):
   stage: scan testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - malscan -a /root
 scan function on missing directory (RHEL 6):
   image: jgrancell/malscanbuild:6
@@ -120,7 +120,7 @@ scan function on missing directory (RHEL 6):
   when: on_success
   allow_failure: true
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - malscan -a /home/non-existant-directory
 
 mime scan test (RHEL 6):
@@ -128,14 +128,14 @@ mime scan test (RHEL 6):
   stage: mimescan testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - malscan -m /home
 mime scan detection test (RHEL 6):
   image: jgrancell/malscanbuild:6
   stage: mimescan testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
     - malscan -m /tmp/mime-detection.jpg
 
@@ -144,7 +144,7 @@ eicar detection test (RHEL 6):
   stage: detection testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
@@ -153,7 +153,7 @@ eicar quarantine test (RHEL 6):
   stage: detection testing
   when: on_success
   script:
-    - malscan -u --fast
+    - malscan -u fast
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -qa /tmp/eicar
@@ -172,5 +172,5 @@ rpm packaging (RHEL7 ):
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
     - chown -R makerpm:makerpm /home/makerpm/rpmbuild
-    - ln -s $CI_PROJECT_PATH /home/makerpm/rpmbuild/malscan
-    - bash /home/makerpm/rpmbuild/malscan/build/build.sh
+    - ln -s $CI_PROJECT_DIR /home/makerpm/rpmbuild/malscan
+    - bash /home/makerpm/rpmbuild/malscan/build/build.sh cli el7
