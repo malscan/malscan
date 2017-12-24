@@ -13,7 +13,7 @@ VERSION="$1"
 DISTRO="$2"
 
 if [[ "$VERSION" == "ci" ]]; then
-  PACKAGE_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt)
+  PACKAGE_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt | cut -d- -f1)
 else
   PACKAGE_VERSION=$VERSION
 fi
