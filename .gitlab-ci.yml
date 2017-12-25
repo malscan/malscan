@@ -168,7 +168,7 @@ rpm packaging:
   stage: packaging
   when: on_success
   script:
-    - yum -y install rpm-build rsync ruby rubygems ruby-devel
+    - yum -y install rpm-build rsync ruby rubygems ruby-devel gcc-c++
     - gem install package_cloud
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
