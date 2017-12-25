@@ -10,7 +10,6 @@
 # -------------------------------------------------
 
 VERSION="$1"
-DISTRO="$2"
 
 if [[ "$VERSION" == "ci" ]]; then
   PACKAGE_VERSION=$(zcat /home/makerpm/rpmbuild/malscan/version.txt | cut -d- -f1)
@@ -43,7 +42,7 @@ tar -czvf "$TEMP/malscan-$PACKAGE_VERSION.tar.gz" "malscan-$PACKAGE_VERSION"
 mv "$TEMP/malscan-$PACKAGE_VERSION.tar.gz" "/home/makerpm/rpmbuild/SOURCES/"
 
 ## Copying the latest SPEC files from our git repo into SPECS
-cp "/home/makerpm/rpmbuild/malscan/build/malscan-$DISTRO.spec" "/home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec"
+cp "/home/makerpm/rpmbuild/malscan/build/malscan-el7.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el7.spec"
 
 ## Moving back into our pwd
 cd /home/makerpm/rpmbuild
@@ -55,9 +54,9 @@ rm -rf "$TEMP"
 echo "Staging of all malscan files completed. Beginning build process."
 
 ## Creating the RPM
-rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-$DISTRO.spec
+rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-el7.spec
 
 echo "Builds complete for Malscan $PACKAGE_VERSION"
 
 echo "Uploading RPMs to Package Cloud."
-package_cloud push jgrancell/malscan/$DISTRO/$RPM_VERSION /home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.$DISTRO.noarch.rpm
+package_cloud push jgrancell/malscan/el/7/$RPM_VERSION /home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.el7.noarch.rpm
