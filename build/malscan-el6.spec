@@ -59,7 +59,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
-* Thu Dec 24 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc7
+* Mon Dec 25 2017 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc8
+- Fixed: Minor packaging updates
+
+* Sun Dec 24 2017 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc7
 - Fixed: Updated RPM build pipeline
 
 * Thu Oct 06 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc6
