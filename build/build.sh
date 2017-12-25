@@ -43,6 +43,8 @@ mv "$TEMP/malscan-$PACKAGE_VERSION.tar.gz" "/home/makerpm/rpmbuild/SOURCES/"
 
 ## Copying the latest SPEC files from our git repo into SPECS
 cp "/home/makerpm/rpmbuild/malscan/build/malscan-el7.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el7.spec"
+cp "/home/makerpm/rpmbuild/malscan/build/malscan-el6.spec" "/home/makerpm/rpmbuild/SPECS/malscan-el6.spec"
+cp "/home/makerpm/rpmbuild/malscan/build/malscan-fedora.spec" "/home/makerpm/rpmbuild/SPECS/malscan-fedora.spec"
 
 ## Moving back into our pwd
 cd /home/makerpm/rpmbuild || exit 1
@@ -55,8 +57,14 @@ echo "Staging of all malscan files completed. Beginning build process."
 
 ## Creating the RPM
 rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-el7.spec
+rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-el6.spec
+rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-fedora.spec
 
 echo "Builds complete for Malscan $PACKAGE_VERSION"
 
 echo "Uploading RPMs to Package Cloud."
 package_cloud push "jgrancell/malscan/el/7/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.el7.noarch.rpm"
+package_cloud push "jgrancell/malscan/el/6/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.el7.noarch.rpm"
+package_cloud push "jgrancell/malscan/fedora/27/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.fedora.noarch.rpm"
+package_cloud push "jgrancell/malscan/fedora/26/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.fedora.noarch.rpm"
+package_cloud push "jgrancell/malscan/fedora/25/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.fedora.noarch.rpm"

@@ -1,0 +1,5 @@
+[malscan]
+name=Malscan Fedora $releasever - $basearch
+baseurl=https://packagecloud.io/jgrancell/malscan/fedora/$releasever/$basearch
+enabled=1
+gpgcheck=0

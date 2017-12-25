@@ -1,0 +1,5 @@
+[malscan]
+name=Malscan EL $releasever - $basearch
+baseurl=https://packagecloud.io/jgrancell/malscan/el/$releasever/$basearch
+enabled=1
+gpgcheck=0
