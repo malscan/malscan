@@ -95,7 +95,7 @@ eicar quarantine test (RHEL7 ):
 ####
 
 rpm packaging:
-  image: jgrancell/malscanbuild:7
+  image: jgrancell/malscanbuild:build
   stage: packaging
   when: on_success
   script:
