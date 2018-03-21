@@ -62,9 +62,16 @@ rpmbuild -ba /home/makerpm/rpmbuild/SPECS/malscan-fedora.spec
 
 echo "Builds complete for Malscan $PACKAGE_VERSION"
 
-echo "Uploading RPMs to Package Cloud."
-package_cloud push "jgrancell/malscan/el/7/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.el7.noarch.rpm"
-package_cloud push "jgrancell/malscan/el/6/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.el7.noarch.rpm"
-package_cloud push "jgrancell/malscan/fedora/27/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.fedora.noarch.rpm"
-package_cloud push "jgrancell/malscan/fedora/26/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.fedora.noarch.rpm"
-package_cloud push "jgrancell/malscan/fedora/25/$RPM_VERSION" "/home/makerpm/rpmbuild/RPMS/noarch/malscan-$RPM_VERSION.fedora.noarch.rpm"
+echo "Beginning RPM signing."
+## Doing the RPM signing
+for RPM in `ls /home/makerpm/rpmbuild/RPMS/noarch/`; do
+  echo "Now signing $RPM"
+  /home/makerpm/rpmbuild/malscan-db/build/sign.sh "/home/makerpm/rpmbuild/RPMS/noarch/$RPM"
+done
+
+echo "Uploading RPMs to AWS S3"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/7/
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/6/
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/26/
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/27/
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/28/

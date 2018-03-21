@@ -1,0 +1,8 @@
+#!/usr/bin/expect -f
+
+### rpm-sign.exp -- Sign RPMs by sending the GPG_KEY_PASSPHRASE
+
+spawn rpm --resign {*}$argv
+expect -exact "Enter pass phrase: "
+send -- "$env(GPG_KEY_PASSPHRASE)\r"
+expect eof

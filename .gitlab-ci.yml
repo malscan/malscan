@@ -91,75 +91,6 @@ eicar quarantine test (RHEL7 ):
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
 ####
-## RHEL 6 CI Pipeline
-##
-
-help function (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: build
-  script:
-    - malscan -h
-
-update function (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: updater testing
-  when: on_success
-  script:
-    - malscan -u
-
-scan function (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: scan testing
-  when: on_success
-  script:
-    - malscan -u fast
-    - malscan -a /root
-scan function on missing directory (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: scan testing
-  when: on_success
-  allow_failure: true
-  script:
-    - malscan -u fast
-    - malscan -a /home/non-existant-directory && exit 1 || exit 0
-
-mime scan test (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: mimescan testing
-  when: on_success
-  script:
-    - malscan -u fast
-    - malscan -m /home
-mime scan detection test (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: mimescan testing
-  when: on_success
-  script:
-    - malscan -u fast
-    - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
-    - malscan -m /tmp/mime-detection.jpg
-
-eicar detection test (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: detection testing
-  when: on_success
-  script:
-    - malscan -u fast
-    - mkdir -p /tmp/eicar
-    - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
-    - malscan -a /tmp/eicar
-eicar quarantine test (RHEL 6):
-  image: jgrancell/malscanbuild:6
-  stage: detection testing
-  when: on_success
-  script:
-    - malscan -u fast
-    - mkdir -p /tmp/eicar
-    - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
-    - malscan -qa /tmp/eicar
-    - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
-
-####
 ## Packaging
 ####
 
@@ -173,4 +104,8 @@ rpm packaging:
     - mkdir -p /home/makerpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
     - rsync -avzP $CI_PROJECT_DIR/ /home/makerpm/rpmbuild/malscan/
     - chown -R makerpm:makerpm /home/makerpm/rpmbuild
+    - su makerpm -c "echo \"$GPG_PRIVATE_KEY\" > ~/privkey.asc"
+    - su makerpm -c "echo \"$GPG_KEY_PASSPHRASE\" | gpg --batch --import ~/privkey.asc"
+    - su makerpm -c "echo \"%_signature gpg\" >> ~/.rpmmacros"
+    - su makerpm -c "echo \"%_gpg_name Josh Grancell <jgrancell@malscan.org>\" >> ~/.rpmmacros"
     - su makerpm -c "bash /home/makerpm/rpmbuild/malscan/build/build.sh ci"

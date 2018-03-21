@@ -1,5 +1,6 @@
 [malscan]
-name=Malscan EL $releasever - $basearch
-baseurl=https://packagecloud.io/jgrancell/malscan/el/$releasever/$basearch
+name=Malscan
+baseurl=http://yum.malscan.org/el/$basearch/
 enabled=1
-gpgcheck=0
+gpgkey=http://yum.malscan.org/keys/malscan-sign.key
+gpgcheck=1
