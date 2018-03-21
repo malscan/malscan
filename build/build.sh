@@ -66,7 +66,7 @@ echo "Beginning RPM signing."
 ## Doing the RPM signing
 for RPM in `ls /home/makerpm/rpmbuild/RPMS/noarch/`; do
   echo "Now signing $RPM"
-  /home/makerpm/rpmbuild/malscan/build/sign.sh "/home/makerpm/rpmbuild/RPMS/noarch/$RPM"
+  /home/makerpm/rpmbuild/malscan/build/sign.exp "/home/makerpm/rpmbuild/RPMS/noarch/$RPM"
 done
 
 echo "Uploading RPMs to AWS S3"
