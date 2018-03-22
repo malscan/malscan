@@ -70,8 +70,8 @@ for RPM in `ls /home/makerpm/rpmbuild/RPMS/noarch/`; do
 done
 
 echo "Uploading RPMs to AWS S3"
-aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/7/
-aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/6/
-aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/26/
-aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/27/
-aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/28/
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/7/ --exclude="*el6*" --exclude="*fedora*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/6/ --exclude="*el7*" --exclude="*fedora*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/26/ --exclude="*el6*" --exclude="*el7*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/27/ --exclude="*el6*" --exclude="*el7*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/28/ --exclude="*el6*" --exclude="*el7*"
