@@ -198,8 +198,7 @@ function updater {
 
     cat rfxn.hdb > "$SIGNATURES_DIRECTORY/rfxn.hdb"
     cat rfxn.ndb > "$SIGNATURES_DIRECTORY/rfxn.ndb"
-    chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.hdb"
-    chown malscan:malscan "$SIGNATURES_DIRECTORY/rfxn.ndb"
+    chown -R malscan:malscan "$SIGNATURES_DIRECTORY"
 
     if [[ -s "$SIGNATURES_DIRECTORY/rfxn.hdb" && -s "$SIGNATURES_DIRECTORY/rfxn.ndb" ]]; then
       if [[ "$SIGNATURE_CHANGE" -gt 0 ]]; then
