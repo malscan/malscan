@@ -224,6 +224,7 @@ function updater {
     rm -f "$TEMPLOG_DIRECTORY/rfxn*"
 
     echo -e "\033[32m  * Update: Malscan signatures updated.\033[37m"
+    echo ""
 
   fi
 
@@ -298,14 +299,12 @@ function lengthscan {
   # Checking to see if we have hits.
   if [[ -n "$LENGTHSCAN_DETECTION" ]]; then
     echo -e "  * \033[31mString Length Scan: Completed. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for a full list of detected files.\033[37m"
-    echo ""
 
     DETECTION_STRING=1
   else
     echo -ne "\033[32m"
     echo "  * String Length Scan: Completed. No suspicious files detected."
     echo -ne "\033[37m"
-    echo ""
     DETECTION_STRING=0
   fi
 
@@ -431,13 +430,11 @@ function mimescan {
   # Checking to see if we have hits.
   if [[ -n "$MIME_DETECTION" ]]; then
     echo -e "  * \033[31mMIME Scan: Completed. See $MIMELOG for a full list of detected files.\033[37m"
-    echo ""
     DETECTION_MIME=1
   else
     echo -ne "\033[32m"
     echo  "  * MIME Scan: Completed. No suspicious files detected."
     echo -ne "\033[37m"
-    echo ""
     DETECTION_MIME=0
   fi
 
@@ -479,9 +476,9 @@ function avscan {
     do
       echo -ne "\033[31m"
       echo "  - DETECTION: $FILE "
+      DETECTION_COUNT=$((DETECTION_COUNT+1))
     done < <(cat "$AV_DETECTION_TEMPLOG")
     DETECTION_AV=1
-    DETECTION_COUNT=$((DETECTION_COUNT+1))
 
     echo -e "  * \033[31mMalware Scan: $DETECTION_COUNT malicious files detected. See $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for a full list of detected files.\033[37m"
   fi
