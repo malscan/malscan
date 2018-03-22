@@ -159,4 +159,4 @@ See `malscan -h` for more detailed program usage.
 
 ## Licensing and Terms of Usage
 
-The Malscan application is released under the GPLv3 license, which is included in the repository. This software is provided as is, with absolutely no warranty provided for it. As this application does alter file/directory structure for this server, make sure that you understand exactly what this application does and the security ramifications of it.
+The Malscan application is released under the MIT license, which is included in the repository. This software is provided as is, with absolutely no warranty provided for it. As this application does alter file/directory structure for this server, make sure that you understand exactly what this application does and the security ramifications of it.

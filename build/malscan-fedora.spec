@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
 Version: 1.7.0
-Release: rc8.fedora
+Release: rc9.fedora
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -59,25 +59,34 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
-* Thu Dec 24 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc7
+* Thu Mar 22 2018 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc9
+- Fixed: Configuration options are now rejected if not already set in /etc/malscan/malscan.conf. (fixes #12)
+- Fixed: Configuration options are now scrubbed to prevent arbitrary code injection. (fixes #12)
+- Fixed: Confirms that permissions are now correct for Freshclam. (fixes #13)
+- Fixed: Detection counts are now correct. (fixes #14)
+
+* Mon Dec 25 2017 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc8
+- Fixed: Minor packaging updates
+
+* Thu Dec 24 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc7
 - Fixed: Updated RPM build pipeline
 
-* Thu Oct 06 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc6
+* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc6
 - Fixed: Logs will now have the correct date and time for each entry
 
-* Thu Oct 06 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc5
+* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc5
 - New: Added pid locking. Only one copy of malscan can run at a time, now.
 
-* Thu Oct 06 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc4
+* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc4
 - Fixed broken rc3 release
 
-* Thu Oct 06 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc3
+* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc3
 - Fixed: Configuration options can now only be set by the root user, not by a user in the malscan group (updates #12)
 
-* Thu Oct 06 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc2
+* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc2
 - Updated: Build number bump for package testing
 
-* Thu Jul 11 2016 Josh Grancell <josh@joshgrancell.com> 1.7.0-rc1
+* Thu Jul 11 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc1
 - New: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 - New: Configuration options can now be set using the malscan -s OPTION value command.
 - New: Initial packaging of ClamAV databases to make the first `malscan -u` command run substantially faster.
