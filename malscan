@@ -252,22 +252,33 @@ function config_view {
   echo ""
   echo "Scanning Settings"
   echo "STRING_LENGTH_MINIMUM      - $STRING_LENGTH_MINIMUM"
+  echo ""
 }
 
 # --------------------------------------------------
 
 function config_set {
   if [[ "$EUID" == 0 ]]; then
-    if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" ]]; then
-      sed -i "s|^$SET_TARGET=.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_DIRECTORY/malscan.conf"
-      echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
+    if grep -Fxq "$SET_TARGET" "$CONFIGURATION_DIRECTORY/malscan.conf"; then
+      if [[ "$SET_TARGET" != "" && "$SET_VALUE" != "" && $SET_VALUE != *"|"* ]]; then
+        sed -i "s|^$SET_TARGET=.*$|$SET_TARGET=\"$SET_VALUE\"|m" "$CONFIGURATION_DIRECTORY/malscan.conf"
+        echo " * Configuration: $SET_TARGET has been updated to $SET_VALUE"
+        echo ""
+      else
+        echo -e "\033[31m"
+        echo "  * Configuration: When setting a new configuration value, you must specify the config and the value."
+        echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.org,admin@malscan.org,jgrancell@joshgrancell.com"
+        echo -e "\033[37m"
+      fi
     else
-      echo ""
-      echo "  * Configuration: When setting a new configuration value, you must specify the config and the value."
-      echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.org,admin@malscan.org,jgrancell@joshgrancell.com"
+      echo -e "\033[31m"
+      echo "  * Configuration: $SET_TARGET is not a valid configuration option. Try again, or manually add this configuration to your malscan.conf"
+      echo -e "\033[37m"
     fi
   else
+    echo -e "\033[31m"
     echo "Configuration changes can only be made by the root user. Exiting."
+    echo -e "\033[37m"
     freelock
     exit 1
   fi
