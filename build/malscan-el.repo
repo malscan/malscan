@@ -1,0 +1,6 @@
+[malscan]
+name=Malscan
+baseurl=http://yum.malscan.org/el/7/
+enabled=1
+gpgkey=http://yum.malscan.org/keys/malscan-sign.key
+gpgcheck=1

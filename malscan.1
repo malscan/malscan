@@ -1,0 +1,52 @@
+.TH "malscan" "1" "January 9, 2016" "malscan 1.7.0" "malscan"
+
+
+.SH "NAME"
+.LP 
+malscan \- a simple and powerful linux malware scanner
+
+
+.SH "SYNOPSIS"
+.LP 
+malscan [options] [file/directory]
+
+
+.SH "DESCRIPTION"
+.LP 
+malscan is a light-weight and powerful command line anti\-virus scanner for linux desktops and servers.
+
+
+.SH "OPTIONS"
+.LP 
+Almost all of the options available to malscan are toggles that enable a feature if they are called. Most of the options are simple switches which enable or disable some features.
+.TP 
+\fB\-h\fR
+Print help information and exit.
+.TP 
+\fB\-v, \-\-version\fR
+Show version information.
+
+.SH "EXAMPLES"
+.LP 
+.TP 
+(0) Scan a single file:
+
+\fBmalscan \-s file\fR
+.TP 
+(1) Scan a directory and all subdirectories:
+
+\fBmalscan \-s /var/www/html\fR
+.TP 
+(2) Run malware, string, and mime-type scans on all files (and subdirectories) in /home:
+
+\fBmalscan \-lms /home\fR
+.TP 
+
+
+.SH "CREDITS"
+.LP
+Please check the full documentation at https://www.malscan.org/credits/ for credits.
+
+.SH "AUTHOR"
+.LP 
+Josh Grancell <josh@joshgrancell.com>
