@@ -542,36 +542,29 @@ function notification {
     echo "To:$NOTIFICATION_ADDRESSES"
     echo "From:$MALSCAN_SENDER_ADDRESS"
     echo "Subject: Malware Detection: $HOSTNAME - $(date)"
-    echo "MIME-Version: 1.0"
-    echo "Content-Type: text/html; charset=us-ascii"
-    echo "Content-Disposition: inline"
-    echo "<!DOCTYPE html>"
-    echo "<html> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
-    echo "<body>"
 
     if [[ -n "$QUARANTINE" && -n "$AVSCAN" ]]; then
-      echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME.log and $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for further information.<br />"
+      echo "Malicious and/or suspicious files have been quarantined on $HOSTNAME. Please see $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME.log and $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for further information."
     elif [[ -n "$AVSCAN" ]]; then
-      echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined.<br />"
-      echo "<br />"
-      echo "The detected malicious or suspicious files are:<br />"
+      echo "Malicious and/or suspicious files have been identified on $HOSTNAME but HAVE NOT been quarantined."
+      echo ""
+      echo "The detected malicious or suspicious files are:"
 
       while IFS='' read -r line || [[ -n "$line" ]]; do
-        echo "$line <br />"
+        echo "$line"
       done < "$AV_DETECTION_TEMPLOG"
 
-      echo "<br />"
-      echo "Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for any additional details.<br />"
+      echo ""
+      echo "Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for any additional details."
     fi
 
     if [[ -n "$MIMECHECK" ]]; then
-      echo "Files have been detected on $HOSTNAME that are using suspicious file extension types. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
+      echo "Files have been detected on $HOSTNAME that are using suspicious file extension types. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining."
     fi
 
     if [[ -n "$LENGTHSCAN" ]]; then
-      echo "Files have been detected that exceed the line length threshold, and may be suspicious. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
+      echo "Files have been detected that exceed the line length threshold, and may be suspicious. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining."
     fi
-    echo "</body>"
     } >> "$EMAIL_TMP"
 
     sendmail -f "Malscan AntiMalware Scanner" -f "$MALSCAN_SENDER_ADDRESS" -i -t < "$EMAIL_TMP"
