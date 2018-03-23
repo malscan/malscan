@@ -4,7 +4,7 @@ Malscan
 Robust ClamAV-based malware scanner for web servers.
 
 [![GitHub version](https://img.shields.io/badge/version-1.7.0-green.svg)](https://github.com/jgrancell/malscan)
-[![Build status](https://gitlab.com/malscan/malscan/badges/1.7.0-dev/pipeline.svg)](https://gitlab.com/malscan/malscan/commits/1.7.0-dev)
+[![Build status](https://gitlab.com/malscan/malscan/badges/master/pipeline.svg)](https://gitlab.com/malscan/malscan/commits/master)
 
 # Table of Contents
 * [Features](#features)
@@ -40,6 +40,8 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 * SSH Access
 
 ## Installation
+
+__NOTE__: New installation procedures will be deployed shortly for CentOS 6, 7, Fedora, and Puppet Community/Enterprise.
 
 #### CentOS 6, CentOS 7
 
@@ -82,21 +84,34 @@ Malscan can be manually installed on any operating system that successfully meet
 
 See `malscan -h` for more detailed program usage.
 
+## Contributing
+
+If you're interested in contributing to malscan, I am looking for the following help:
+
+* Feature development
+* Documentation
+* Web design
+* Logo design
+
+Contact me at `jgrancell@malscan.org` or `josh@joshgrancell.com` if you're interested.
+
 ## Changelog
 
 #### Version 1.7.0
-*Release: December 24, 2017*
+*Release: March 22, 2018*
 * Feature: Lock files are used to ensure multiple runs of malscan don't stack.
 * Feature: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 * Feature: Configuration options can now be set using the malscan -s OPTION value command.
-* Fixed: malscan will now correctly check for sudo
-* Fixed: malscan will now check to see if the user is in the malscan group, in lieu of being run as sudo
-* Updated: malscan will now use its own freshclam.conf file and /var/lib/malscan signatures directory, to prevent conflicts with ClamAV
+* Fixed: malscan will now correctly check for sudo.
+* Fixed: malscan will now check to see if the user is in the malscan group, in lieu of being run as sudo.
+* Fixed: Notifications are now sent in a more spam-checker-friendly format, reducing issues with notifications ending up in the spam folder.
+* Updated: malscan will now use its own freshclam.conf file and /var/lib/malscan signatures directory, to prevent conflicts with ClamAV.
 * Updated: The malscan file structure has been updated to conform with the FHS. (fixes #7)
-* Updated: Removed whitelisting and tripwire scanning until it can be re-worked in a later release
-* Updated: Removed reporting until it can be re-developed in a later release.
-* Updated: Rewrote the install.sh script to support Fedora, Debian, and CentOS/RHEL 7
-* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 26/27 (fixes #8)
+* Updated: Rewrote the install.sh script to support Fedora, Debian, and CentOS/RHEL 7.
+* Updated: Created RPM packaging for CentOS/RHEL 6, 7, and Fedora 26/27. (fixes #8)
+* Updated: New exhaustive build testing CI pipeline for automated malscan testing.
+* Removed: Removed whitelisting and tripwire scanning until it can be re-worked in a later release.
+* Removed: Removed reporting until it can be re-developed in a later release.
 * Removed: Removed Ubuntu/Debian support while working on packaging.
 
 #### Version 1.5.3
