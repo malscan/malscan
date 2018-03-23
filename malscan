@@ -80,7 +80,7 @@ fi
 # --------------------------------------------------
 
 ## Parsing through the arguments
-while getopts achlmn:qs::tuvw OPT; do
+while getopts achlmnqs::tuvw OPT; do
   case "$OPT" in
     a) AVSCAN=1;;
     c) CONFIG=1;;
@@ -571,6 +571,7 @@ function notification {
     if [[ -n "$LENGTHSCAN" ]]; then
       echo "Files have been detected that exceed the line length threshold, and may be suspicious. Please see $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for additional information, and investigate each file for whitelisting or quarantining.<br />"
     fi
+    echo "</body>"
     } >> "$EMAIL_TMP"
 
     sendmail -f "Malscan AntiMalware Scanner" -f "$MALSCAN_SENDER_ADDRESS" -i -t < "$EMAIL_TMP"
@@ -666,7 +667,7 @@ if [[ -n "$UPDATER" ]]; then
   updater
 fi
 
-if [[ -n "$NOTIFICATION" && -n "$DETECTION" ]]; then
+if [[ -n "$NOTIFICATION" && -n "$DETECTION_AV" ]]; then
   notification
 fi
 
