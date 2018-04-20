@@ -48,6 +48,10 @@ function helper {
   echo "    -m                        - File extension match scan mode"
   echo "    -q                        - Quarantine mode (implies -a)"
   echo ""
+  echo "Tripwire Mode:"
+  echo "    -t                        - Compares all files in the directory tree against known versions in the Whitelist DB."
+  echo "    -w                        - Whitelists all files in the specified directory tree."
+  echo ""
   echo "Other Parameters:"
   echo "    -c                        - Shows all configuration options and values"
   echo "    -s [option name] [value]  - Sets a configuration option to a value"
@@ -88,8 +92,7 @@ while getopts achlmnqs::tuvw OPT; do
     l) LENGTHSCAN=1;;
     m) MIMESCAN=1;;
     n)
-      NOTIFICATION=1
-      ;;
+      NOTIFICATION=1;;
     q)
       QUARANTINE=1;;
     s)
