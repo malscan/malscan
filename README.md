@@ -26,6 +26,7 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
   * Standard HEX or MD5 based detections, with a database of over 20,000 signatures and growing.
   * String length detections - smart detection of long injected strings, such as base64
   * MimeType mismatch detections - detects PHP files attempting to masquerade as other file types
+  * Tripwire detection mode - identifies files that have changed (or new files that have been created) to a known base filetree state.
 * Easy File Quarantining
 * Built-in new file signature generation
 * Customizable email notifications
@@ -96,6 +97,11 @@ If you're interested in contributing to malscan, I am looking for the following 
 Contact me at `jgrancell@malscan.org` or `josh@joshgrancell.com` if you're interested.
 
 ## Changelog
+
+#### Version 1.7.1
+*Release: April 20, 2018*
+* New: Tripwire detection mode
+* Fixed: Corrected permission issue on log file. (fixes #15)
 
 #### Version 1.7.0
 *Release: March 22, 2018*
