@@ -59,7 +59,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
-* Fri Apr 01 2015 Josh Grancell <jgrancell@malscan.org> 1.7.1-1
+* Fri Apr 20 2018 Josh Grancell <jgrancell@malscan.org> 1.7.1-1
 - New: Tripwire detection mode
 - Fixed: Corrected permission issue on log file. (fixes #15)
 
