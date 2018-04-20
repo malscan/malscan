@@ -102,6 +102,7 @@ Contact me at `jgrancell@malscan.org` or `josh@joshgrancell.com` if you're inter
 *Release: April 20, 2018*
 * New: Tripwire detection mode
 * Fixed: Corrected permission issue on log file. (fixes #15)
+* Updated: Changed the save path for the Tripwire whitelist file
 
 #### Version 1.7.0
 *Release: March 22, 2018*
