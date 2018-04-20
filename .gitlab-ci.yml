@@ -23,27 +23,27 @@ stages:
 ## RHEL 7 CI Pipeline
 ##
 
-help function (RHEL7 ):
+help function (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: build
   script:
     - malscan -h
 
-update function (RHEL7 ):
+update function (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: updater testing
   when: on_success
   script:
     - malscan -u
 
-scan function (RHEL7 ):
+scan function (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -a /root
-scan function on missing directory (RHEL7 ):
+scan function on missing directory (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
@@ -52,14 +52,14 @@ scan function on missing directory (RHEL7 ):
     - malscan -u fast
     - malscan -a /home/non-existant-directory && exit 1 || exit 0
 
-mime scan test (RHEL7 ):
+mime scan test (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -m /home
-mime scan detection test (RHEL7 ):
+mime scan detection test (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
@@ -68,7 +68,7 @@ mime scan detection test (RHEL7 ):
     - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
     - malscan -m /tmp/mime-detection.jpg
 
-eicar detection test (RHEL7 ):
+eicar detection test (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
@@ -77,7 +77,7 @@ eicar detection test (RHEL7 ):
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
-eicar quarantine test (RHEL7 ):
+eicar quarantine test (RHEL7):
   image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
@@ -88,6 +88,25 @@ eicar quarantine test (RHEL7 ):
     - malscan -qa /tmp/eicar
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
+tripwire test (RHEL7):
+  image: jgrancell/malscanbuild:7
+  stage: scan testing
+  when: on_success
+  script:
+    - malscan -u fast
+    - malscan -w /etc
+    - malscan -t /etc
+
+tripwire detection test (RHEL7):
+  image: jgrancell/malscanbuild:7
+  stage: scan testing
+  when: on_success
+  script:
+    - malscan -u fast
+    - malscan -w /etc
+    - touch /etc/badfile.txt
+    - malscan -t /etc
+    
 ####
 ## Packaging
 ####
