@@ -17,8 +17,6 @@ stages:
   - build
   - updater testing
   - scan testing
-  - mimescan testing
-  - detection testing
   - packaging
 
 ####
@@ -56,14 +54,14 @@ scan function on missing directory (RHEL7 ):
 
 mime scan test (RHEL7 ):
   image: jgrancell/malscanbuild:7
-  stage: mimescan testing
+  stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -m /home
 mime scan detection test (RHEL7 ):
   image: jgrancell/malscanbuild:7
-  stage: mimescan testing
+  stage: scan testing
   when: on_success
   script:
     - malscan -u fast
@@ -72,7 +70,7 @@ mime scan detection test (RHEL7 ):
 
 eicar detection test (RHEL7 ):
   image: jgrancell/malscanbuild:7
-  stage: detection testing
+  stage: scan testing
   when: on_success
   script:
     - malscan -u fast
@@ -81,7 +79,7 @@ eicar detection test (RHEL7 ):
     - malscan -a /tmp/eicar
 eicar quarantine test (RHEL7 ):
   image: jgrancell/malscanbuild:7
-  stage: detection testing
+  stage: scan testing
   when: on_success
   script:
     - malscan -u fast

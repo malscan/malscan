@@ -1,6 +1,6 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
-Version: 1.7.0
+Version: 1.7.1
 Release: 1.el7
 URL:     https://github.com/jgrancell/malscan
 License: MIT
@@ -59,39 +59,20 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
-* Thu Mar 22 2018 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc9
-- Fixed: Configuration options are now rejected if not already set in /etc/malscan/malscan.conf. (fixes #12)
-- Fixed: Configuration options are now scrubbed to prevent arbitrary code injection. (fixes #12)
-- Fixed: Confirms that permissions are now correct for Freshclam. (fixes #13)
-- Fixed: Detection counts are now correct. (fixes #14)
+* Fri Apr 20 2018 Josh Grancell <jgrancell@malscan.org> 1.7.1-1
+- Fixed: Corrected permission issue on log file. (fixes #15)
 
-* Mon Dec 25 2017 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc8
-- Fixed: Minor packaging updates
-
-* Sun Dec 24 2017 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc7
-- Fixed: Updated RPM build pipeline
-
-* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc6
-- Fixed: Logs will now have the correct date and time for each entry
-
-* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc5
-- New: Added pid locking. Only one copy of malscan can run at a time, now.
-
-* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc4
-- Fixed broken rc3 release
-
-* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc3
-- Fixed: Configuration options can now only be set by the root user, not by a user in the malscan group (updates #12)
-
-* Thu Oct 06 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc2
-- Updated: Build number bump for package testing
-
-* Thu Jul 11 2016 Josh Grancell <jgrancell@malscan.org> 1.7.0-rc1
+* Thu Mar 22 2018 Josh Grancell <jgrancell@malscan.org> 1.7.0-1
 - New: Configuration options can now be viewed using the malscan -c command. (fixes #10)
 - New: Configuration options can now be set using the malscan -s OPTION value command.
 - New: Initial packaging of ClamAV databases to make the first `malscan -u` command run substantially faster.
 - Fixed: malscan will now correctly check for sudo
 - Fixed: malscan will now check to see if the user is in the malscan group, in lieu of being run as sudo
+- Fixed: Configuration options are now rejected if not already set in /etc/malscan/malscan.conf. (fixes #12)
+- Fixed: Configuration options are now scrubbed to prevent arbitrary code injection. (fixes #12)
+- Fixed: Confirms that permissions are now correct for Freshclam. (fixes #13)
+- Fixed: Detection counts are now correct. (fixes #14)
+- Fixed: Configuration options can now only be set by the root user, not by a user in the malscan group (updates #12)
 - Updated: malscan will now use its own freshclam.conf file and /var/lib/malscan signatures directory, to prevent conflicts with ClamAV
 - Updated: The malscan file structure has been updated to conform with the FHS. (fixes #7)
 - Updated: Removed whitelisting and tripwire scanning until it can be re-worked in a later release
