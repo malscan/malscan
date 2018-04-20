@@ -210,6 +210,8 @@ function updater {
       echo -e "\033[31m  - Update: Malscan signatures have failed to update correctly. Please try again later."
     fi
 
+    chown -R malscan:malscan "$LOGGING_DIRECTORY"
+
     echo ""
     if [[ -n "$SLIM_UPDATE" && "$SLIM_UPDATE" != "--fast" && "$SLIM_UPDATE" != "fast" ]]; then
       echo -e "\033[37m  - Update: Updating ClamAV definitions. This can take a long time."
