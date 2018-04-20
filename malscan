@@ -335,7 +335,7 @@ function lengthscan {
 ## Defining the whitelist function
 function whitelist {
   echo ""
-  WHITELIST_DB="$SIGNATURES_DIRECTORY/whitelist.db"
+  WHITELIST_DB="$APPLICATION_DIRECTORY/whitelist.db"
   TEMPLOG=$(mktemp)
   echo -e "\\033[33mWhitelist: Beginning whitelist process.\\033[37m"
   echo "Whitelist: Generating file list."
@@ -371,7 +371,7 @@ function whitelist {
 # --------------------------------------------------
 
 function tripwire {
-  WHITELIST_DB="$SIGNATURES_DIRECTORY/whitelist.db"
+  WHITELIST_DB="$APPLICATION_DIRECTORY/whitelist.db"
   TEMPLOG=$(mktemp)
   TRIPWIRE_LOG="$LOGGING_DIRECTORY/scan-results-$LOGGING_DATE_FILE_NAME"
 
