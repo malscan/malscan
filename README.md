@@ -3,7 +3,7 @@ Malscan
 
 Robust ClamAV-based malware scanner for web servers.
 
-[![GitHub version](https://img.shields.io/badge/version-1.7.0-green.svg)](https://github.com/jgrancell/malscan)
+[![GitHub version](https://img.shields.io/badge/version-1.7.1-green.svg)](https://github.com/jgrancell/malscan)
 [![Build status](https://gitlab.com/malscan/malscan/badges/master/pipeline.svg)](https://gitlab.com/malscan/malscan/commits/master)
 
 # Table of Contents
