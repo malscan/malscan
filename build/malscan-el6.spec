@@ -1,7 +1,7 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
-Version: 1.7.1
-Release: 2.el6
+Version: 1.7.2
+Release: 1.el6
 URL:     https://github.com/jgrancell/malscan
 License: MIT
 Group: Applications/System
@@ -59,6 +59,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Mon May 7 2018 Josh Grancell <jgrancell@malscan.org> 1.7.2-1
+- Fixed: Updater will now properly pull the malscan core version from the right git branch.
+- Updated: Updated all documentation to point to new docs site.
+
 * Fri Apr 20 2018 Josh Grancell <jgrancell@malscan.org> 1.7.1-2
 - Updated: Changed the save path for the Tripwire whitelist file
 

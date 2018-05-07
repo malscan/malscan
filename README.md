@@ -46,7 +46,7 @@ __NOTE__: New installation procedures will be deployed shortly for CentOS 6, 7, 
 
 #### CentOS 6, CentOS 7
 
-Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://www.malscan.org/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
+Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://malscan.rtfd.io/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
 
 * Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.

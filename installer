@@ -33,7 +33,7 @@ function welcome {
   echo ""
   echo "An open source, libre linux malware scanner."
   echo "Copyright 2014-2017, Josh Grancell"
-  echo "https://malscan.org, https://github.com/malscan"
+  echo "https://github.com/malscan, http://malscan.rtfd.io"
   echo ""
   echo "-----------------------------------------------"
   echo ""
@@ -119,7 +119,7 @@ function configure_for_os {
     echo "Malscan is currently only available for installation on the following Operating Systems: "
     echo "    CentOS/RHEL 6.x / 7.x"
     echo "    Fedora 24 / 25 / 26"
-    echo -e "Feature requests for new Operating System support can be submitted to malscan.org/features\033[37m"
+    echo -e "Feature requests for new Operating System support can be submitted to https://github.com/malscan/malscan/issues\033[37m"
     exit 0
   fi
 }
