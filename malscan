@@ -167,7 +167,7 @@ function updater {
 
         else
           echo -e "\\033[32m  - Update: Your malscan installation requires a full re-installation.\\033[37m"
-          echo -e "\\033[32m  - Update: Please see http://malscan.rtfd.io/re-install.\\033[37m"
+          echo -e "\\033[32m  - Update: Please see http://docs.malscan.com/re-install.\\033[37m"
         fi
       else
         echo "Shit's broken."
@@ -271,7 +271,7 @@ function config_set {
       else
         echo -e "\\033[31m"
         echo "  * Configuration: When setting a new configuration value, you must specify the config and the value."
-        echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.org,admin@malscan.org,jgrancell@joshgrancell.com"
+        echo "  * Configuration: Example: malscan -s NOTIFICATION_ADDRESSES jgrancell@malscan.com,admin@malscan.com,jgrancell@joshgrancell.com"
         echo -e "\\033[37m"
       fi
     else
