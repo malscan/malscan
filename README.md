@@ -3,7 +3,7 @@ Malscan
 
 Robust ClamAV-based malware scanner for web servers.
 
-[![GitHub version](https://img.shields.io/badge/version-1.7.1-green.svg)](https://github.com/jgrancell/malscan)
+[![GitHub version](https://img.shields.io/badge/version-1.7.1-green.svg)](https://github.com/malscan/malscan)
 [![Build status](https://gitlab.com/malscan/malscan/badges/master/pipeline.svg)](https://gitlab.com/malscan/malscan/commits/master)
 
 # Table of Contents
@@ -46,7 +46,7 @@ __NOTE__: New installation procedures will be deployed shortly for CentOS 6, 7, 
 
 #### CentOS 6, CentOS 7
 
-Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://malscan.rtfd.io/getting-started/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
+Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://docs.malscan.com/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
 
 * Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
@@ -94,7 +94,7 @@ If you're interested in contributing to malscan, I am looking for the following 
 * Web design
 * Logo design
 
-Contact me at `jgrancell@malscan.org` or `josh@joshgrancell.com` if you're interested.
+Contact me at `jgrancell@malscan.com` or `josh@joshgrancell.com` if you're interested.
 
 ## Changelog
 
