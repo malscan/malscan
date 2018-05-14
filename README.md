@@ -94,7 +94,7 @@ If you're interested in contributing to malscan, I am looking for the following 
 * Web design
 * Logo design
 
-Contact me at `jgrancell@malscan.com` or `josh@joshgrancell.com` if you're interested.
+Contact me at `jgrancell@malscan.com` if you're interested.
 
 ## Changelog
 
