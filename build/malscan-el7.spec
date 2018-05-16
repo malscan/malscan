@@ -59,9 +59,9 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
-* Mon May 7 2018 Josh Grancell <jgrancell@malscan.org> 1.7.2-1
+* Mon May 7 2018 Josh Grancell <jgrancell@malscan.com> 1.7.2-1
 - Fixed: Updater will now properly pull the malscan core version from the right git branch.
-- Updated: Updated all documentation to point to new docs site.
+- Updated: Updated all documentation to point to new docs site and new 1.x branch
 
 * Fri Apr 20 2018 Josh Grancell <jgrancell@malscan.org> 1.7.1-2
 - Updated: Changed the save path for the Tripwire whitelist file

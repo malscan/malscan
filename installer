@@ -10,14 +10,14 @@
 # -------------------------------------------------
 
 
-MALSCAN_REPOSITORY_URL="https://gitlab.com/malscan/malscan/raw"
+MALSCAN_REPOSITORY_URL="https://raw.githubusercontent.com/malscan/malscan/raw"
 SIGNATURE_REPOSITORY_URL="https://www.joshgrancell.com/signatures"
 
 ## Determining which release to install
 if [[ $# == 1 ]]; then
   CURRENT_INSTALLER_BRANCH="$1"
 else
-  CURRENT_INSTALLER_BRANCH="master"
+  CURRENT_INSTALLER_BRANCH="1.x"
 fi
 
 ## Verifying that we are running under root/sudo

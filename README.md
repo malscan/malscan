@@ -1,10 +1,11 @@
 Malscan
 ============
 
-Robust ClamAV-based malware scanner for web servers.
+ClamAV-based malware scanner for Linux web servers.
 
-[![GitHub version](https://img.shields.io/badge/version-1.7.1-green.svg)](https://github.com/malscan/malscan)
-[![Build status](https://gitlab.com/malscan/malscan/badges/master/pipeline.svg)](https://gitlab.com/malscan/malscan/commits/master)
+[![Latest version](https://img.shields.io/github/release/malscan/malscan.svg)](https://github.com/malscan/malscan/releases)
+[![GitHub license](https://img.shields.io/github/license/malscan/malscan.svg)](https://github.com/malscan/malscan/blob/1.x/LICENSE)
+[![Build status](https://gitlab.com/malscan/malscan/badges/1.x/pipeline.svg)](https://gitlab.com/malscan/malscan/pipelines)
 
 # Table of Contents
 * [Features](#features)
@@ -14,7 +15,14 @@ Robust ClamAV-based malware scanner for web servers.
 
 ## Summary
 
-Malscan is a robust and fully featured scanning platform for Linux servers that greatly simplifies keeping your web servers secure and malware-free. It is built upon the ClamAV platform, providing all of the features of Clamscan with a host of new features and detection modes.
+Malscan is a scanning platform for Linux servers that simplifies keeping your web servers
+secure and malware-free. It is built upon the ClamAV platform, providing all of the
+features of Clamscan with a host of new features and detection modes.
+
+**NOTE**: This branch is currently in legacy mode. I am in the process of rewriting this
+application into Python from Shell, which will be the primary application language moving forward.
+New features will not be introduced for the lgacy Shell application, however bugfixes will continue
+for some time.
 
 ## Features
 * Multiple channels of malware signatures
@@ -48,7 +56,7 @@ __NOTE__: New installation procedures will be deployed shortly for CentOS 6, 7, 
 
 Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://docs.malscan.com/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
 
-* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/master/install.sh && bash install.sh`
+* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/1.x/install.sh && bash install.sh`
 * Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
 
 #### Other Operating Systems
@@ -70,11 +78,11 @@ Malscan can be manually installed on any operating system that successfully meet
   * mkdir /var/log/malscan
   * mkdir /root/.malscan/quarantine
 * Place the following files in the listed locations:
-  * wget -P "/etc/malscan/" "https://gitlab.com/malscan/malscan/raw/master/malscan.conf"
-  * wget -P "/etc/malscan/" "https://gitlab.com/malscan/malscan/raw/master/freshclam.conf"
-  * wget -P "/usr/local/share/man/man1/" "https://gitlab.com/malscan/malscan/raw/master/malscan.1"
-  * wget -P "/usr/local/bin/" "https://gitlab.com/malscan/malscan/raw/master/malscan"
-  * wget -P "/usr/local/share/malscan/" "https://gitlab.com/malscan/malscan/raw/master/version.txt"
+  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/malscan/malscan/1.x/malscan.conf"
+  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/malscan/malscan/1.x/freshclam.conf"
+  * wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/malscan/malscan/1.x/malscan.1"
+  * wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/malscan/malscan/1.x/malscan"
+  * wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/malscan/malscan/1.x/version.txt"
 * Create a malscan user and group, and assign any users that you would like to use malscan to the malscan group
   * groupadd -r malscan
   * useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
@@ -97,6 +105,11 @@ If you're interested in contributing to malscan, I am looking for the following 
 Contact me at `jgrancell@malscan.com` if you're interested.
 
 ## Changelog
+
+#### Version 1.7.2-1
+*Release: May 15, 2018*
+* Fixed: Updater will now properly pull the malscan core version from the right git branch.
+* Updated: Updated all documentation to point to new docs site and new 1.x branch
 
 #### Version 1.7.1
 *Release: April 20, 2018*
