@@ -1,0 +1,26 @@
+language: python
+
+matrix:
+  include:
+    - python: "2.7"
+    - python: "3.3"
+    - python: "3.4"
+    - python: "3.5"
+    - python: "3.6"
+    - python: "nightly"
+  allow_failures:
+    - python: "2.7"
+    - python: "nightly"
+
+install:
+  - if [[ `python --version | grep 3.6` ]]; then pip install -U setuptools; fi;
+  - pip install .
+  - pip install -r requirements-dev.txt
+
+script:
+  - flake8 malscan
+  - flake8 tests
+  - coverage run setup.py test
+
+after_success:
+  - codecov
