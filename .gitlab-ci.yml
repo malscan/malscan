@@ -106,7 +106,7 @@ tripwire detection test (RHEL7):
     - malscan -w /etc
     - touch /etc/badfile.txt
     - malscan -t /etc
-    
+
 ####
 ## Packaging
 ####
@@ -124,5 +124,5 @@ rpm packaging:
     - su makerpm -c "echo \"$GPG_PRIVATE_KEY\" > ~/privkey.asc"
     - su makerpm -c "echo \"$GPG_KEY_PASSPHRASE\" | gpg --batch --import ~/privkey.asc"
     - su makerpm -c "echo \"%_signature gpg\" >> ~/.rpmmacros"
-    - su makerpm -c "echo \"%_gpg_name Josh Grancell <jgrancell@malscan.org>\" >> ~/.rpmmacros"
+    - su makerpm -c "echo \"%_gpg_name Josh Grancell <jgrancell@malscan.com>\" >> ~/.rpmmacros"
     - su makerpm -c "bash /home/makerpm/rpmbuild/malscan/build/build.sh ci"
