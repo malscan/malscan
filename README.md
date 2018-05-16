@@ -19,6 +19,11 @@ Robust ClamAV-based malware scanner for web servers.
 
 Malscan is a robust and fully featured scanning platform for Linux servers that greatly simplifies keeping your web servers secure and malware-free. It is built upon the ClamAV platform, providing all of the features of Clamscan with a host of new features and detection modes.
 
+### Branch Notice
+
+This application is currently being rewritten from the ground-up in Python. If you are interested in actively using Malscan, please see the `1.x` branch for the Shell version of
+this application, which is still fully supported.
+
 ## Features
 * Multiple channels of malware signatures
   * RFX Networks Signatures
@@ -45,7 +50,7 @@ Malscan is a robust and fully featured scanning platform for Linux servers that 
 
 The purpose of the refactor branch is to rewrite Malscan, previously written in shell script, into Python.
 If you are interested in participating in the rewrite contact me directly at `jgrancell@malscan.com`.
-If you're just interested in using Malscan, look at the `master` branch or visit https://docs.malscan.com
+If you're just interested in using Malscan, look at the `1.x` branch or visit https://docs.malscan.com
 
 ## Usage
 
