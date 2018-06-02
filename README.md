@@ -4,10 +4,10 @@ Malscan
 Robust ClamAV-based malware scanner for web servers.
 
 
-[![Build Status](https://travis-ci.org/malscan/malscan.svg?branch=refactor)](https://travis-ci.org/malscan/malscan)
+[![Build Status](https://travis-ci.org/malscan/malscan.svg?branch=master)](https://travis-ci.org/malscan/malscan)
 [![codecov](https://codecov.io/gh/malscan/malscan/branch/refactor/graph/badge.svg)](https://codecov.io/gh/malscan/malscan)
 [![Maintainability](https://api.codeclimate.com/v1/badges/6853e74c03949aeb009e/maintainability)](https://codeclimate.com/github/malscan/malscan/maintainability)
-[![Code Quality](https://scrutinizer-ci.com/g/malscan/malscan/badges/quality-score.png?b=refactor)](https://scrutinizer-ci.com/g/malscan/malscan/?branch=refactor)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/malscan/malscan/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/malscan/malscan/?branch=master)
 
 # Table of Contents
 * [Features](#features)
