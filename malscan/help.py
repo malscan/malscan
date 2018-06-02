@@ -32,49 +32,33 @@ class Help:
             __version__,
             last_db_update)
         )
-        self._pheader('Usage:')
+        self._print_header('Usage:')
         print("    malscan [parameters] [target]")
-        self._pheader('Scan Modes:')
-        self._pswitch(
-            '-l',
-            'suspicious string scanning mode'
-        )
-        self._pswitch(
-            '-m',
-            'file extention match scanning mode'
-        )
-        self._pswitch(
-            '-s',
-            'basic malware scan [implied when you provide no other modes]'
-        )
-        self._pswitch(
-            '-q',
-            'malware quarantine mode'
-        )
-        self._pheader('Tripwire:')
-        self._pswitch(
-            '-t',
-            'scans the target directory for altered whitelisted files'
-        )
-        self._pswitch(
-            '-w',
-            'whitelists all files in the target directory'
-        )
-        self._pheader('Other Modes:')
-        self._pswitch(
-            'config',
-            'displays the current running malscan configuration'
-        )
-        self._pswitch(
-            'update',
-            'updates malscan with the latest malware signatures'
-        )
-        self._pswitch(
-            'version',
-            'shows the current application and signature versions'
-        )
 
-    def _pheader(self, header):
+        switches = {
+            'Scan Modes:': None,
+            '-l': 'suspicious string scanning mode',
+            '-m': 'file extension match scanning mode',
+            '-s': 'basic malware scan',
+            '-q': 'malware quarantine mode',
+            'Tripwire:': None,
+            '-t': 'scans the target directory for altered whitelisted files',
+            '-w': 'whitelists all files in the target directory',
+            'General Commands:': None,
+            'config': 'displays the current running malscan configuration',
+            'update': 'updates malscan with the latest malware signatures',
+            'version': 'shows the current application and signature versions'
+        }
+        for switch, description in switches.items():
+            self.output(switch, description)
+
+    def output(self, switch, description):
+        if description is None:
+            self._print_header(switch)
+        else:
+            self._print_switch(switch, description)
+
+    def _print_header(self, header):
         print("{}{}{}{}".format(
             self.style['newline'],
             self.style['header'],
@@ -82,7 +66,7 @@ class Help:
             self.style['normal']
         ))
 
-    def _pswitch(self, switch, description):
+    def _print_switch(self, switch, description):
         switch_size = len(switch)
         if switch_size == 7:
             switch_padding = '    '
