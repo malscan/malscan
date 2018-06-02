@@ -8,10 +8,24 @@
 # License: MIT License
 #
 # --------------------------------------------------
+"""
+Malscan Help module
+
+:class Help:             provides help functionality to Malscan
+
+:function version:       displays version line
+:function display:       displays help text
+:function output:        passes help text to correct formatter
+:function _print_header: prints the header helptext
+:function _print_switch: prints switch helptext
+"""
 from malscan import __version__
 
 
 class Help:
+    """ This class provides Help functionality for Malscan,
+    and catches failing malscan commands and arguments
+    """
     def __init__(self):
         self.style = {}
         self.style['header'] = '\033[95m'
@@ -23,11 +37,15 @@ class Help:
         self.style['bold'] = '\033[1m'
         self.style['underline'] = '\033[4m'
         self.style['newline'] = '\n'
+        self.switch_length = 11
 
-    def version(self):
+    @staticmethod
+    def version():
+        """ Prints the current malscan and signature versions """
         print(__version__)
 
     def display(self, last_db_update):
+        """ Prints out all available commands, plus version information """
         print("{}, last updated: {}".format(
             __version__,
             last_db_update)
@@ -53,12 +71,14 @@ class Help:
             self.output(switch, description)
 
     def output(self, switch, description):
+        """ Determines the correct print formatter to use for a help line"""
         if description is None:
             self._print_header(switch)
         else:
             self._print_switch(switch, description)
 
     def _print_header(self, header):
+        """ Prints a header line, non-indented and with a preceeding newline"""
         print("{}{}{}{}".format(
             self.style['newline'],
             self.style['header'],
@@ -67,11 +87,7 @@ class Help:
         ))
 
     def _print_switch(self, switch, description):
-        switch_size = len(switch)
-        if switch_size == 7:
-            switch_padding = '    '
-        elif switch_size == 6:
-            switch_padding = '     '
-        else:
-            switch_padding = '         '
-        print('    ' + switch + switch_padding + description)
+        """ Prints a switch line, aligning the description with other lines"""
+        while len(switch) < self.switch_length:
+            switch = switch + ' '
+        print('    ' + switch + description)

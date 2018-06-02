@@ -14,10 +14,12 @@ test_requirements = [
 with io.open('README.md', encoding='UTF-8') as reader:
     readme = reader.read()
 
+
 def malscan_test_suite():
     test_loader = unittest.TestLoader()
     test_suite = test_loader.discover('tests', pattern='test_*.py')
     return test_suite
+
 
 setup(
     name='Malscan',
@@ -34,10 +36,10 @@ setup(
     tests_require=test_requirements,
     test_suite='setup.malscan_test_suite',
     classifiers=[
-    "Development Status :: 2 - Pre-Alpha",
-    "Intended Audience :: System Administrators",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.6"
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: System Administrators",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6"
     ]
 
 )
