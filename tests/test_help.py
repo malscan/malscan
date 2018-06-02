@@ -48,6 +48,8 @@ class TestHelp(unittest.TestCase):
             "\033[95mScan Modes:\033[0m\n"
             "    -l         suspicious string scanning mode\n"
             "    -m         file extention match scanning mode\n"
+            "    -s         basic malware scan [implied when "
+            "you provide no other modes]\n"
             "    -q         malware quarantine mode\n\n"
             "\033[95mTripwire:\033[0m\n"
             "    -t         scans the target directory"

@@ -38,6 +38,7 @@ class Configuration:
         self.optargs = {
             'l':      'scan.string',
             'm':      'scan.mime',
+            's':      'scan.basic',
             'q':      'scan.quarantine',
             't':      'tripwire.scan',
             'w':      'tripwire.whitelist',
@@ -69,7 +70,7 @@ class Configuration:
             self.configuration_file = self.global_config
             self.configuration_mode = 'global'
 
-        self.configuration['last_database_update'] = 'placeholder'
+        self.configuration['last_db_update'] = 'placeholder'
 
     def get(self, config_option):
         return self.configuration[config_option]

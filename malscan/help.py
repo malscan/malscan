@@ -27,10 +27,10 @@ class Help:
     def version(self):
         print(__version__)
 
-    def display(self, last_database_update):
+    def display(self, last_db_update):
         print("{}, last updated: {}".format(
             __version__,
-            last_database_update)
+            last_db_update)
         )
         self._pheader('Usage:')
         print("    malscan [parameters] [target]")
@@ -42,6 +42,10 @@ class Help:
         self._pswitch(
             '-m',
             'file extention match scanning mode'
+        )
+        self._pswitch(
+            '-s',
+            'basic malware scan [implied when you provide no other modes]'
         )
         self._pswitch(
             '-q',

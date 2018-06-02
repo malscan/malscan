@@ -22,21 +22,48 @@ class Malscan():
     def load(self):
         # Making sure that we've received the appropriate number of arguments
         if self.argument_count == 1:
-            self.help.display(self.config.get('last_database_update'))
+            self.help.display(self.config.get('last_db_update'))
         else:
             # Removing the self-referencing argument
             del self.arguments[0]
 
-            if "update" in self.arguments:
-                # This is not yet implemented
-                import malscan.core.update as Updater
-                Updater.run()
-            elif "version" in self.arguments:
-                self.help.version()
-            elif "config" in self.arguments:
-                self.config.show()
+            # If there's only 1 argument we're likely running a command
+            if len(self.arguments) == 1:
+                command = self.arguments[0]
+
+                # There's one single command, so we verify it's not a target.
+                if path.isfile(command) or path.isdir(command):
+                    # User didn't pass a scan type, we're going to set -s
+                    self.arguments.append(self.arguments[0])
+                    self.arguments[0] = '-s'
+                    self._run_scanner()
+                else:
+                    # Determining which non-scan command we're running
+                    if command == "update" or command == "--update":
+                        from malscan.core.update import Update
+                        updater = Update()
+                        updater.run()
+                    elif command == "version" or command == "--version":
+                        self.help.version()
+                    elif command == "config" or command == "--config":
+                        self.config.show()
+                    else:
+                        self.help.display(self.config.get('last_db_update'))
+            elif len(self.arguments) == 2:
+                # Two arguments usually indicates a target
+                target = self.arguments[1]
+                if path.isfile(target) or path.isdir(target):
+                    # The target exists, so we scan it with any modes requested
+                    self._run_scanner()
+                else:
+                    # The target doesn't exist, so we're going to error here.
+                    from malscan.exception import Exception
+                    exception = Exception()
+                    exception.error('The specified target "{}"'
+                                    '" does not exist.'.format(target))
             else:
-                self._run_scanner()
+                # The command they used is unknown so we give them help text.
+                self.help.display(self.config.get('last_db_update'))
 
     def _run_scanner(self):
         """ Configures the scanning instance and invokes the scanner """
@@ -45,8 +72,8 @@ class Malscan():
         for arg in self.arguments:
             if arg.startswith("-"):
                 for opt in arg:
-                    if opt in self.config.show_optargs():
-                        self.scan_modes.append(self.config['optargs'][opt])
+                    if opt in self.config.optargs:
+                        self.scan_modes.append(self.config.optargs[opt])
             else:
                 self._add_target(arg)
         if self.targets == []:
@@ -56,7 +83,7 @@ class Malscan():
         print('Scan types:')
         print('    ' + '\n    '.join(self.scan_modes))
 
-    def _check_target(target):
+    def _check_target(self, target):
         """ Determines if a string is a valid target for scanning """
         if path.isfile(target) or path.isdir(target):
             return True

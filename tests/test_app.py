@@ -25,7 +25,7 @@ class TestMalscan(unittest.TestCase):
             "QuarantineMode": "locked-down",
             "QuarantineUser": "root",
             "QuarantineGroup": "malscan",
-            "last_database_update": "placeholder",
+            "last_db_update": "placeholder",
         }
         config = self.malscan.config.configuration
         self.assertDictEqual(expected, config)
@@ -34,6 +34,7 @@ class TestMalscan(unittest.TestCase):
         expected_optargs = {
             "l": "scan.string",
             "m": "scan.mime",
+            "s": "scan.basic",
             "q": "scan.quarantine",
             "t": "tripwire.scan",
             "w": "tripwire.whitelist",
