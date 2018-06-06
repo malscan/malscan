@@ -53,21 +53,22 @@ class Help:
         self._print_header('Usage:')
         print("    malscan [parameters] [target]")
 
-        switches = {}
-        switches['Scan Modes:'] = None
-        switches['-l'] = 'suspicious string scanning mode'
-        switches['-m'] = 'file extension match scanning mode'
-        switches['-s'] = 'basic malware scan'
-        switches['-q'] = 'malware quarantine mode'
-        switches['Tripwire:'] = None
-        switches['-t'] = 'scans target directory for altered whitelisted files'
-        switches['-w'] = 'whitelists all files in the target directory'
-        switches['General Commands:'] = None
-        switches['config'] = 'displays current running malscan configuration'
-        switches['update'] = 'updates malscan with latest malware signatures'
-        switches['version'] = 'shows the application and signature versions'
-        for switch, description in switches.items():
-            self.output(switch, description)
+        switches = []
+        switches.append({ 'Scan Modes:': None })
+        switches.append({ '-l': 'suspicious string scanning mode' })
+        switches.append({ '-m': 'file extension match scanning mode' })
+        switches.append({ '-s': 'basic malware scan' })
+        switches.append({ '-q': 'malware quarantine mode' })
+        switches.append({ 'Tripwire:': None })
+        switches.append({ '-t': 'scans target directory for altered whitelisted files' })
+        switches.append({ '-w': 'whitelists all files in the target directory' })
+        switches.append({ 'General Commands:': None })
+        switches.append({ 'config': 'displays current running malscan configuration' })
+        switches.append({'update': 'updates malscan with latest malware signatures' })
+        switches.append({'version': 'shows the application and signature versions' })
+        for key in switches:
+            for switch, description in key.items():
+                self.output(switch, description)
 
     def output(self, switch, description):
         """ Determines the correct print formatter to use for a help line"""
