@@ -27,9 +27,6 @@ class Malscan():
             # Removing the self-referencing argument
             del self.arguments[0]
 
-
-
-
             # If there's only 1 argument we're likely running a command
             if len(self.arguments) == 1:
                 command = self.arguments[0]
