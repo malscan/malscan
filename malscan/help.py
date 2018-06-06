@@ -53,20 +53,28 @@ class Help:
         self._print_header('Usage:')
         print("    malscan [parameters] [target]")
 
-        switches = []
-        switches.append({ 'Scan Modes:': None })
-        switches.append({ '-l': 'suspicious string scanning mode' })
-        switches.append({ '-m': 'file extension match scanning mode' })
-        switches.append({ '-s': 'basic malware scan' })
-        switches.append({ '-q': 'malware quarantine mode' })
-        switches.append({ 'Tripwire:': None })
-        switches.append({ '-t': 'scans target directory for altered whitelisted files' })
-        switches.append({ '-w': 'whitelists all files in the target directory' })
-        switches.append({ 'General Commands:': None })
-        switches.append({ 'config': 'displays current running malscan configuration' })
-        switches.append({'update': 'updates malscan with latest malware signatures' })
-        switches.append({'version': 'shows the application and signature versions' })
-        for key in switches:
+        cmd = []
+        cmd.append({'Scan Modes:': None})
+        cmd.append({'-l': 'suspicious string scanning mode'})
+        cmd.append({'-m': 'file extension match scanning mode'})
+        cmd.append({'-s': 'basic malware scan'})
+        cmd.append({'-q': 'malware quarantine mode'})
+        cmd.append({'Tripwire:': None})
+        cmd.append(
+            {'-t': 'scans target directory for altered whitelisted files'}
+        )
+        cmd.append({'-w': 'whitelists all files in the target directory'})
+        cmd.append({'General Commands:': None})
+        cmd.append(
+            {'config': 'displays current running malscan configuration'}
+        )
+        cmd.append(
+            {'update': 'updates malscan with latest malware signatures'}
+        )
+        cmd.append(
+            {'version': 'shows the application and signature versions'}
+        )
+        for key in cmd:
             for switch, description in key.items():
                 self.output(switch, description)
 
