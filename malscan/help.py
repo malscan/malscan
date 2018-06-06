@@ -53,20 +53,19 @@ class Help:
         self._print_header('Usage:')
         print("    malscan [parameters] [target]")
 
-        switches = {
-            'Scan Modes:': None,
-            '-l': 'suspicious string scanning mode',
-            '-m': 'file extension match scanning mode',
-            '-s': 'basic malware scan',
-            '-q': 'malware quarantine mode',
-            'Tripwire:': None,
-            '-t': 'scans the target directory for altered whitelisted files',
-            '-w': 'whitelists all files in the target directory',
-            'General Commands:': None,
-            'config': 'displays the current running malscan configuration',
-            'update': 'updates malscan with the latest malware signatures',
-            'version': 'shows the current application and signature versions'
-        }
+        switches = {}
+        switches['Scan Modes:'] = None
+        switches['-l'] = 'suspicious string scanning mode'
+        switches['-m'] = 'file extension match scanning mode'
+        switches['-s'] = 'basic malware scan'
+        switches['-q'] = 'malware quarantine mode'
+        switches['Tripwire:'] = None
+        switches['-t'] = 'scans target directory for altered whitelisted files'
+        switches['-w'] = 'whitelists all files in the target directory'
+        switches['General Commands:'] = None
+        switches['config'] = 'displays current running malscan configuration'
+        switches['update'] = 'updates malscan with latest malware signatures'
+        switches['version'] = 'shows the application and signature versions'
         for switch, description in switches.items():
             self.output(switch, description)
 

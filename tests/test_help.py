@@ -51,16 +51,16 @@ class TestHelp(unittest.TestCase):
             "    -s         basic malware scan\n"
             "    -q         malware quarantine mode\n\n"
             "\033[95mTripwire:\033[0m\n"
-            "    -t         scans the target directory"
+            "    -t         scans target directory"
             " for altered whitelisted files\n"
             "    -w         whitelists all files in the "
             "target directory\n\n"
             "\033[95mGeneral Commands:\033[0m\n"
-            "    config     displays the current "
+            "    config     displays current "
             "running malscan configuration\n"
-            "    update     updates malscan with the "
+            "    update     updates malscan with "
             "latest malware signatures\n"
-            "    version    shows the current application"
+            "    version    shows the application"
             " and signature versions\n".format(__version__),
             capturedOutput.getvalue()
         )
