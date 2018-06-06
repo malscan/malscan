@@ -27,32 +27,35 @@ class Malscan():
             # Removing the self-referencing argument
             del self.arguments[0]
 
+
+
+
             # If there's only 1 argument we're likely running a command
             if len(self.arguments) == 1:
                 command = self.arguments[0]
 
                 # There's one single command, so we verify it's not a target.
-                if path.isfile(command) or path.isdir(command):
+                if path.exists(command):
                     # User didn't pass a scan type, we're going to set -s
                     self.arguments.append(self.arguments[0])
                     self.arguments[0] = '-s'
                     self._run_scanner()
                 else:
                     # Determining which non-scan command we're running
-                    if command == "update" or command == "--update":
+                    if 'update' in command:
                         from malscan.core.update import Update
                         updater = Update()
                         updater.run()
-                    elif command == "version" or command == "--version":
+                    elif 'version' in command:
                         self.help.version()
-                    elif command == "config" or command == "--config":
+                    elif 'config' in command:
                         self.config.show()
                     else:
                         self.help.display(self.config.get('last_db_update'))
             elif len(self.arguments) == 2:
                 # Two arguments usually indicates a target
                 target = self.arguments[1]
-                if path.isfile(target) or path.isdir(target):
+                if path.exists(target):
                     # The target exists, so we scan it with any modes requested
                     self._run_scanner()
                 else:
