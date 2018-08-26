@@ -95,10 +95,7 @@ class Settings:
                     "option {}. Available settings values: {}"
                 ).format(value, key, settings_values)
 
-                if locale == 'local':
-                    self.exception.warning(warning)
-                else:
-                    self.exception.error(warning)
+                self.exception.error(warning)
                 return False
         else:
             self.exception.warning(
