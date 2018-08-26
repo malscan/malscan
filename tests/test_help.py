@@ -56,11 +56,9 @@ class TestHelp(unittest.TestCase):
             "    -w         whitelists all files in the "
             "target directory\n\n"
             "\033[95mGeneral Commands:\033[0m\n"
-            "    config     displays current "
-            "running malscan configuration\n"
-            "    update     updates malscan with "
-            "latest malware signatures\n"
-            "    version    shows the application"
+            "    config     displays running malscan configuration\n"
+            "    update     updates malscan malware signatures\n"
+            "    version    shows application"
             " and signature versions\n".format(__version__),
             capturedOutput.getvalue()
         )
