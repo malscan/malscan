@@ -144,7 +144,7 @@ class TestHelp(unittest.TestCase):
 
         # Verifying the log file output
         self.assertEqual(
-            "FATAL ERROR: This is an error exception test.\n",
+            "ERROR: This is an error exception test.\n",
             file.read()
         )
         file.close()
@@ -174,7 +174,7 @@ class TestHelp(unittest.TestCase):
 
         # Verifying the log file output
         self.assertEqual(
-            "FATAL ERROR: This is an error exception test.\n",
+            "ERROR: This is an error exception test.\n",
             file.read()
         )
         file.close()

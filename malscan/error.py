@@ -35,19 +35,19 @@ class Error:
         self._log_writer(log_string)
 
     def warning(self, string, secondary=""):
-        log_string = 'WARNING: {}'.format(string)
-        console_string = self._format_string('warning', string)
-        if secondary != "":
-            secondary = self._format_string('warning', secondary)
-        self._handle_exception(console_string, log_string, secondary)
+        self.error(string, secondary, False)
 
-    def error(self, string, secondary=""):
-        log_string = 'FATAL ERROR: {}'.format(string)
-        console_string = self._format_string('error', string)
-        if secondary != "":
-            secondary = self._format_string('error', secondary)
+    def error(self, string, secondary="", fatal=True):
+        if fatal:
+            error_string = 'ERROR'
+        else:
+            error_string = 'WARNING'
+        log_string = error_string + ': {}'.format(string)
+        console_string = self._format_string(error_string.lower(), string)
+        if secondary != '':
+            secondary = self._format_string(error_string.lower(), secondary)
         self._handle_exception(console_string, log_string, secondary)
 
     def _format_string(self, exception_type, string):
-        style = self.help.style[exception_type]
+        style = self.help.style[exception_type.lower()]
         return style + string + self.help.style['normal']
