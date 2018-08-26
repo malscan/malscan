@@ -10,13 +10,13 @@
 # --------------------------------------------------
 from os import path
 import sys
-from malscan.exception import Exception
+from malscan.error import Error
 
 
 class Configuration:
     def __init__(self):
         self.configuration = {}
-        self.exception = Exception()
+        self.exception = Error()
         self.base_path = path.dirname(path.dirname(__file__))
 
         self.config_options = {

@@ -44,6 +44,7 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+gl-sast-report.json
 
 # Translations
 *.mo
@@ -91,3 +92,4 @@ ENV/
 # Malscan legacy
 legacy
 logs
+test.sh

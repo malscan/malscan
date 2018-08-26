@@ -46,10 +46,7 @@ class Help:
 
     def display(self, last_db_update):
         """ Prints out all available commands, plus version information """
-        print("{}, last updated: {}".format(
-            __version__,
-            last_db_update)
-        )
+        print("{}, last updated: {}".format(__version__, last_db_update))
         self._print_header('Usage:')
         print("    malscan [parameters] [target]")
 
@@ -65,15 +62,9 @@ class Help:
         )
         cmd.append({'-w': 'whitelists all files in the target directory'})
         cmd.append({'General Commands:': None})
-        cmd.append(
-            {'config': 'displays current running malscan configuration'}
-        )
-        cmd.append(
-            {'update': 'updates malscan with latest malware signatures'}
-        )
-        cmd.append(
-            {'version': 'shows the application and signature versions'}
-        )
+        cmd.append({'config': 'displays running malscan configuration'})
+        cmd.append({'update': 'updates malscan malware signatures'})
+        cmd.append({'version': 'shows application and signature versions'})
         for key in cmd:
             for switch, description in key.items():
                 self.output(switch, description)

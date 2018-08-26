@@ -8,11 +8,11 @@
 # License: MIT License
 #
 # --------------------------------------------------
-from os import path, chmod, mkdir
+from os import path, mkdir
 from malscan.help import Help
 
 
-class Exception:
+class Error:
 
     def __init__(self):
         self.help = Help()
@@ -22,7 +22,6 @@ class Exception:
 
         if not path.isdir(self.log_path):
             mkdir(self.log_path, 0o755)
-            chmod(self.log_path, 0o755)
 
     def _log_writer(self, string):
         file = open(self.log_file, 'a+')

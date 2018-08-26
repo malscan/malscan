@@ -2,6 +2,7 @@
 """ App entry point. """
 from malscan.configuration import Configuration
 from malscan.help import Help
+from malscan.error import Error
 
 from sys import argv as Argv
 from os import path, getcwd
@@ -21,14 +22,12 @@ class Malscan():
 
     def load(self):
         # Making sure that we've received the appropriate number of arguments
-        if self.argument_count == 1:
-            self.help.display(self.config.get('last_db_update'))
-        else:
+        if self.argument_count > 1:
             # Removing the self-referencing argument
             del self.arguments[0]
 
             # If there's only 1 argument we're likely running a command
-            if len(self.arguments) == 1:
+            if self.argument_count == 2:
                 command = self.arguments[0]
 
                 # There's one single command, so we verify it's not a target.
@@ -49,21 +48,11 @@ class Malscan():
                         self.config.show()
                     else:
                         self.help.display(self.config.get('last_db_update'))
-            elif len(self.arguments) == 2:
-                # Two arguments usually indicates a target
-                target = self.arguments[1]
-                if path.exists(target):
-                    # The target exists, so we scan it with any modes requested
-                    self._run_scanner()
-                else:
-                    # The target doesn't exist, so we're going to error here.
-                    from malscan.exception import Exception
-                    exception = Exception()
-                    exception.error('The specified target "{}"'
-                                    '" does not exist.'.format(target))
             else:
-                # The command they used is unknown so we give them help text.
-                self.help.display(self.config.get('last_db_update'))
+                # Two arguments usually indicates a target
+                self._run_scanner()
+        else:
+            self.help.display(self.config.get('last_db_update'))
 
     def _run_scanner(self):
         """ Configures the scanning instance and invokes the scanner """
@@ -85,7 +74,7 @@ class Malscan():
 
     def _check_target(self, target):
         """ Determines if a string is a valid target for scanning """
-        if path.isfile(target) or path.isdir(target):
+        if path.exists(target):
             return True
         else:
             return False
@@ -94,3 +83,8 @@ class Malscan():
         """ Adds a target to the target list, if it is a valid target """
         if self._check_target(target):
             self.targets.append(target)
+        else:
+            # The target doesn't exist, so we're going to error here.
+            exception = Error()
+            exception.error('The specified target "{}"'
+                            ' does not exist.'.format(target))

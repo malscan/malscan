@@ -4,7 +4,7 @@ import sys
 import unittest
 import os
 from malscan.help import Help
-from malscan.exception import Exception
+from malscan.error import Error
 if sys.version_info >= (3, 0):
     from io import StringIO
 else:
@@ -13,7 +13,7 @@ else:
 
 class TestHelp(unittest.TestCase):
     def setUp(self):
-        self.exception = Exception()
+        self.exception = Error()
         self.help = Help()
         self.maxDiff = None
         if os.path.isfile(self.exception.log_file):
@@ -21,7 +21,7 @@ class TestHelp(unittest.TestCase):
 
     def test_init(self):
         self.assertIsInstance(self.exception.help, Help)
-        self.assertIsInstance(self.exception, Exception)
+        self.assertIsInstance(self.exception, Error)
         self.assertTrue(os.path.isdir(self.exception.log_path))
         self.assertFalse(os.path.isfile(self.exception.log_file))
         self.assertTrue(os.access(self.exception.log_path, os.W_OK))
