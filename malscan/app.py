@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """ App entry point. """
-from malscan.configuration import Configuration
+from malscan.settings import Settings
 from malscan.help import Help
 from malscan.error import Error
 
@@ -13,8 +13,8 @@ class Malscan():
     to run various malscan commands """
 
     def __init__(self):
-        self.config = Configuration()
-        self.config.load()
+        self.settings = Settings()
+        self.settings.load()
 
         self.arguments = Argv
         self.argument_count = len(self.arguments)
@@ -44,15 +44,15 @@ class Malscan():
                         updater.run()
                     elif 'version' in command:
                         self.help.version()
-                    elif 'config' in command:
-                        self.config.show()
+                    elif 'settings' in command:
+                        self.settings.show()
                     else:
-                        self.help.display(self.config.get('last_db_update'))
+                        self.help.display(self.settings.get('last_db_update'))
             else:
                 # Two arguments usually indicates a target
                 self._run_scanner()
         else:
-            self.help.display(self.config.get('last_db_update'))
+            self.help.display(self.settings.get('last_db_update'))
 
     def _run_scanner(self):
         """ Configures the scanning instance and invokes the scanner """
@@ -61,8 +61,8 @@ class Malscan():
         for arg in self.arguments:
             if arg.startswith("-"):
                 for opt in arg:
-                    if opt in self.config.optargs:
-                        self.scan_modes.append(self.config.optargs[opt])
+                    if opt in self.settings.optargs:
+                        self.scan_modes.append(self.settings.optargs[opt])
             else:
                 self._add_target(arg)
         if self.targets == []:

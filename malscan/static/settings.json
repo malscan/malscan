@@ -1,0 +1,15 @@
+{
+  "ApplicationUser":      [],
+  "ApplicationGroup":     [],
+  "SignatureDirectory":   [],
+  "EmailNotifications":   [],
+  "NotificationAddress":  [],
+  "MalscanSenderAddress": [],
+  "QuarantineDirectory":  [],
+  "QuarantineMode":       [
+      "locked-down",
+      "normal"
+  ],
+  "QuarantineUser":       [],
+  "QuarantineGroup":      []
+}

@@ -1,0 +1,11 @@
+{
+  "l":      "scan.string",
+  "m":      "scan.mime",
+  "s":      "scan.basic",
+  "q":      "scan.quarantine",
+  "t":      "tripwire.scan",
+  "w":      "tripwire.whitelist",
+  "settings":  "core.settings",
+  "update":  "core.update",
+  "version": "core.version"
+}

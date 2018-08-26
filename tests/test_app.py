@@ -11,7 +11,7 @@ class TestMalscan(unittest.TestCase):
         self.maxDiff = None
         self.base_path = path.dirname(path.dirname(__file__))
 
-    def test_configuration(self):
+    def test_settings(self):
 
         expected = {
             "base_path": self.base_path,
@@ -27,8 +27,8 @@ class TestMalscan(unittest.TestCase):
             "QuarantineGroup": "malscan",
             "last_db_update": "placeholder",
         }
-        config = self.malscan.config.configuration
-        self.assertDictEqual(expected, config)
+        settings = self.malscan.settings.settings
+        self.assertDictEqual(expected, settings)
 
     def test_optargs(self):
         expected_optargs = {
@@ -38,16 +38,16 @@ class TestMalscan(unittest.TestCase):
             "q": "scan.quarantine",
             "t": "tripwire.scan",
             "w": "tripwire.whitelist",
-            "config": "core.config",
+            "settings": "core.settings",
             "update": "core.update",
             "version": "core.version"
         }
 
-        self.assertDictEqual(expected_optargs, self.malscan.config.optargs)
+        self.assertDictEqual(expected_optargs, self.malscan.settings.optargs)
 
     def test_config_file(self):
         self.assertEqual(
             self.base_path + '/config/malscan.conf',
-            self.malscan.config.configuration_file
+            self.malscan.settings.settings_file
         )
-        self.assertEqual('global', self.malscan.config.configuration_mode)
+        self.assertEqual('global', self.malscan.settings.settings_mode)
