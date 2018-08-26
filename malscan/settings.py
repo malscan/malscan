@@ -8,6 +8,19 @@
 # License: MIT License
 #
 # --------------------------------------------------
+"""
+Malscan Settings module
+
+:class Settings:         provides settings and configuration functionality
+
+:function load:                     displays version line
+:function get:                      gets a specific Malscan setting
+:function show:                     shows current Malscan settings
+:function _load_settings_file:      loads a settings file
+:function _parse_file_line:         parses a line in a settings file
+:function _save_settings_option     saves a setting
+:function _validate_settings_option determines if a settings option is valid
+"""
 from os import path
 import sys
 import json
@@ -26,23 +39,26 @@ class Settings:
         with open(self.base_path + "/malscan/static/optargs.json") as o_data:
             self.optargs = json.load(o_data)
 
-    def load(self):
         self.settings['base_path'] = self.base_path
         user_home = path.expanduser("~")
         self.local_settings = user_home + "/.config/malscan/malscan.conf"
         self.global_settings = self.base_path + "/config/malscan.conf"
 
+    def load(self):
+
         if path.isfile(self.global_settings):
+            self.locale = 'global'
             self._load_settings_file()
         else:
-            Exception.error(
+            self.exception.error(
                 "The malscan settings file "
                 "cannot be found at {}".format(self.global_settings)
             )
             sys.exit(1)
 
         if path.isfile(self.local_settings):
-            self._load_settings_file('local')
+            self.locale = 'local'
+            self._load_settings_file()
             self.settings_file = self.local_settings
             self.settings_mode = 'local'
         else:
@@ -58,17 +74,18 @@ class Settings:
         json.dump(self.settings, sys.stdout, indent=4)
         print("")
 
-    def _load_settings_file(self, locale='global'):
-        if locale == 'local':
+    def _load_settings_file(self):
+        if self.locale == 'local':
             settings_file = self.local_settings
         else:
             settings_file = self.global_settings
 
         file = open(settings_file, 'r')
         for line in file.readlines():
-            self._parse_file_line(line, locale)
+            self._parse_file_line(line)
+        file.close()
 
-    def _parse_file_line(self, line, locale):
+    def _parse_file_line(self, line):
         if line[0] == '#':
             return None
         else:
@@ -76,13 +93,13 @@ class Settings:
             if option != []:
                 key = option[0]
                 value = option[1]
-                self._save_settings_option(key, value, locale)
+                self._save_settings_option(key, value)
 
-    def _save_settings_option(self, key, value, locale):
-        if self._validate_settings_option(key, value, locale):
+    def _save_settings_option(self, key, value):
+        if self._validate_settings_option(key, value):
             self.settings[key] = value
 
-    def _validate_settings_option(self, key, value, locale):
+    def _validate_settings_option(self, key, value):
         if key in self.settings_options:
             if self.settings_options[key] == []:
                 return True
