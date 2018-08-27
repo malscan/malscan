@@ -2,7 +2,7 @@
 # --------------------------------------------------
 #
 # Package: Malscan
-# Author: Josh Grancell <jgrancell@malscan.org>
+# Author: Josh Grancell <jgrancell@malscan.com>
 # Description: Linux malware scanner
 # Copyright: 2015-2018 Josh Grancell
 # License: MIT License

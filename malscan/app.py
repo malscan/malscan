@@ -1,4 +1,13 @@
-# -*- encoding: utf-8 -*-
+#!/usr/bin/env python
+# --------------------------------------------------
+#
+# Package: Malscan
+# Author: Josh Grancell <jgrancell@malscan.com>
+# Description: Linux malware scanner
+# Copyright: 2015-2018 Josh Grancell
+# License: MIT License
+#
+# --------------------------------------------------
 """ App entry point. """
 from malscan.settings import Settings
 from malscan.help import Help
