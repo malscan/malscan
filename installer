@@ -22,14 +22,14 @@ fi
 
 ## Verifying that we are running under root/sudo
 if [[ "$EUID" != 0 ]]; then
-  echo -e "\033[31mThe installer must be run either as the root user or under sudo.\033[37m"
+  echo -e "\\033[31mThe installer must be run either as the root user or under sudo.\\033[37m"
   exit 1
 fi
 
 ## Determining our OS
 function welcome {
   echo ""
-  echo -e "\033[32mmalscan. \033[37m"
+  echo -e "\\033[32mmalscan. \\033[37m"
   echo ""
   echo "An open source, libre linux malware scanner."
   echo "Copyright 2014-2018, Josh Grancell"
@@ -44,20 +44,20 @@ function identify_os {
     ## Determining the RedHat-derivative OS
     if [[ -d /usr/local/cpanel ]]; then
       DISTRO="cPanel"
-      echo -e "Detected OS: \033[32mcPanel\033[37m"
+      echo -e "Detected OS: \\033[32mcPanel\\033[37m"
     elif [[ -f /etc/centos-release ]]; then
       DISTRO="CentOS"
-      echo -e "Detected OS: \033[32mCentOS\033[37m"
+      echo -e "Detected OS: \\033[32mCentOS\\033[37m"
     elif [[ -f /etc/fedora-release ]]; then
       DISTRO="Fedora"
-      echo -e "Detected OS: \033[32mFedora\033[37m"
+      echo -e "Detected OS: \\033[32mFedora\\033[37m"
     else
       DISTRO="RHEL"
-      echo -e "Detected OS: \033[32mRed Hat Enterprise Linux\033[37m"
+      echo -e "Detected OS: \\033[32mRed Hat Enterprise Linux\\033[37m"
     fi
   else
     DISTRO="Unsupported"
-    echo -e "Detected OS: \033[31mAn unsupported OS has been detected. Please attempt a manual install or submit a feature request.\033[37m"
+    echo -e "Detected OS: \\033[31mAn unsupported OS has been detected. Please attempt a manual install or submit a feature request.\\033[37m"
     exit 1
   fi
 }
@@ -68,10 +68,11 @@ function configure_for_os {
     echo "To install ClamAV through WHM, use the cPanel > Manage Plugins tool."
     echo "If you have completed the ClamAV plugin installation, you may continue with the Malscan installation."
     echo "Continue? [y/N]"
+    # shellcheck disable=SC2162
     read INSTALL_OPTION
 
     if [[ "$INSTALL_OPTION" != "y" && "$INSTALL_OPTION" != "Y" ]]; then
-      echo -e "\033[31mYou have selected to exit this isntallation. Please run this installer again once the ClamAV plugin has been installed.\033[37m"
+      echo -e "\\033[31mYou have selected to exit this isntallation. Please run this installer again once the ClamAV plugin has been installed.\\033[37m"
       exit 0
     fi
     yum -q -y install file wget
@@ -85,6 +86,7 @@ function configure_for_os {
     echo "  * clamav"
     echo "  * clamav-update / clamav-db"
     echo -n " Would you like to proceed with malscan installation? [y/N] "
+    # shellcheck disable=SC2162
     read CONTINUE_INSTALL
 
     if [[ "$CONTINUE_INSTALL" != 'y' && "$CONTINUE_INSTALL" != 'Y' && "$CONTINUE_INSTALL" != 'yes' ]]; then
@@ -106,6 +108,7 @@ function configure_for_os {
     echo "  * clamav"
     echo "  * clamav-update"
     echo -n " Would you like to proceed with malscan installation? [y/N] "
+    # shellcheck disable=SC2162
     read CONTINUE_INSTALL
 
     if [[ "$CONTINUE_INSTALL" != 'y' && "$CONTINUE_INSTALL" != 'Y' && "$CONTINUE_INSTALL" != 'yes' ]]; then
@@ -115,11 +118,11 @@ function configure_for_os {
     dnf -q -y install clamav clamav-update file wget
   else
     ## Incompatible distro, exiting
-    echo -e "\033[31mMalscan has detected that this server is not running a supported operating system."
+    echo -e "\\033[31mMalscan has detected that this server is not running a supported operating system."
     echo "Malscan is currently only available for installation on the following Operating Systems: "
     echo "    CentOS/RHEL 6.x / 7.x"
     echo "    Fedora 24 / 25 / 26"
-    echo -e "Feature requests for new Operating System support can be submitted to https://github.com/malscan/malscan/issues\033[37m"
+    echo -e "Feature requests for new Operating System support can be submitted to https://github.com/malscan/malscan/issues\\033[37m"
     exit 0
   fi
 }
@@ -166,17 +169,20 @@ function install_malscan {
 
 function configure_malscan {
   ## Getting the user's input on email notifications
-  echo -e "\033[33mBeginning the malscan configuration process..."
+  echo -e "\\033[33mBeginning the malscan configuration process..."
   echo ""
-  echo -ne "Would you like to enable email notifications? [y/N] [default: N] \033[37m"
+  echo -ne "Would you like to enable email notifications? [y/N] [default: N] \\033[37m"
+  # shellcheck disable=SC2162
   read EMAIL_NOTIFICATIONS
 
   if [[ "$EMAIL_NOTIFICATIONS" == "y" || "$EMAIL_NOTIFICATIONS" == "Y" || "$EMAIL_NOTIFICATIONS" == "yes" || "$EMAIL_NOTIFICATIONS" == "YES" ]]; then
       ## Email notifications are being enabled, so we're now getting the list of addresses
-      echo -e "\033[33mAt what email addresses would you like to receive notifications (Comma-separated list): \033[37m"
+      echo -e "\\033[33mAt what email addresses would you like to receive notifications (Comma-separated list): \\033[37m"
+      # shellcheck disable=SC2162
       read EMAIL_ADDRESSES
 
-      echo -e "\033[33mWhat email address would you like malscan to send email from? \033[37m"
+      echo -e "\\033[33mWhat email address would you like malscan to send email from? \\033[37m"
+      # shellcheck disable=SC2162
       read SENDER_ADDRESS
 
       "$MALSCAN_BINARY_PATH/malscan" -s EMAIL_NOTIFICATIONS TRUE > /dev/null
@@ -187,8 +193,8 @@ function configure_malscan {
 
     ## No remote quarantine, so we're now requesting the local quarantine directory
     echo ""
-    echo -e "\033[33mWhat directory would you like to quarantine files in? [default=/root/.malscan/quarantine] \033[37m"
-    read QUARANTINE_DIRECTORY
+    echo -e "\\033[33mWhat directory would you like to quarantine files in? [default=/root/.malscan/quarantine] \\033[37m"
+    read -r QUARANTINE_DIRECTORY
 
     if [[ "$QUARANTINE_DIRECTORY" = "" || "$QUARANTINE_DIRECTORY" = " " ]]; then
       QUARANTINE_PATH="/root/.malscan/quarantine"
@@ -198,15 +204,15 @@ function configure_malscan {
 
     ## Creating the quarantine path if it doesn't exist
     if [[ -d "$QUARANTINE_PATH" ]]; then
-      echo -e "\033[32mYour quarantine path has been successfully set!\033[37m"
+      echo -e "\\033[32mYour quarantine path has been successfully set!\\033[37m"
       "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH" > /dev/null
     else
       mkdir -p "$QUARANTINE_PATH"
-      echo -e "\033[32mThe directory $QUARANTINE_PATH has been created, and set as the Quarantine location.\033[37m"
+      echo -e "\\033[32mThe directory $QUARANTINE_PATH has been created, and set as the Quarantine location.\\033[37m"
       "$MALSCAN_BINARY_PATH/malscan" -s QUARANTINE_DIRECTORY "$QUARANTINE_PATH" > /dev/null
     fi
 
-    echo -e "\033[032mMalscan has been successfully configured! Beginning initial update...\033[37m"
+    echo -e "\\033[032mMalscan has been successfully configured! Beginning initial update...\\033[37m"
 
     echo -e "Pre-seeding the malscan signature databases with bundled signatures. This may take some time to complete."
     wget -P "$MALSCAN_SIGNATURE_PATH/" "$SIGNATURE_REPOSITORY_URL/main.cvd" --quiet
