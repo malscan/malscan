@@ -10,7 +10,7 @@
 # -------------------------------------------------
 
 
-MALSCAN_REPOSITORY_URL="https://raw.githubusercontent.com/malscan/malscan/raw"
+MALSCAN_REPOSITORY_URL="https://raw.githubusercontent.com/malscan/malscan"
 SIGNATURE_REPOSITORY_URL="https://www.joshgrancell.com/signatures"
 
 ## Determining which release to install
