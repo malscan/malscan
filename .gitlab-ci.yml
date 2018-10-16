@@ -20,7 +20,6 @@ installer:
     - if [[ ! -f /etc/malscan/freshclam.conf ]]; then exit 1; fi
     - if [[ ! -f /usr/local/share/malscan/README.md ]]; then exit 1; fi
     - if [[ ! -f /usr/local/share/malscan/LICENSE ]]; then exit 1; fi
-    - if [[ ! -f /usr/local/share/malscan/version.txt ]]; then exit 1; fi
 
 help function:
   stage: core functionality
