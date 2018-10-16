@@ -1,18 +1,8 @@
+image: alpine:latest
+
 before_script:
-  - groupadd -r malscan
-  - useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
-  - mkdir -p /usr/local/share/malscan && chown -R malscan:malscan /usr/local/share/malscan
-  - mkdir -p /var/lib/malscan && chown -R malscan:malscan /var/lib/malscan
-  - mkdir -p /var/log/malscan && chown -R malscan:malscan /var/log/malscan
-  - mkdir -p /root/.malscan/quarantine
-  - mkdir -p /etc/malscan
-  - mkdir -p /usr/local/share/man/man1
-  - cp "$CI_PROJECT_DIR/malscan.conf" /etc/malscan/
-  - cp "$CI_PROJECT_DIR/freshclam.conf" /etc/malscan/
-  - cp "$CI_PROJECT_DIR/malscan.1" /usr/local/share/man/man1/
-  - cp "$CI_PROJECT_DIR/malscan" /usr/local/bin/
-  - cp "$CI_PROJECT_DIR/version.txt" /usr/local/share/malscan/
-  - chmod +x /usr/local/bin/malscan
+  - apk add bash
+  - /bin/bash installer --unattended
 stages:
   - build
   - updater testing
@@ -24,27 +14,23 @@ stages:
 ##
 
 help function (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: build
   script:
     - malscan -h
 
 update function (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: updater testing
   when: on_success
   script:
     - malscan -u
 
 scan function (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -a /root
 scan function on missing directory (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   allow_failure: true
@@ -53,14 +39,12 @@ scan function on missing directory (RHEL7):
     - malscan -a /home/non-existant-directory && exit 1 || exit 0
 
 mime scan test (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -m /home
 mime scan detection test (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
@@ -69,7 +53,6 @@ mime scan detection test (RHEL7):
     - malscan -m /tmp/mime-detection.jpg
 
 eicar detection test (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
@@ -78,7 +61,6 @@ eicar detection test (RHEL7):
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
 eicar quarantine test (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
@@ -89,7 +71,6 @@ eicar quarantine test (RHEL7):
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
 tripwire test (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
@@ -98,7 +79,6 @@ tripwire test (RHEL7):
     - malscan -t /etc
 
 tripwire detection test (RHEL7):
-  image: jgrancell/malscanbuild:7
   stage: scan testing
   when: on_success
   script:
