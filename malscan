@@ -10,6 +10,7 @@
 # --------------------------------------------------
 
 ## Loading the configuration file from the Malscan directory
+# shellcheck disable=SC1091
 source /etc/malscan/malscan.conf
 VERSION=$(cat "$APPLICATION_DIRECTORY/version.txt" || echo "unknown")
 
@@ -430,7 +431,7 @@ function mimescan {
   # Working through the temporary file list to match files with mimetypes.
   while IFS= read -r FILE
   do
-    if file "$FILE" | egrep -q '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
+    if file "$FILE" | grep -E '(jpg|png|gif|swf|txt|pdf|js|css|html|htm|xml).*?(PHP)'; then
       MIME_DETECTION=1
       echo -ne "\\033[35m"
       echo "  - DETECTION: $FILE has been detected as a PHP file with a non-matching extension." | tee -a "$LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log"
@@ -528,7 +529,7 @@ function quarantine {
       # Setting the files to 000 permissions so they cannot be accessed
       chmod 600 "$QUARANTINE_DIRECTORY/$LOGGING_DATE_FILE_NAME/$ABSPATH"
       echo -e "  - \\033[36m$FILE quarantined and locked down in $QUARANTINE_DIRECTORY/$LOGGING_DATE_FILE_NAME.\\033[37m" | tee -a "$LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME"
-    done < <(cat "$AV_DETECTION_TEMPLOG" | cut -d: -f1)
+    done < <(cut -d: -f1 < "$AV_DETECTION_TEMPLOG")
 
     echo "$LOGGING_DATE - Quarantine - $QUARANTINE_COUNT malicious files quarantined. See $LOGGING_DIRECTORY/quarantine-$LOGGING_DATE_FILE_NAME.log for Quarantine information, and $LOGGING_DIRECTORY/detection-$LOGGING_DATE_FILE_NAME.log for malware detection information." >> "$LOGGING_DIRECTORY/scan.log"
   fi
