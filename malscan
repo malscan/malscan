@@ -150,7 +150,7 @@ function updater {
       echo ""
       echo -e "\\033[37m  * Update: Checking for malscan application updates."
 
-      wget -q https://raw.githubusercontent.com/malscan/malscan/master/malscan
+      wget -q https://raw.githubusercontent.com/malscan/malscan/1.x/malscan
       NEW_VERSION=$(grep -m 1 "VERSION=" malscan | cut -d\' -f2 || echo "unknown")
 
       if [[ "$NEW_VERSION" != "unknown" ]]; then
