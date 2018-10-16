@@ -39,7 +39,6 @@ install freshclam.conf ${RPM_BUILD_ROOT}/etc/malscan/freshclam.conf
 install malscan ${RPM_BUILD_ROOT}/usr/local/bin/malscan
 install malscan.1 ${RPM_BUILD_ROOT}/usr/local/share/man/man1/malscan.1
 install LICENSE ${RPM_BUILD_ROOT}/usr/local/share/malscan/malscan.license
-install version.txt ${RPM_BUILD_ROOT}/usr/local/share/malscan/version.txt
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -55,7 +54,6 @@ rm -rf ${RPM_BUILD_ROOT}
 %dir %attr(755,malscan,malscan) /var/lib/malscan
 %dir %attr(755,malscan,malscan) /var/log/malscan
 %attr(644,malscan,malscan) /usr/local/share/malscan/malscan.license
-%attr(644,malscan,malscan) /usr/local/share/malscan/version.txt
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
