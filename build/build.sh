@@ -12,8 +12,7 @@
 VERSION="$1"
 
 if [[ "$VERSION" == "ci" ]]; then
-  PACKAGE_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt | cut -d- -f1)
-  RPM_VERSION=$(cat /home/makerpm/rpmbuild/malscan/version.txt)
+  PACKAGE_VERSION=$(grep -m 1 "VERSION=" /home/makerpm/rpmbuild/malscan/malscan | cut -d\' -f2)
 else
   PACKAGE_VERSION=$VERSION
 fi
