@@ -78,9 +78,9 @@ only for currently supported operating systems. Support includes:
 
 To set up the yum repository, install one of the three below RPM files depending on your distribution and version:
 
-* RHEL/CentOS 7: `https://yum.malscan.org/malscan-release-el-7.rpm`
-* RHEL/CentOS 6: `https://yum.malscan.org/malscan-release-el-6.rpm`
-* Fedora (all versions): `https://yum.malscan.org/malscan-release-fedora.rpm`
+* RHEL/CentOS 7: `https://yum.malscan.com/malscan-release-el-7.rpm`
+* RHEL/CentOS 6: `https://yum.malscan.com/malscan-release-el-6.rpm`
+* Fedora (all versions): `https://yum.malscan.com/malscan-release-fedora.rpm`
 
 #### Other Operating Systems
 
