@@ -15,35 +15,39 @@ ClamAV-based malware scanner for Linux web servers.
 
 ## Summary
 
-Malscan is a scanning platform for Linux servers that simplifies keeping your web servers
-secure and malware-free. It is built upon the ClamAV platform, providing all of the
-features of Clamscan with a host of new features and detection modes.
-
-**NOTE**: This branch is currently in legacy mode. I am in the process of rewriting this
-application into Python from Shell, which will be the primary application language moving forward.
-New features will not be introduced for the lgacy Shell application, however bugfixes will continue
-for some time.
+Malscan is a scanning platform for Linux servers that simplifies keeping your
+web servers secure and malware-free. It is built upon the ClamAV platform,
+providing all of the features of Clamscan with a host of new features and
+detection modes.
 
 ## Features
 * Multiple channels of malware signatures
-  * RFX Networks Signatures
-  * Metasploit Signatures
-  * Malscan Signatures
-  * ClamAV Main Signatures
+    * RFX Networks Signatures
+    * Metasploit Signatures
+    * Malscan Signatures
+    * ClamAV Main Signatures
 * Multiple Detection Methods
-  * Standard HEX or MD5 based detections, with a database of over 20,000 signatures and growing.
-  * String length detections - smart detection of long injected strings, such as base64
-  * MimeType mismatch detections - detects PHP files attempting to masquerade as other file types
-  * Tripwire detection mode - identifies files that have changed (or new files that have been created) to a known base filetree state.
+    * Standard HEX or MD5 based detections
+        * Includes a database of over 30,000 signatures
+        * Uses both HEX and hash based detections
+    * String length detections
+        * Identifies long obfuscated strings.
+        * Non-signature based, to help detect zero day code injections
+    * MimeType mismatch detections
+        * Detects PHP files that are masquerading as other file types.
+        * Identifies certain common obfuscated attack vectors, such as command
+        shells hiding as `.png` files.
+    * Tripwire detection mode
+        * Allows you to whitelist files in a known clean configuration.
+        * Compares the file tree to previously whitelisted states to identify changes.
+        * Can be hooked into common deploy tools, such as `capistrano` or `dpl`.
 * Easy File Quarantining
-* Built-in new file signature generation
-* Customizable email notifications
+* Custom email notifications
 
 ## Requirements
 * Linux Server / Desktop
 * Full root access, or the ability to install:
   * ClamAV
-  * Git
   * File
   * Postfix or Exim, if using email notifications.
 * SSH Access
@@ -52,42 +56,54 @@ for some time.
 
 __NOTE__: New installation procedures will be deployed shortly for CentOS 6, 7, Fedora, and Puppet Community/Enterprise.
 
-#### CentOS 6, CentOS 7
+#### Puppet
 
-Repositories are available for CentOS and RHEL 6 and 7, as well as Fedora 27 and 26. Installation instructions for these repositories can be found at https://docs.malscan.com/ .  If you do not (or cannot) install repositories, you can use the automated installation script by following these steps:
+Puppet is the primary supported installation method for malscan.
 
-* Run the following command from within the terminal to install Malscan automatically: `wget https://raw.githubusercontent.com/jgrancell/malscan/1.x/install.sh && bash install.sh`
-* Follow the guided installer in the terminal to complete the installation, configuration, and initial whitelisting process.
+The malscan Puppet module is currently under development. You can find the
+status of the module's development [here](https://github.com/malscan/puppetmodule)
+
+#### Red Hat Enterprise Linux, CentOS, and Fedora
+
+RPM packages are available for RHEL, CentOS, and Fedora. Packages are generated
+only for currently supported operating systems. Support includes:
+
+| Operating System | Version |           |
+| :--------------: | :-----: | :-------: |
+|   RHEL / CentOS  |    7    | ![](https://img.shields.io/badge/supported-yes-blue.svg) |
+|   RHEL / CentOS  |    6    | ![](https://img.shields.io/badge/supported-yes-blue.svg) |
+|      Fedora      |    28   | ![](https://img.shields.io/badge/supported-yes-blue.svg) |
+|      Fedora      |    27   | ![](https://img.shields.io/badge/supported-yes-blue.svg) |
+|      Fedora      |    26   | ![](https://img.shields.io/badge/supported-no-red.svg) |
+
+To set up the yum repository, install one of the three below RPM files depending on your distribution and version:
+
+* RHEL/CentOS 7: `https://yum.malscan.org/malscan-release-el-7.rpm`
+* RHEL/CentOS 6: `https://yum.malscan.org/malscan-release-el-6.rpm`
+* Fedora (all versions): `https://yum.malscan.org/malscan-release-fedora.rpm`
 
 #### Other Operating Systems
 
-Generally, the installer steps should work on all other RHEL derivatives. If you run into specific installer issues with any non-supported Operating Systems or versions, please submit an issue and or pull request to add support for it.
+We make every effort to support as many operating systems as possible. Currently, we
+officially support the following operating systems:
 
-Malscan can be manually installed on any operating system that successfully meets the System Requirements listed above. This can be done by following the steps outlined below.
-* Install all software dependencies with your OS's package manager (or from source):
-  * clamav
-  * clamav-update (your package manager may name it clamav-update or clamav-db)
-  * bash
-  * file
-  * wget
-  * sendmail
-* Create the required malscan directories.
-  * mkdir /usr/local/share/malscan
-  * mkdir /etc/malscan
-  * mkdir /var/lib/malscan
-  * mkdir /var/log/malscan
-  * mkdir /root/.malscan/quarantine
-* Place the following files in the listed locations:
-  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/malscan/malscan/1.x/malscan.conf"
-  * wget -P "/etc/malscan/" "https://raw.githubusercontent.com/malscan/malscan/1.x/freshclam.conf"
-  * wget -P "/usr/local/share/man/man1/" "https://raw.githubusercontent.com/malscan/malscan/1.x/malscan.1"
-  * wget -P "/usr/local/bin/" "https://raw.githubusercontent.com/malscan/malscan/1.x/malscan"
-  * wget -P "/usr/local/share/malscan/" "https://raw.githubusercontent.com/malscan/malscan/1.x/version.txt"
-* Create a malscan user and group, and assign any users that you would like to use malscan to the malscan group
-  * groupadd -r malscan
-  * useradd -r -g malscan -s /sbin/nologin -c "Malscan Service User" malscan
-  * usermod -a -G malscan your_user
-* Make the binary executable with chmod +x /usr/local/bin/malscan
+* Alpine Linux
+* Debian
+* Unbuntu (LTS only)
+
+All of the above are supported via the malscan installer. This installer will automatically
+identify your operating system, and install required dependencies.
+
+**NOTE:** For Alpine Linux, you *must* install bash before you can run the installer.
+
+To install via the installer on a supported system, simply run:
+
+``` bash
+curl -sSL https://get.malscan.com | bash
+```
+
+We strongly recommend reading through the installer before running it. Running scripts
+without knowing what they do is dumb.
 
 ## Usage
 
@@ -105,6 +121,14 @@ If you're interested in contributing to malscan, I am looking for the following 
 Contact me at `jgrancell@malscan.com` if you're interested.
 
 ## Changelog
+
+#### Version 1.8.0
+*Release: Oct 18, 2018*
+* Fixed: Installer was referencing bad download URLs
+* Fixed: `which` may not be available in some distributions.
+* Updated: Added support for Ubuntu 16.04 and 18.04
+* Updated: Added support for Debian 8 and 9.
+* Updated: Added support for Alpine Linux.
 
 #### Version 1.7.2-1
 *Release: May 15, 2018*

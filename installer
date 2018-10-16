@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -------------------------------------------------
 #
 # Package: Malscan
@@ -9,19 +9,31 @@
 #
 # -------------------------------------------------
 
-
 MALSCAN_REPOSITORY_URL="https://raw.githubusercontent.com/malscan/malscan"
 SIGNATURE_REPOSITORY_URL="https://www.joshgrancell.com/signatures"
 
-## Determining which release to install
-if [[ $# == 1 ]]; then
-  CURRENT_INSTALLER_BRANCH="$1"
+if [[ -f /etc/alpine-release ]]; then
+  if ! command -v bash; then
+    echo "Bash must be installed for Alpine Linux before running the installer."
+    echo "Run 'apk add bash' and then run this installer again."
+    exit 1
+  fi
+fi
+
+## Looping through passed arguments to set values
+if [[ "$1" == '--unattended' || "$1" == '-u' ]]; then
+  UNATTENDED_INSTALLATION=true
+  shift
+fi
+
+if [[ "$1" == '--branch' || "$1" == '-b' ]]; then
+  CURRENT_INSTALLER_BRANCH="$2"
 else
-  CURRENT_INSTALLER_BRANCH="1.x"
+  CURRENT_INSTALLER_BRANCH='1.x'
 fi
 
 ## Verifying that we are running under root/sudo
-if [[ "$EUID" != 0 ]]; then
+if [[ "$EUID" != 0 && $(whoami) != 'root' ]]; then
   echo -e "\\033[31mThe installer must be run either as the root user or under sudo.\\033[37m"
   exit 1
 fi
@@ -37,6 +49,12 @@ function welcome {
   echo ""
   echo "-----------------------------------------------"
   echo ""
+
+  if [[ "$UNATTENDED_INSTALLATION" == true ]]; then
+    echo -e "     \\033[33mUNATTENDED INSTALLATION MODE ENABLED\\033[37m"
+    echo ""
+    echo "-----------------------------------------------"
+  fi
 }
 
 function identify_os {
@@ -55,6 +73,15 @@ function identify_os {
       DISTRO="RHEL"
       echo -e "Detected OS: \\033[32mRed Hat Enterprise Linux\\033[37m"
     fi
+  elif [[ -f "/etc/lsb-release" ]]; then
+    DISTRO="Ubuntu"
+    echo -e "Detected OS: \\033[32mUbuntu\\033[37m"
+  elif grep -q 'NAME="Debian GNU/Linux"' /etc/os-release; then
+    DISTRO="Debian"
+    echo -e "Detected OS: \\033[32mDebian\\033[37m"
+  elif [[ -f "/etc/alpine-release" ]]; then
+    DISTRO="Alpine Linux"
+    echo -e "Detected OS: \\033[32mAlpine Linux\\033[37m"
   else
     DISTRO="Unsupported"
     echo -e "Detected OS: \\033[31mAn unsupported OS has been detected. Please attempt a manual install or submit a feature request.\\033[37m"
@@ -64,66 +91,84 @@ function identify_os {
 
 function configure_for_os {
   if [[ "$DISTRO" == "cPanel" ]]; then
-    echo "Because this is a cPanel system, ClamAV must be manually installed through WHM."
-    echo "To install ClamAV through WHM, use the cPanel > Manage Plugins tool."
-    echo "If you have completed the ClamAV plugin installation, you may continue with the Malscan installation."
-    echo "Continue? [y/N]"
-    # shellcheck disable=SC2162
-    read INSTALL_OPTION
+    echo 'Because this is a cPanel system, ClamAV must be manually installed through WHM.'
+    echo 'To install ClamAV through WHM, use the cPanel > Manage Plugins tool.'
+    echo 'If you have completed the ClamAV plugin installation, you may continue with the Malscan installation.'
+    PACKAGE_PRE_DEPENDENCY=''
+    PACKAGE_INSTALLER='yum -y -q install'
+    PACKAGES='file wget'
+  elif [[ "$DISTRO" == 'RHEL' || "$DISTRO" == 'CentOS' ]]; then
+    PACKAGE_PRE_DEPENDENCY='yum -y install epel-release'
+    PACKAGE_INSTALLER='yum -y install'
 
-    if [[ "$INSTALL_OPTION" != "y" && "$INSTALL_OPTION" != "Y" ]]; then
-      echo -e "\\033[31mYou have selected to exit this isntallation. Please run this installer again once the ClamAV plugin has been installed.\\033[37m"
-      exit 0
-    fi
-    yum -q -y install file wget
-
-  elif [[ "$DISTRO" == "RHEL" || "$DISTRO" == "CentOS" ]]; then
-    echo ""
-    echo "RHEL-based Operating Systems require several additional packages. This installer will install:"
-    echo "  * epel-release"
-    echo "  * file"
-    echo "  * wget"
-    echo "  * clamav"
-    echo "  * clamav-update / clamav-db"
-    echo -n " Would you like to proceed with malscan installation? [y/N] "
-    # shellcheck disable=SC2162
-    read CONTINUE_INSTALL
-
-    if [[ "$CONTINUE_INSTALL" != 'y' && "$CONTINUE_INSTALL" != 'Y' && "$CONTINUE_INSTALL" != 'yes' ]]; then
-      exit 0
-    fi
-
-    yum -q -y install epel-release file wget
-
-    if grep -qs "release 6" /etc/redhat-release; then
-      yum -q -y install clamav clamav-db
+    if grep -qs 'release 6' /etc/redhat-release; then
+      PACKAGES='file wget clamav clamav-db'
     else
-      yum -q -y install clamav clamav-update
+      PACKAGES='file wget clamav clamav-update'
     fi
-  elif [[ "$DISTRO" == "Fedora" ]]; then
-    echo ""
-    echo "Fedora requires several additional packages. This installer will install:"
-    echo "  * file"
-    echo "  * wget"
-    echo "  * clamav"
-    echo "  * clamav-update"
-    echo -n " Would you like to proceed with malscan installation? [y/N] "
-    # shellcheck disable=SC2162
-    read CONTINUE_INSTALL
-
-    if [[ "$CONTINUE_INSTALL" != 'y' && "$CONTINUE_INSTALL" != 'Y' && "$CONTINUE_INSTALL" != 'yes' ]]; then
-      exit 0
-    fi
-    ## Installing for Fedora
-    dnf -q -y install clamav clamav-update file wget
+  elif [[ "$DISTRO" == 'Fedora' ]]; then
+    PACKAGE_PRE_DEPENDENCY=''
+    PACKAGE_INSTALLER='dnf -y -q install'
+    PACKAGES='clamav clamav-update file wget'
+  elif [[ "$DISTRO" == 'Ubuntu' || "$DISTRO" == 'Debian' ]]; then
+    PACKAGE_PRE_DEPENDENCY='apt-get update'
+    PACKAGE_INSTALLER='apt-get -y -q install'
+    PACKAGES='file wget clamav clamav-freshclam'
+  elif [[ "$DISTRO" == "Alpine Linux" ]]; then
+    PACKAGE_PRE_DEPENDENCY='apk update'
+    PACKAGE_INSTALLER='apk add'
+    PACKAGES='bash clamav file wget shadow'
   else
     ## Incompatible distro, exiting
     echo -e "\\033[31mMalscan has detected that this server is not running a supported operating system."
     echo "Malscan is currently only available for installation on the following Operating Systems: "
-    echo "    CentOS/RHEL 6.x / 7.x"
-    echo "    Fedora 24 / 25 / 26"
+    echo "    Alpine Linux 3"
+    echo "    CentOS/RHEL 6 & 7"
+    echo "    Debian 8 & 9 "
+    echo "    Fedora"
+    echo "    Ubuntu 14.04, 16.04, & 18.04"
     echo -e "Feature requests for new Operating System support can be submitted to https://github.com/malscan/malscan/issues\\033[37m"
     exit 0
+  fi
+
+  echo ""
+  echo "$DISTRO requires several additional packages to be installed. This installer will install:"
+  for PACKAGE in $PACKAGES; do
+    echo "  * $PACKAGE"
+  done
+
+  if [[ "$UNATTENDED_INSTALLATION" == true ]]; then
+    CONTINUE_INSTALL='y'
+    echo ''
+    echo -e "\\033[33mAutomated dependency installation beginning. This may take a few minutes.\\033[37m"
+  else
+    echo -n " Would you like to proceed with malscan installation? [y/N] "
+    # shellcheck disable=SC2162
+    read CONTINUE_INSTALL
+  fi
+
+  if [[ "$CONTINUE_INSTALL" != 'y' && "$CONTINUE_INSTALL" != 'Y' && "$CONTINUE_INSTALL" != 'yes' ]]; then
+    exit 0
+  fi
+
+  if [[ $PACKAGE_PRE_DEPENDENCY != '' ]]; then
+    $PACKAGE_PRE_DEPENDENCY > /dev/null
+  fi
+
+  # shellcheck disable=SC2086
+  $PACKAGE_INSTALLER $PACKAGES > /dev/null
+}
+
+function validate_dependencies {
+  {
+    command -v clamscan
+    command -v freshclam
+    command -v file
+    command -v wget
+  } > /dev/null
+  if [[ $? == 1 ]]; then
+    echo -e "\\033[31mOne or more dependencies failed to install properly.\\033[37m"
+    exit 1
   fi
 }
 
@@ -171,9 +216,14 @@ function configure_malscan {
   ## Getting the user's input on email notifications
   echo -e "\\033[33mBeginning the malscan configuration process..."
   echo ""
-  echo -ne "Would you like to enable email notifications? [y/N] [default: N] \\033[37m"
-  # shellcheck disable=SC2162
-  read EMAIL_NOTIFICATIONS
+
+  if [[ "$UNATTENDED_INSTALLATION" == true ]]; then
+    EMAIL_NOTIFICATIONS='n'
+  else
+    echo -ne "Would you like to enable email notifications? [y/N] [default: N] \\033[37m"
+    # shellcheck disable=SC2162
+    read EMAIL_NOTIFICATIONS
+  fi
 
   if [[ "$EMAIL_NOTIFICATIONS" == "y" || "$EMAIL_NOTIFICATIONS" == "Y" || "$EMAIL_NOTIFICATIONS" == "yes" || "$EMAIL_NOTIFICATIONS" == "YES" ]]; then
       ## Email notifications are being enabled, so we're now getting the list of addresses
@@ -193,8 +243,13 @@ function configure_malscan {
 
     ## No remote quarantine, so we're now requesting the local quarantine directory
     echo ""
-    echo -e "\\033[33mWhat directory would you like to quarantine files in? [default=/root/.malscan/quarantine] \\033[37m"
-    read -r QUARANTINE_DIRECTORY
+
+    if [[ "$UNATTENDED_INSTALLATION" == true ]]; then
+      QUARANTINE_DIRECTORY=''
+    else
+      echo -e "\\033[33mWhat directory would you like to quarantine files in? [default=/root/.malscan/quarantine] \\033[37m"
+      read -r QUARANTINE_DIRECTORY
+    fi
 
     if [[ "$QUARANTINE_DIRECTORY" = "" || "$QUARANTINE_DIRECTORY" = " " ]]; then
       QUARANTINE_PATH="/root/.malscan/quarantine"
