@@ -104,12 +104,13 @@ rpm packaging:
   image: jgrancell/malscanbuild:build
   stage: packaging
   when: on_success
-  script:
+  before_script:
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
     - mkdir -p /home/makerpm/rpmbuild/{RPMS,SRPMS,BUILD,SOURCES,SPECS}
     - rsync -avzP $CI_PROJECT_DIR/ /home/makerpm/rpmbuild/malscan/
     - chown -R makerpm:makerpm /home/makerpm/rpmbuild
+  script:
     - su makerpm -c "echo \"$GPG_PRIVATE_KEY\" > ~/privkey.asc"
     - su makerpm -c "echo \"$GPG_KEY_PASSPHRASE\" | gpg --batch --import ~/privkey.asc"
     - su makerpm -c "echo \"%_signature gpg\" >> ~/.rpmmacros"
