@@ -1,6 +1,6 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
-Version: 1.7.2
+Version: 1.8.0
 Release: 1.el7
 URL:     https://github.com/jgrancell/malscan
 License: MIT
@@ -59,6 +59,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Tue Oct 16 2018 Josh Grancell <jgrancell@malscan.com> 1.8.0-1
+- Updated: Fixed some non-portable code in the mimescan function.
+- Updated: Cleaned up some shellcheck notices in the avscan function.
+
 * Mon May 7 2018 Josh Grancell <jgrancell@malscan.com> 1.7.2-1
 - Fixed: Updater will now properly pull the malscan core version from the right git branch.
 - Updated: Updated all documentation to point to new docs site and new 1.x branch

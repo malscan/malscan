@@ -9,10 +9,11 @@
 #
 # --------------------------------------------------
 
+VERSION='1.8.0'
+
 ## Loading the configuration file from the Malscan directory
 # shellcheck disable=SC1091
 source /etc/malscan/malscan.conf
-VERSION=$(cat "$APPLICATION_DIRECTORY/version.txt" || echo "unknown")
 
 ## Setting up some default binary locations
 FRESHCLAM_BINARY_LOCATION=$(command -v freshclam)
