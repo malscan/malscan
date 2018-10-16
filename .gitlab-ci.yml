@@ -4,33 +4,42 @@ before_script:
   - apk add bash
   - /bin/bash installer --unattended
 stages:
-  - build
-  - updater testing
+  - install
+  - core functionality
   - scan testing
   - packaging
 
 ####
 ## RHEL 7 CI Pipeline
 ##
+installer:
+  stage: install
+  script:
+    - if [[ ! -x /usr/local/bin/malscan ]]; then exit 1; fi
+    - if [[ ! -f /etc/malscan/malscan.conf ]]; then exit 1; fi
+    - if [[ ! -f /etc/malscan/freshclam.conf ]]; then exit 1; fi
+    - if [[ ! -f /usr/local/share/malscan/README.md ]]; then exit 1; fi
+    - if [[ ! -f /usr/local/share/malscan/LICENSE ]]; then exit 1; fi
+    - if [[ ! -f /usr/local/share/malscan/version.txt ]]; then exit 1; fi
 
-help function (RHEL7):
-  stage: build
+help function:
+  stage: core functionality
   script:
     - malscan -h
 
-update function (RHEL7):
-  stage: updater testing
+update function:
+  stage: core functionality
   when: on_success
   script:
     - malscan -u
 
-scan function (RHEL7):
+scan function:
   stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -a /root
-scan function on missing directory (RHEL7):
+scan function on missing directory:
   stage: scan testing
   when: on_success
   allow_failure: true
@@ -38,13 +47,13 @@ scan function on missing directory (RHEL7):
     - malscan -u fast
     - malscan -a /home/non-existant-directory && exit 1 || exit 0
 
-mime scan test (RHEL7):
+mime scan test:
   stage: scan testing
   when: on_success
   script:
     - malscan -u fast
     - malscan -m /home
-mime scan detection test (RHEL7):
+mime scan detection test:
   stage: scan testing
   when: on_success
   script:
@@ -52,7 +61,7 @@ mime scan detection test (RHEL7):
     - echo '<?php echo "PHP file;" ?>' >> /tmp/mime-detection.jpg
     - malscan -m /tmp/mime-detection.jpg
 
-eicar detection test (RHEL7):
+eicar detection test:
   stage: scan testing
   when: on_success
   script:
@@ -60,7 +69,7 @@ eicar detection test (RHEL7):
     - mkdir -p /tmp/eicar
     - wget -P "/tmp/eicar/" "https://www.eicar.org/download/eicar.com.txt"
     - malscan -a /tmp/eicar
-eicar quarantine test (RHEL7):
+eicar quarantine test:
   stage: scan testing
   when: on_success
   script:
@@ -70,7 +79,7 @@ eicar quarantine test (RHEL7):
     - malscan -qa /tmp/eicar
     - if find /root/.malscan -name "eicar.com.txt"; then exit 0; else exit 1; fi
 
-tripwire test (RHEL7):
+tripwire test:
   stage: scan testing
   when: on_success
   script:
@@ -78,7 +87,7 @@ tripwire test (RHEL7):
     - malscan -w /etc
     - malscan -t /etc
 
-tripwire detection test (RHEL7):
+tripwire detection test:
   stage: scan testing
   when: on_success
   script:
