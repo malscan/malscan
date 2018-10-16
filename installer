@@ -13,7 +13,7 @@ MALSCAN_REPOSITORY_URL="https://raw.githubusercontent.com/malscan/malscan"
 SIGNATURE_REPOSITORY_URL="https://www.joshgrancell.com/signatures"
 
 if [[ -f /etc/alpine-release ]]; then
-  if ! command -v bash; then
+  if ! command -v bash > /dev/null; then
     echo "Bash must be installed for Alpine Linux before running the installer."
     echo "Run 'apk add bash' and then run this installer again."
     exit 1

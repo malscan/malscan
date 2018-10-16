@@ -162,7 +162,7 @@ function updater {
             mv "malscan" "/usr/local/bin/malscan"
             chmod 755 "/usr/local/bin/malscan"
 
-            echo -e "\\033[32m  - Update: The malscan application has been updated to $(cat "$APPLICATION_DIRECTORY/version.txt" || echo "an unknown version").\\033[37m"
+            echo -e "\\033[32m  - Update: The malscan application has been updated to $NEW_VERSION.\\033[37m"
           fi
 
         else
