@@ -150,17 +150,15 @@ function updater {
       echo ""
       echo -e "\\033[37m  * Update: Checking for malscan application updates."
 
-      wget -q https://raw.githubusercontent.com/malscan/malscan/1.x/version.txt
-      NEW_VERSION=$(sha256sum version.txt | awk '{print $1}' || echo "unknown")
+      wget -q https://raw.githubusercontent.com/malscan/malscan/master/malscan
+      NEW_VERSION=$(grep -m 1 "VERSION=" malscan | cut -d\' -f2 || echo "unknown")
 
       if [[ "$NEW_VERSION" != "unknown" ]]; then
-        OLD_VERSION=$(sha256sum "$APPLICATION_DIRECTORY/version.txt" | awk '{print $1}' || echo 'unknown')
+        OLD_VERSION=$(grep -m 1 "VERSION=" /usr/local/bin/malscan | cut -d\' -f2 || echo 'unknown')
         if [[ "$OLD_VERSION" != 'unknown' ]]; then
           if [[ "$OLD_VERSION" == "$NEW_VERSION" ]]; then
             echo -e "\\033[32m  - Update: No malscan application updates available.\\033[37m"
           else
-            mv "version.txt" "$APPLICATION_DIRECTORY/version.txt"
-            wget -q https://raw.githubusercontent.com/malscan/malscan/1.x/malscan
             mv "malscan" "/usr/local/bin/malscan"
             chmod 755 "/usr/local/bin/malscan"
 
