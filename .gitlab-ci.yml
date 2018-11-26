@@ -103,6 +103,8 @@ rpm packaging:
   image: jgrancell/malscanbuild:build
   stage: packaging
   when: on_success
+  only:
+    - tags
   before_script:
     - useradd makerpm
     - mkdir -p /home/makerpm/rpmbuild
@@ -115,3 +117,17 @@ rpm packaging:
     - su makerpm -c "echo \"%_signature gpg\" >> ~/.rpmmacros"
     - su makerpm -c "echo \"%_gpg_name Josh Grancell <jgrancell@malscan.com>\" >> ~/.rpmmacros"
     - su makerpm -c "bash /home/makerpm/rpmbuild/malscan/build/build.sh ci"
+
+docker image:
+  image: docker:stable
+  stage: packaging
+  when: on_success
+  service: docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  script:
+    - export MALSCAN_FULL_VERSION=$(grep "^VERSION=" malscan | cut -d\' -f2)
+    - export MALSCAN_MINOR_VERSION=$(grep "^VERSION=" malscan | cut -d\' -f2 | cut -d. -f1-2)
+    - export MALSCAN_MAJOR_VERSION=$(grep "^VERSION=" malscan | cut -d\' -f2 | cut -d. -f1)
+    - docker build --tag malscan/malscan:$MALSCAN_FULL_VERSION --tag malscan/malscan:$MALSCAN_MINOR_VERSION --tag malscan/malscan:latest .
