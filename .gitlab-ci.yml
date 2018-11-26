@@ -127,8 +127,13 @@ docker image:
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+  before_script:
+    - echo "$DOCKER_HUB_PASSWORD" | docker login -u malscanworker --password-stdin
   script:
     - export MALSCAN_FULL_VERSION=$(grep "^VERSION=" malscan | cut -d\' -f2)
     - export MALSCAN_MINOR_VERSION=$(grep "^VERSION=" malscan | cut -d\' -f2 | cut -d. -f1-2)
     - export MALSCAN_MAJOR_VERSION=$(grep "^VERSION=" malscan | cut -d\' -f2 | cut -d. -f1)
-    - docker build --tag malscan/malscan:$MALSCAN_FULL_VERSION --tag malscan/malscan:$MALSCAN_MINOR_VERSION --tag malscan/malscan:latest .
+    - docker build --tag malscan/malscan:$MALSCAN_FULL_VERSION --tag malscan/malscan:$MALSCAN_MINOR_VERSION --tag malscan/malscan:$MALSCAN_MAJOR_VERSION.x .
+    - docker push malscan/malscan:$MALSCAN_FULL_VERSION
+    - docker push malscan/malscan:$MALSCAN_MINOR_VERSION
+    - docker push malscan/malscan:$MALSCAN_MAJOR_VERSION.x
