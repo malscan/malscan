@@ -1,5 +1,9 @@
 ## malscan
 
+#### Version 1.8.1
+*Release: Nov 26, 2018*
+* Fixed: Malscan now provides better information when attempting a run with the lockfile present.
+
 #### Version 1.8.0
 *Release: Oct 15, 2018*
 * New: Added a proper `CHANGELOG.md` file.

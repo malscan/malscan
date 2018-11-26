@@ -9,7 +9,7 @@
 #
 # --------------------------------------------------
 
-VERSION='1.8.0'
+VERSION='1.8.1'
 
 ## Loading the configuration file from the Malscan directory
 # shellcheck disable=SC1091
@@ -26,7 +26,8 @@ TEMPLOG_DIRECTORY=$(mktemp -d)
 
 if [ -f "$APPLICATION_DIRECTORY/malscan.lock" ]; then
   MALSCAN_PID=$(cat "$APPLICATION_DIRECTORY/malscan.lock")
-  echo "Malscan is currently running in process $MALSCAN_PID. Exiting."
+  echo "$APPLICATION_DIRECTORY/malscan.lock is present."
+  echo "There may be another instance of Malscan already running as process $MALSCAN_PID"
   exit 1
 else
   MALSCAN_PID=$$
