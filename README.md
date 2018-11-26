@@ -3,9 +3,9 @@ malscan
 
 ClamAV-based malware scanner for Linux web servers.
 
-[![Latest version](https://img.shields.io/github/release/malscan/malscan.svg)](https://github.com/malscan/malscan/releases)
-[![GitHub license](https://img.shields.io/github/license/malscan/malscan.svg)](https://github.com/malscan/malscan/blob/1.x/LICENSE)
-[![Build status](https://gitlab.com/malscan/malscan/badges/1.x/pipeline.svg)](https://gitlab.com/malscan/malscan/pipelines)
+[![unstable version](https://img.shields.io/badge/branch_stability-unstable-red.svg)](https://github.com/malscan/malscan/releases)
+[![GitHub license](https://img.shields.io/github/license/malscan/malscan.svg)](https://github.com/malscan/malscan/blob/2.x/LICENSE)
+[![Build status](https://gitlab.com/malscan/malscan/badges/2.x/pipeline.svg)](https://gitlab.com/malscan/malscan/pipelines)
 
 # Table of Contents
 * [Features](#features)
@@ -19,6 +19,11 @@ malscan is a scanning platform for Linux servers that simplifies keeping your
 web servers secure and malware-free. It is built upon the ClamAV platform,
 providing all of the features of Clamscan with a host of new features and
 detection modes.
+
+**Note**: The 2.x branch of malscan is a development branch that includes a rewrite of the core
+code from a monolithic script into individual moduleized scripts. Please use the
+[1.x branch](https://github.com/malscan/malscan/tree/1.x) for production systems until 2.x is
+released as stable.
 
 ## Features
 * Multiple channels of malware signatures
@@ -102,8 +107,8 @@ To install via the installer on a supported system, simply run:
 curl -sSL https://get.malscan.com | bash
 ```
 
-We strongly recommend reading through the installer before running it. Running scripts
-without knowing what they do is dumb.
+**We strongly recommend reading through the installer before running it. Running scripts
+without knowing what they do is dumb.**
 
 ## Usage
 
