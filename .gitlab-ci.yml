@@ -122,6 +122,8 @@ docker image:
   image: docker:stable
   stage: packaging
   when: on_success
+  only:
+    - tags
   services:
     - docker:dind
   variables:
