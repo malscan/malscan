@@ -76,11 +76,10 @@ only for currently supported operating systems. Support includes:
 |      Fedora      |    27   | ![](https://img.shields.io/badge/supported-yes-blue.svg) |
 |      Fedora      |    26   | ![](https://img.shields.io/badge/supported-no-red.svg) |
 
-To set up the yum repository, install one of the three below RPM files depending on your distribution and version:
+Guides on how to set up the malscan yum repository can be found here:
 
-* RHEL/CentOS 7: `https://yum.malscan.com/malscan-release-el-7.rpm`
-* RHEL/CentOS 6: `https://yum.malscan.com/malscan-release-el-6.rpm`
-* Fedora (all versions): `https://yum.malscan.com/malscan-release-fedora.rpm`
+* [CentOS 7](https://malscan.readthedocs.io/en/latest/guides/installation/centos7/)
+* [CentOS 6](https://malscan.readthedocs.io/en/latest/guides/installation/centos6/)
 
 #### Other Operating Systems
 
