@@ -10,7 +10,7 @@
 # -------------------------------------------------
 
 MALSCAN_REPOSITORY_URL="https://raw.githubusercontent.com/malscan/malscan"
-SIGNATURE_REPOSITORY_URL="https://www.joshgrancell.com/signatures"
+SIGNATURE_REPOSITORY_URL="https://s3.amazonaws.com/malscan/signatures"
 
 if [[ -f /etc/alpine-release ]]; then
   if ! command -v bash > /dev/null; then
