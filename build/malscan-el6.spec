@@ -1,8 +1,8 @@
 Summary: Linux malware scanner for web servers
 Name: malscan
-Version: 1.8.1
+Version: 1.8.2
 Release: 1.el6
-URL:     https://github.com/jgrancell/malscan
+URL:     https://github.com/malscan/malscan
 License: MIT
 Group: Applications/System
 BuildRoot: %{_tmppath}/%{name}-root
@@ -57,6 +57,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc /usr/local/share/man/man1/malscan.1
 
 %changelog
+* Fri Jan 17 2020 Josh Grancell <josh@malscan.com> 1.8.2-1
+- Fixed: Corrected all URLs within repository code post server move.
+- Updated: Copyright now extends to 2020.
+
 * Mon Nov 26 2018 Josh Grancell <jgrancell@malscan.com> 1.8.1-1
 - Fixed: Malscan now provides better information when attempting a run with the lockfile present.
 

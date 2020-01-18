@@ -1,7 +1,7 @@
 FROM alpine:latest as build
 
 FROM alpine:latest
-LABEL maintainer="Josh Grancell <jgrancell@malscan.com>"
+LABEL maintainer="Josh Grancell <josh@malscan.com>"
 
 ## Installing ClamAV
 RUN apk add --update \

@@ -1,5 +1,13 @@
 ## malscan
 
+#### Version 1.8.2
+*Release: Jan 17, 2020*
+
+* **IMPORTANT**: This will be the last non-maintenance release of the 1.x branch of Malscan. No
+additional features will be coming to the 1.x branch.
+* Fixed: Corrected all URLs within repository code and documentation post server move.
+* Updated: Copyright now extends to 2020.
+
 #### Version 1.8.1
 *Release: Nov 26, 2018*
 * Fixed: Malscan now provides better information when attempting a run with the lockfile present.

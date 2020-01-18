@@ -2,9 +2,9 @@
 # -------------------------------------------------
 #
 # Package: Malscan
-# Author: Josh Grancell <josh@joshgrancell.com>
+# Author: Josh Grancell <josh@malscan.com>
 # Description: Linux malware scanner for web servers
-# Copyright: 2015-2018 Josh Grancell
+# Copyright: 2015-2020 Josh Grancell
 # License: MIT License
 #
 # -------------------------------------------------
@@ -74,3 +74,6 @@ aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/el/6/ --e
 aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/26/ --exclude="*el6*" --exclude="*el7*"
 aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/27/ --exclude="*el6*" --exclude="*el7*"
 aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/28/ --exclude="*el6*" --exclude="*el7*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/29/ --exclude="*el6*" --exclude="*el7*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/30/ --exclude="*el6*" --exclude="*el7*"
+aws s3 sync "/home/makerpm/rpmbuild/RPMS/noarch/" s3://yum.malscan.org/fedora/31/ --exclude="*el6*" --exclude="*el7*"

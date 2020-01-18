@@ -54,16 +54,12 @@ detection modes.
 
 ## Installation
 
-__NOTE__: New installation procedures will be deployed shortly for CentOS 6, 7, Fedora, and Puppet Community/Enterprise.
-
-#### Puppet
-
-Puppet is the primary supported installation method for malscan.
-
-The malscan Puppet module is currently under development. You can find the
-status of the module's development [here](https://github.com/malscan/puppetmodule)
+__NOTE__: Malscan v1.x is the last to support RPM-based installation. Malscan v2.x will
+support platform-agnostic installation processes, including Puppet and script-based installers.
 
 #### Red Hat Enterprise Linux, CentOS, and Fedora
+
+**NOTE**: Malscan RPM packages are depreciated and will be removed
 
 RPM packages are available for RHEL, CentOS, and Fedora. Packages are generated
 only for currently supported operating systems. Support includes:
@@ -98,7 +94,7 @@ identify your operating system, and install required dependencies.
 To install via the installer on a supported system, simply run:
 
 ``` bash
-curl -sSL https://get.malscan.com | bash
+curl -sSL https://raw.githubusercontent.com/malscan/malscan/1.x/installer | bash
 ```
 
 We strongly recommend reading through the installer before running it. Running scripts
