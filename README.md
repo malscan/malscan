@@ -1,6 +1,8 @@
 malscan
 ============
 
+**NOTE: Malscan is no longer under active development.** All *.malscan.com domains are no longer available.
+
 ClamAV-based malware scanner for Linux web servers.
 
 [![Latest version](https://img.shields.io/github/release/malscan/malscan.svg)](https://github.com/malscan/malscan/releases)
